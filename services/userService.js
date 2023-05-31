@@ -52,7 +52,6 @@ class UserService {
 		const userId = jwt.verify(token, conf.get("JWT_SECRET")).id
 
 		const user = await this.getById(userId)
-
 		if (userId) {
 			return { status: true, data: user }
 		} else {
@@ -60,29 +59,28 @@ class UserService {
 		}
 	}
 
-	async updateByID(data) {
-		const filter = { _id: req.params.id }
-		const update = req.body
+	async updateByID(id, data) {
+		const filter = { _id: id }
 
-		const resUpdate = await User.findByIdAndUpdate(filter, update, {
+		const resUpdate = await User.findByIdAndUpdate(filter, data, {
 			new: true
 		})
 
 		if (resUpdate) {
-			return res.status(200).json({ message: customMessages.user.success.update })
+			return { status: true, message: customMessages.user.success.update, data: resUpdate }
 		} else {
-			return res.status(400).json({ message: customMessages.user.failed.update })
+			return { status: false, message: customMessages.user.failed.update }
 		}
 
 	}
 
-	async deleteByID(data) {
-		const resDelete = await User.findByIdAndDelete(req.params.id)
+	async deleteByID(id) {
+		const resDelete = await User.findByIdAndDelete(id)
 
 		if (resDelete) {
-			return res.status(200).json({ message: customMessages.user.success.delete })
+			return { status: true, code: 200, message: customMessages.user.success.delete, data: resDelete }
 		} else {
-			return res.status(400).json({ message: customMessages.user.failed.delete })
+			return { status: false, message: customMessages.user.failed.delete }
 		}
 	}
 

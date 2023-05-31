@@ -41,8 +41,9 @@ class UserController {
 
     async updateUserByID (req, res, next)  {
         try {
-            const { id } = req.params.id
-            const result = await userService.updateByID(id)
+            const  id  = req.params.id
+            const  data  = req.body
+            const result = await userService.updateByID(id, data)
             return res.json(result)
         } catch ( err ) {
             return res.status(500).json( { message: err } )
@@ -51,9 +52,9 @@ class UserController {
 
     async deleteUserByID (req, res, next)  {
         try {
-            const { id } = req.params.id
+            const { id } = req.params
             const result = await userService.deleteByID(id)
-            return res.json(result)
+            return res.status(result.code).json(result)
         } catch ( err ) {
             return res.status(500).json( { message: err } )
         }
