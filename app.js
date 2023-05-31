@@ -14,6 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json())
 
 
+
 app.use('/api/group', require('./routes/group.routes'))
 app.use('/api/user', require('./routes/user.routes'))
 app.use('/api/lead', require('./routes/lead.routes'))
