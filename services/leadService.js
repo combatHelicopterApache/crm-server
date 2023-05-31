@@ -1,5 +1,5 @@
-const Lead = require("../models/leads/leads");
-const customError = require("../common/errors");
+const Lead = require("../models/leads");
+const customError = require("../common/messages");
 
 
 const CreateNewLeadService = async (ip, data) => {

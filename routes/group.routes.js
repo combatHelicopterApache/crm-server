@@ -5,7 +5,7 @@ const {
     GetGroupById,
     UpdateGroupByID,
     DeleteGroupByID
-} = require("../controllers/groups/groups.controller");
+} = require("../controllers/groups.controller");
 
 const router = Router()
 

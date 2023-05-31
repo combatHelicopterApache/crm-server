@@ -6,7 +6,7 @@ const conf = require('config')
 
 
 const app = express()
-const PORT = conf.get('port') || 6000
+const PORT = conf.get('PORT') || 6000
 
 
 app.use(cors())
@@ -14,15 +14,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json())
 
 
-app.use('/api/group', require('./routes/groups.routes'))
-app.use('/api/user', require('./routes/users.routes'))
-app.use('/api/lead', require('./routes/leads.routes'))
-app.use('/api/login', require('./routes/login.routes'))
+app.use('/api/group', require('./routes/group.routes'))
+app.use('/api/user', require('./routes/user.routes'))
+app.use('/api/lead', require('./routes/lead.routes'))
 
 
 const serverStart = async () => {
     try {
-        await mongo.connect(conf.get('mongoUri'), {
+        await mongo.connect(conf.get('MONGO_URI'), {
             useNewUrlParser: true,
             useUnifiedTopology: true
         })

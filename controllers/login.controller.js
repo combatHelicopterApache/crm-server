@@ -1,5 +1,5 @@
-const customError = require("../../common/errors")
-const loginService = require('../../services/loginService')
+const customError = require("../common/messages")
+const loginService = require('../services/loginService')
 const LoginUser = async (req, res) => {
 	try {
 		const result = await loginService.loginService(req.body)

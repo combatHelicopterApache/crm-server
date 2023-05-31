@@ -37,6 +37,7 @@ const ErrorMessages = {
             "delete" : "The user  removal  was failed",
             "get": "An error while receiving data",
             "add": "An error when adding data",
+            "exists": `User with this email address already exists`
         },
         "common": {
             "search": {

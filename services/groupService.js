@@ -1,5 +1,5 @@
-const Group = require('../models/groups/groups')
-const customError = require('../common/errors')
+const Group = require('../models/groups')
+const customError = require('../common/messages')
 
 const CreateNewGroupService = async (data) => {
     try {

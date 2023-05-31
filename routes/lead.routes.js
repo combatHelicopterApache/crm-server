@@ -5,7 +5,7 @@ const {
     GetLeadById,
     UpdateLeadByID,
     DeleteLeadByID
-} = require("../controllers/leads/leads.controller");
+} = require("../controllers/leads.controller");
 
 const router = Router()
 

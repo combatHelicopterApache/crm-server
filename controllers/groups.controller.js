@@ -1,5 +1,5 @@
-const customError = require('../../common/errors')
-const groupServices = require('../../services/groupsService')
+const customError = require('../common/messages')
+const groupServices = require('../services/groupService')
 
 const CreateNewGroup = async (req, res) => {
     try {

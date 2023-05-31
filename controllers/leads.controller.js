@@ -1,5 +1,5 @@
-const customError = require('../../common/errors')
-const leadService = require('../../services/leadsService')
+const customError = require('../common/messages')
+const leadService = require('../services/leadService')
 
 const CreateNewLead = async (req, res) => {
     try {
