@@ -53,7 +53,7 @@ class Validation {
 
 		const loginSchema = Joi.object({
 			login: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } }),
-			password: Joi.string().min(8).pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/).required()
+			password: Joi.string().min(8).pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{7,19}[@$!#%*?&A-Za-z\d]$/).required()
 		})
 
 		const loginData = {

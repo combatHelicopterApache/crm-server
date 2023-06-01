@@ -1,6 +1,6 @@
 const {Router} = require('express')
 const userController = require("../controllers/userController");
-
+const middlewares = require('../middlewares/middlewares')
 const router = Router()
 
 router.post(
@@ -15,6 +15,7 @@ router.get(
 
 router.post(
 	'/login',
+	middlewares.validateLoginData,
 	userController.loginUser
 )
 

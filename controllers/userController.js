@@ -43,7 +43,7 @@ class UserController {
         try {
             const  id  = req.params.id
             const  data  = req.body
-            const result = await userService.updateByID(id, data)
+            const  result = await userService.updateByID(id, data)
             return res.json(result)
         } catch ( err ) {
             return res.status(500).json( { message: err } )
