@@ -1,71 +1,71 @@
 const userService = require('../services/userService')
 
 class UserController {
-    async crateUser (req, res, next)  {
+    async crateUser (req, res)  {
         try {
             const result = await userService.createNewUser(req.body)
-            return res.json(result)
+            return res.send(result)
         } catch ( err ) {
-            return res.status(500).json( { message: err } )
+            return res.status(500).send( { message: err } )
         }
     }
 
-    async getUsers (req, res, next)  {
+    async getUsers (req, res)  {
         try {
             const result = await userService.getAll()
-            return res.json(result)
+            return res.send(result)
         } catch ( err ) {
-            return res.status(500).json( { message: err } )
+            return res.status(500).send( { message: err } )
         }
     }
 
-    async getUserById (req, res, next)  {
+    async getUserById (req, res)  {
         try {
             const { id } = req.params
             const result = await userService.getById(id)
-            return res.json(result)
+            return res.send(result)
         } catch ( err ) {
-            return res.status(500).json( { message: err } )
+            return res.status(500).send( { message: err } )
         }
     }
 
-    async getUserByToken (req, res, next)  {
+    async getUserByToken (req, res)  {
         try {
             const { token } = req.query
             const result = await userService.getByToken(token)
-            return res.json(result)
+            return res.send(result)
         } catch ( err ) {
-            return res.status(500).json( { message: err } )
+            return res.status(500).send( { message: err } )
         }
     }
 
-    async updateUserByID (req, res, next)  {
+    async updateUserByID (req, res)  {
         try {
             const  id  = req.params.id
             const  data  = req.body
             const  result = await userService.updateByID(id, data)
-            return res.json(result)
+            return res.send(result)
         } catch ( err ) {
-            return res.status(500).json( { message: err } )
+            return res.status(500).send( { message: err } )
         }
     }
 
-    async deleteUserByID (req, res, next)  {
+    async deleteUserByID (req, res)  {
         try {
             const { id } = req.params
             const result = await userService.deleteByID(id)
-            return res.status(result.code).json(result)
+            return res.status(result.code).send(result)
         } catch ( err ) {
-            return res.status(500).json( { message: err } )
+            return res.status(500).send( { message: err } )
         }
     }
 
-    async loginUser (req, res, next) {
+    async loginUser (req, res) {
         try {
             const result = await userService.login(req.body)
-            return res.json(result)
+            return res.send(result)
         } catch ( err ) {
-            return res.status(500).json( { message: err } )
+            return res.status(500).send( { message: err } )
         }
     }
 

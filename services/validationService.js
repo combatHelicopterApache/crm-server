@@ -8,7 +8,7 @@ class Validation {
 	}
 
 	async validateEmail (email) {
-		const emailSchema = Joi.string().email({ minDomainSegments: 2 })
+		const emailSchema = Joi.string().email({ minDomainSegments: 2 } )
 
 		const { error } = emailSchema.validate(email)
 
@@ -37,7 +37,7 @@ class Validation {
 	}
 
 	async validateLoginData(data) {
-		const login = data.hasOwnProperty("login") ? data.login.split(" ").join("") : undefined
+		const login = data.hasOwnProperty("email") ? data.email.split(" ").join("") : undefined
 		const password = data.hasOwnProperty("password") ? data.password.split(" ").join("") : undefined
 
 
@@ -62,12 +62,12 @@ class Validation {
 		}
 
 		const { error } = loginSchema.validate(loginData)
-
 		if (error) {
 			return { status: false, message: error.details[0].message }
-		} else {
-			return { status: true }
 		}
+
+		return { status: true }
+
 	}
 }
 
