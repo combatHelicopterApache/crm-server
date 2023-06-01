@@ -14,6 +14,7 @@ const userModel = new Schema({
     parent_id:          { type: Number,  default: '' },
     child_id:           { type: Number,  default: '' },
     company_id:         { type: Number,  default: '' },
+    permissions:        { type: Object }
 },{
     timestamps: {
         createdAt: "created_at",

@@ -88,6 +88,10 @@ class Validation {
 		return { status: true }
 
 	}
+
+	async checkUserPermissions () {
+
+	}
 }
 
 module.exports =  new Validation()
