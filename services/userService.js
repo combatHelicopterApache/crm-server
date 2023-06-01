@@ -20,8 +20,9 @@ class UserService {
 
 		const createdUser = await user.save()
 
+		const userData = await this.prepareUserData(createdUser)
 		if (createdUser) {
-			return { status: true, message: customMessages.user.success.add, user: createdUser }
+			return { status: true, message: customMessages.user.success.add, user: userData }
 		} else {
 			return { status: false, message: customMessages.user.failed.add }
 		}
@@ -76,8 +77,9 @@ class UserService {
 		const userId = jwt.verify(token, conf.get("JWT_SECRET")).id
 
 		const user = await this.getById(userId)
+
 		if (userId) {
-			return { status: true, data: user }
+			return { user }
 		} else {
 			return { status: false, message: customMessages.user.common.search.failed }
 		}
@@ -91,8 +93,10 @@ class UserService {
 			new: true
 		})
 
+		const userData = await this.prepareUserData(resUpdate)
+
 		if (resUpdate) {
-			return { status: true, message: customMessages.user.success.update, data: resUpdate }
+			return { status: true, message: customMessages.user.success.update, data: userData }
 		} else {
 			return { status: false, message: customMessages.user.failed.update }
 		}
@@ -103,9 +107,9 @@ class UserService {
 		if (! await validationService.validateMongoId(id)) return { status: false, message: customMessages.id.error, id: id }
 
 		const resDelete = await User.findByIdAndDelete(id)
-
+		const userData = await this.prepareUserData(resDelete)
 		if (resDelete) {
-			return { status: true, code: 200, message: customMessages.user.success.delete, data: resDelete }
+			return { status: true, code: 200, message: customMessages.user.success.delete, data: userData }
 		} else {
 			return { status: false, message: customMessages.user.failed.delete }
 		}

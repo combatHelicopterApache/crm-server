@@ -5,6 +5,7 @@ const router = Router()
 
 router.post(
     '/create',
+	middlewares.validateUserData,
     userController.crateUser
 )
 
