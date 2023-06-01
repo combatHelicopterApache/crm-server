@@ -5,6 +5,9 @@ const ErrorMessages = {
     "ip": {
         "error": "Your ip is not whitelisted"
     },
+    "id": {
+        "error": "Id is not valid"
+    },
     "group": {
         "success": {
             "update": "The group was successfully updated",

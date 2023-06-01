@@ -1,27 +1,28 @@
-const User = require("../models/user")
+const User = require("../models/userModel")
 const customMessages = require("../common/messages")
 const Joi = require("joi")
 const jwt = require("jsonwebtoken")
 const conf = require("config")
+const validationService = require('./validationService')
 
 
 class UserService {
-	async createNewUser(data) {
-		const { full_name, login, email, password, role, group, is_admin, attached_users } = data
+	async createNewUser(data, Model) {
+		const { full_name, email, password, role, group, is_admin } = data
 
-		const candidate = await User.findOne({ login })
+		const candidate = await User.findOne({ email })
 
 		if (candidate) {
 			return { status: false, message: customMessages.user.failed.exists }
 		}
 
-		const user = await new User({ full_name, login, email, password, role, group, is_admin, attached_users })
+		const user = await new User({ full_name, email, password, role, group, is_admin })
 
 		const createdUser = await user.save()
 
 
 		if (createdUser) {
-			return { status: true, message: customMessages.user.success.add , user: createdUser }
+			return { status: true, message: customMessages.user.success.add, user: createdUser }
 		} else {
 			return { status: false, message: customMessages.user.failed.add }
 		}
@@ -38,10 +39,13 @@ class UserService {
 	}
 
 	async getById(id) {
+
+		if (! await validationService.validateMongoId(id)) return { status: false, message: customMessages.id.error, id: id }
+
 		const foundUser = await User.findById({ _id: id })
 
 		if (foundUser) {
-			return foundUser
+			return { status: true, data: foundUser }
 		} else {
 			return { status: false, message: customMessages.user.common.search.failed, id: id }
 		}
@@ -60,6 +64,7 @@ class UserService {
 	}
 
 	async updateByID(id, data) {
+		if (! await validationService.validateMongoId(id)) return { status: false, message: customMessages.id.error, id: id }
 		const filter = { _id: id }
 
 		const resUpdate = await User.findByIdAndUpdate(filter, data, {
@@ -75,6 +80,8 @@ class UserService {
 	}
 
 	async deleteByID(id) {
+		if (! await validationService.validateMongoId(id)) return { status: false, message: customMessages.id.error, id: id }
+
 		const resDelete = await User.findByIdAndDelete(id)
 
 		if (resDelete) {
@@ -84,42 +91,13 @@ class UserService {
 		}
 	}
 
-	async validateLoginData(data) {
-		const login = data.hasOwnProperty("login") ? data.login.split(" ").join("") : undefined
-		const password = data.hasOwnProperty("password") ? data.password.split(" ").join("") : undefined
 
 
-		if (login === "" || login === undefined) return { status: false, message: customMessages.login.failed.login.empty }
-		if (!password || password === "" || password === undefined) return {
-			status: false,
-			message: customMessages.login.failed.password.empty
-		}
 
-
-		const loginSchema = Joi.object({
-			login: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } }),
-			password: Joi.string().min(8).pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")).required()
-		})
-
-		const loginData = {
-			login,
-			password
-		}
-
-		const { error, value } = loginSchema.validate(loginData)
-
-		if (error) {
-			return { status: false, message: error.details[0].message }
-		} else {
-			return { status: true }
-		}
-	}
 
 	async login(data) {
-
 		try {
-
-			const validation = await this.validateLoginData(data)
+			const validation = await validationService.validateLoginData(data)
 
 			if (validation.status === true) {
 				const user = await User.findOne({ login: data.login, password: data.password })
@@ -143,7 +121,7 @@ class UserService {
 					login: userData.login
 				}
 
-				const token = jwt.sign( tokenData , conf.get("JWT_SECRET"), {expiresIn: '12h'})
+				const token = jwt.sign(tokenData, conf.get("JWT_SECRET"), { expiresIn: "12h" })
 
 				if (!user) {
 					return { status: false, message: customMessages.login.failed.match }
@@ -151,8 +129,8 @@ class UserService {
 					return {
 						status: true,
 						message: customMessages.login.success,
-						token:  token,
-						data:  userData
+						token: token,
+						data: userData
 					}
 				}
 			} else {

@@ -1,4 +1,4 @@
-const Lead = require("../models/leads");
+const Lead = require("../models/leadModel");
 const customError = require("../common/messages");
 
 

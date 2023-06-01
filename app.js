@@ -15,9 +15,9 @@ app.use(bodyParser.json())
 
 
 
-app.use('/api/group', require('./routes/group.routes'))
-app.use('/api/user', require('./routes/user.routes'))
-app.use('/api/lead', require('./routes/lead.routes'))
+app.use('/api/group', require('./routes/groupRoutes'))
+app.use('/api/user', require('./routes/userRoutes'))
+app.use('/api/lead', require('./routes/leadRoutes'))
 
 
 const serverStart = async () => {

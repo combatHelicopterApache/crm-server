@@ -1,37 +1,37 @@
 const {Router} = require('express')
 const {
-    CreateNewGroup,
-    GetGroups,
-    GetGroupById,
-    UpdateGroupByID,
-    DeleteGroupByID
-} = require("../controllers/groups.controller");
+    CreateNewLead,
+    GetLeads,
+    GetLeadById,
+    UpdateLeadByID,
+    DeleteLeadByID
+} = require("../controllers/leadController");
 
 const router = Router()
 
 router.post(
     '/create',
-    CreateNewGroup
+    CreateNewLead
 )
 
 router.get(
     '/',
-    GetGroups
+    GetLeads
 )
 
 router.get(
     '/:id',
-    GetGroupById
+    GetLeadById
 )
 
 router.put(
     '/:id',
-    UpdateGroupByID
+    UpdateLeadByID
 )
 
 router.delete(
     '/:id',
-    DeleteGroupByID
+    DeleteLeadByID
 )
 
 

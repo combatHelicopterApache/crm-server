@@ -1,6 +1,6 @@
 const { model, Schema } = require('mongoose')
 
-const groups = new Schema({
+const groupModel = new Schema({
     uid:              { type: String, required: true, unique: true },
     title_en:         { type: String, required: true, unique: true },
     code:             { type: String, required: true, unique: true },
@@ -12,4 +12,4 @@ const groups = new Schema({
     }
 })
 
-module.exports = model('Groups', groups )
+module.exports = model('Groups', groupModel )
