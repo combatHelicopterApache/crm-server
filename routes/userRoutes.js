@@ -5,12 +5,13 @@ const router = Router()
 
 router.post(
     '/create',
-	middlewares.validateUserData,
+	middlewares.validateUserDataMiddleware,
     userController.crateUser
 )
 
 router.get(
     '/',
+	middlewares.checkRoleMiddleware,
     userController.getAllUsers
 )
 
@@ -21,7 +22,7 @@ router.get(
 
 router.post(
 	'/login',
-	middlewares.validateLoginData,
+	middlewares.validateLoginDataMiddleware,
 	userController.loginUser
 )
 

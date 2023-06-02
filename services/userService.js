@@ -210,7 +210,7 @@ class UserService {
 			id: userData.id,
 			full_name: userData.full_name,
 			role: userData.role,
-			email: userData.email
+			email: userData.email,
 		}
 
 		const token = jwt.sign(tokenData, conf.get("JWT_SECRET"), { expiresIn: "12h" })
