@@ -10,9 +10,18 @@ class UserController {
         }
     }
 
-    async getUsers (req, res)  {
+    async getAllUsers (req, res)  {
         try {
             const result = await userService.getAll()
+            return res.send(result)
+        } catch ( err ) {
+            return res.status(500).send( { message: err } )
+        }
+    }
+
+    async getUsersWithParams (req, res)  {
+        try {
+            const result = await userService.getAllWithParams(req.query)
             return res.send(result)
         } catch ( err ) {
             return res.status(500).send( { message: err } )

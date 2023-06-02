@@ -11,7 +11,12 @@ router.post(
 
 router.get(
     '/',
-    userController.getUsers
+    userController.getAllUsers
+)
+
+router.get(
+	'/items',
+	userController.getUsersWithParams
 )
 
 router.post(

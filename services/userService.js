@@ -54,7 +54,68 @@ class UserService {
 		if (users) {
 			return { status: true, data: userData }
 		} else {
-			return { status: false, message: customMessages.user.common.search.success }
+			return { status: false, message: customMessages.user.common.search.failed }
+		}
+	}
+	async getAllWithParams(data) {
+		const {
+			sort,
+			order,
+			page,
+			per_page,
+			full_name,
+			email,
+			phone,
+			title,
+			role,
+			group,
+			company_name
+		} = data
+
+
+		const limit = per_page || 25
+		const skip = (page - 1) * per_page
+
+		const sortOptions = {}
+		if (sort && order) {
+			sortOptions[sort] = order === 'desc' ? -1 : 1
+		}
+
+
+		// filters field
+		const filterOptions = {}
+
+		full_name       ? filterOptions.full_name       = { $regex: full_name, $options: 'i' }     : null
+		email           ? filterOptions.email           = { $regex: email, $options: 'i' }         : null
+		phone           ? filterOptions.phone           = { $regex: phone, $options: 'i' }         : null
+		title           ? filterOptions.title           = { $regex: title, $options: 'i' }         : null
+		role            ? filterOptions.role            = { $regex: role, $options: 'i' }          : null
+		group           ? filterOptions.group           = { $regex: group, $options: 'i' }         : null
+		company_name    ? filterOptions.company_name    = { $regex: company_name, $options: 'i' }  : null
+
+
+
+		const total = await User.countDocuments()
+
+		const users =
+			await User
+				.find(filterOptions)
+				.sort(sortOptions)
+				.skip(skip)
+				.limit(limit)
+
+		if (users) {
+			return {
+				status: true,
+				data: users,
+				meta: {
+					page,
+					per_page,
+					total
+				}
+			}
+		} else {
+			return { status: false, message: customMessages.user.common.search.failed }
 		}
 	}
 

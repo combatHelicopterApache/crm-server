@@ -1,5 +1,5 @@
 const { model, Schema } = require('mongoose')
-
+const moment = require('moment');
 
 const userModel = new Schema({
     full_name:          { type: String,  required: true },
@@ -7,14 +7,17 @@ const userModel = new Schema({
     phone:              { type: String },
     email:              { type: String,  required: true, unique: true },
     password:           { type: String,  required: true },
-    role:               { type: String,  required: true },
-    role_id:            { type: Number,  required: true },
-    group:              { type: String,  default: '' },
     is_admin:           { type: Boolean, required: true, default: false },
-    parent_id:          { type: Number,  default: '' },
-    child_id:           { type: Number,  default: '' },
+    role_id:            { type: Number,  required: true },
+    role_name:          { type: String,  required: true },
     company_id:         { type: Number,  default: '' },
-    permissions:        { type: Object }
+    company_name:       { type: String,  default: '' },
+    brand_id:           { type: Number,  default: '' },
+    brand_name:         { type: String,  default: '' },
+    desk_id:            { type: Number,  default: '' },
+    desk_name:          { type: String,  default: '' },
+    manager_id:         { type: Number,  default: '' },
+    manager_name:       { type: String,  default: '' },
 },{
     timestamps: {
         createdAt: "created_at",
