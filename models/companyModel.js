@@ -1,4 +1,9 @@
-const { model, Schema } = require("mongoose");
+const mongoose = require("mongoose");
+const {
+  model,
+  Schema,
+  Types: { ObjectId },
+} = mongoose;
 
 const companyModel = new Schema(
   {
@@ -13,6 +18,8 @@ const companyModel = new Schema(
     title: { type: String, required: false, unique: false },
     notes: { type: String, required: false, unique: false },
     status: { type: Number, required: true, unique: false },
+    owner_id: { type: String, required: true, unique: false },
+    owner: { type: ObjectId, ref: "Users" },
   },
   {
     timestamps: {

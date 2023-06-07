@@ -2,7 +2,7 @@ const User = require("../models/userModel");
 const customMessages = require("../common/messages");
 const Joi = require("joi");
 const jwt = require("jsonwebtoken");
-// const conf = require("config")
+const { initialUser, UserRole, UserStatus } = require("../const/user");
 const validationService = require("./validationService");
 
 class UserService {
@@ -275,6 +275,41 @@ class UserService {
         token: token,
         data: userData,
       };
+    }
+  }
+  async createOwnerUserForNewCompany(data) {
+    const { admin_name, admin_phone, admin_email, address } = data;
+
+    const candidate = await User.findOne({ email: admin_email });
+
+    if (candidate) {
+      return { status: false };
+    }
+
+    const user = new User({
+      ...initialUser,
+      full_name: admin_name,
+      phone: admin_phone,
+      email: admin_email,
+      password: "Owner12345",
+      role_name: "Owner",
+      role_id: UserRole.OWNER,
+      is_admin: true,
+      status: UserStatus.ACTIVE,
+      address: address,
+      title: "Owner",
+    });
+
+    const createdUser = await user.save();
+    const userData = await this.prepareUserData(createdUser);
+    if (createdUser) {
+      return {
+        status: true,
+        message: customMessages.user.success.add,
+        user: userData,
+      };
+    } else {
+      return { status: false, message: customMessages.user.failed.add };
     }
   }
 }

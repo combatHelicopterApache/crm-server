@@ -7,7 +7,7 @@ class CompanyService {
     const result = await companyModel.find();
 
     if (!result) {
-      return { status: false, message: customMessages.company.failed.get };
+      return { status: false };
     }
     const prepareResult = result?.reduce((acc, item, idx) => {
       acc.push({
@@ -30,12 +30,13 @@ class CompanyService {
       return acc;
     }, []);
 
-    return {
+    const data = {
       status: true,
-      message: customMessages.company.success.get,
+      // message: customMessages.company.success.get,
       data: prepareResult,
       count: prepareResult.length,
     };
+    return data;
   }
 
   async createCompany(data) {
@@ -43,14 +44,15 @@ class CompanyService {
 
     await result.save();
     const userData = await this.prepareCompanyData(result);
+
     if (result) {
       return {
         status: true,
-        message: customMessages.company.success.add,
+        // message: customMessages.company.success.add,
         data: userData,
       };
     } else {
-      return { status: false, message: customMessages.company.failed.add };
+      return { status: false };
     }
   }
 
@@ -64,11 +66,11 @@ class CompanyService {
     if (result) {
       return {
         status: true,
-        message: customMessages.company.success.delete,
+        // message: customMessages.company.success.delete,
         data: userData,
       };
     } else {
-      return { status: false, message: customMessages.company.failed.delete };
+      return { status: false };
     }
   }
 
