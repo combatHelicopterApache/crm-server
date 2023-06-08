@@ -58,6 +58,15 @@ class UserController {
       return res.status(500).send({ message: err });
     }
   }
+  async getSuperAdminUsers(req, res) {
+    console.log(req);
+    try {
+      const result = await userService.getAllSuperAdmin();
+      return res.status(200).send(result);
+    } catch (err) {
+      return res.status(500).send({ message: err });
+    }
+  }
 
   async deleteUserByID(req, res) {
     try {

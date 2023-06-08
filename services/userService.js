@@ -89,6 +89,39 @@ class UserService {
       };
     }
   }
+  async getAllSuperAdmin() {
+    const users = await User.find({ role_id: 1 });
+
+    const userData = users.reduce((acc, item) => {
+      acc.push({
+        id: item?._id,
+        full_name: item?.full_name,
+        title: item?.title,
+        phone: item?.phone,
+        email: item?.email,
+        role: item?.role,
+        role_id: item?.role_id,
+        group: item?.group,
+        is_admin: item?.is_admin,
+        parent_id: item?.parent_id,
+        child_id: item?.child_id,
+        company_id: item?.company_id,
+        created_at: item?.created_at,
+        updated_at: item?.updated_at,
+      });
+
+      return acc;
+    }, []);
+
+    if (users) {
+      return { status: true, data: userData };
+    } else {
+      return {
+        status: false,
+        message: customMessages.user.common.search.failed,
+      };
+    }
+  }
   async getAllWithParams(data) {
     const {
       sort,
