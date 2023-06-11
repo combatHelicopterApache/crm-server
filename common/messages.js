@@ -74,14 +74,35 @@ const ErrorMessages = {
     "login": {
         "success": "Authorization success",
         "failed":  {
-            "match" : "User with combination login-password is not found",
+            "match" : "User with combination Login-password is not found",
             "login" : {
-                "empty": "Please enter the login",
-                "error": "Bad login"
+                "empty": "Please enter the Login",
+                "error": "Bad Login"
             },
             "password" : {
                 "empty": "Please enter the password",
                 "error": "Bad password"
+            }
+        }
+    },
+    "company": {
+        "success": {
+            "update": "The company was successfully updated",
+            "delete" : "The company was successfully deleted",
+            "get": "The lead data received successfully",
+            "add": "The lead has been successfully added",
+        },
+        "failed": {
+            "match" : "Сompany with combination Login-password is not found",
+            "update": "The company update was failed",
+            "delete" : "The company removal was failed",
+            "get": "An error while receiving data",
+            "add": "An error when adding data",
+        },
+        "common": {
+            "search": {
+                "success": "Item(s) is found",
+                "failed": "Item(s) not found"
             }
         }
     }
