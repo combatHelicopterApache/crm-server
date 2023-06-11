@@ -2,6 +2,8 @@ const { Router } = require("express");
 const userController = require("../controllers/userController");
 const middlewares = require("../middlewares/middlewares");
 const router = Router();
+const { loginSchema } = require("../validators/auth.validator");
+const validator = require("../helpers/joi.validation.handler");
 
 router.get("/admin-user", userController.getSuperAdminUsers);
 
@@ -15,11 +17,7 @@ router.get("/", middlewares.checkRoleMiddleware, userController.getAllUsers);
 
 router.get("/items", userController.getUsersWithParams);
 
-router.post(
-  "/login",
-  middlewares.validateLoginDataMiddleware,
-  userController.loginUser
-);
+router.post("/login", validator(loginSchema), userController.loginUser);
 
 router.get("/token", userController.getUserByToken);
 

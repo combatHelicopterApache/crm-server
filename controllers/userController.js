@@ -81,7 +81,7 @@ class UserController {
   async loginUser(req, res) {
     try {
       const result = await userService.login(req.body);
-      return res.send(result);
+      return res.status(200).send(result);
     } catch (err) {
       return res.status(500).send({ message: err });
     }

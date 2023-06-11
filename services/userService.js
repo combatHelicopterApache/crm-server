@@ -1,9 +1,9 @@
 const User = require("../models/userModel");
 const customMessages = require("../common/messages");
-const Joi = require("joi");
 const jwt = require("jsonwebtoken");
 const { initialUser, UserRole, UserStatus } = require("../const/user");
 const validationService = require("./validationService");
+const bcrypt = require("bcrypt");
 
 class UserService {
   async createNewUser(data, Model) {
@@ -284,29 +284,33 @@ class UserService {
   async login(data) {
     const user = await User.findOne({
       email: data.email,
-      password: data.password,
-    });
-    const userData = await this.prepareUserData(user);
+    }).lean();
+
+    // const userData = await this.prepareUserData(user);
 
     const tokenData = {
-      id: userData.id,
-      full_name: userData.full_name,
-      role: userData.role,
-      email: userData.email,
+      id: user._id.toString(),
+      full_name: user.full_name,
+      role_id: user.role_id,
+      email: user.email,
+      company_id: user.company_id,
     };
 
-    const token = jwt.sign(tokenData, proccess.env.JWT_SECRET, {
+    const token = jwt.sign(tokenData, process.env.JWT_SECRET, {
       expiresIn: "12h",
     });
 
     if (!user) {
       return { status: false, message: customMessages.login.failed.match };
     } else {
+      user.id = user._id;
+      delete user._id;
+      delete user.__v;
       return {
         status: true,
         message: customMessages.login.success,
         token: token,
-        data: userData,
+        data: user,
       };
     }
   }
@@ -319,15 +323,17 @@ class UserService {
       return { status: false };
     }
 
+    const defaultPassworrd = "Owner12345";
+
     const user = new User({
       ...initialUser,
       full_name: admin_name,
       phone: admin_phone,
       email: admin_email,
-      password: "Owner12345",
+      password: bcrypt.hash(defaultPassworrd, process.env.BCRYPT_ROUNDS),
       role_name: "Owner",
       role_id: UserRole.OWNER,
-      is_admin: true,
+      is_admin: false,
       status: UserStatus.ACTIVE,
       address: address,
       title: "Owner",
