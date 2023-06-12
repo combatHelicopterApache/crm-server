@@ -2,12 +2,12 @@ const { generateRandomLetters } = require("../helpers/generateRandomLetters");
 const MODULES = {
   dashboard: true,
   leads: true,
-  affilates: true,
+  affiliates: true,
   deposits: true,
   calendar: true,
   groups: true,
   users: true,
-  analitycs: true,
+  analytics: true,
   settings: true,
 };
 
