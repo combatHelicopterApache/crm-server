@@ -1,8 +1,8 @@
 const customError = require("../common/messages")
-const loginService = require('../services/loginService')
+const userService = require('../services/userService')
 const LoginUser = async (req, res) => {
 	try {
-		const result = await loginService.loginService(req.body)
+		const result = await userService.login(req.body)
 
 		if(result.status !== true) {
 			return res.status(200).json(result)
