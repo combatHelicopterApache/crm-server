@@ -29,25 +29,41 @@ class Middlewares {
         }
     }
 
-    async checkRoleMiddleware(req, res, next) {
+    async checkCompanyIdMiddleware (req, res, next) {
         try {
-            const token = req.headers.authorization.split(" ")[1]
-
+            const token = req.headers.authorization?.split(" ")[1]
             if (!token) {
                 return res
                     .status(403)
-                    .send({message: "No permission for this request"})
+                    .send( { message: "Authorization required for this request!" } )
             }
 
-            const decoded = jwt.verify(token, process.env.JWT_SECRET)
-            if (decoded.role_id !== 1 && decoded.role_id !== 2 && decoded.role_id !== 3) {
+            req.user = jwt.verify(token, process.env.JWT_SECRET)
+            next()
+
+        } catch (e) {
+            throw new Error(e)
+        }
+    }
+
+    async checkRoleMiddleware(req, res, next) {
+        try {
+            if (req.user.role_id !== 1 && req.user.role_id !== 2 && req.user.role_id !== 3) {
                 return res
                     .status(403)
-                    .send({message: "No permission for this request"})
+                    .send({message: "No permissions for this request"})
             }
+            next()
+        } catch (e) {
+            res.status(500).send(e)
+        }
+    }
 
-            req.user = decoded
-
+    async checkCompanyIdMiddleware (req, res, next) {
+        try {
+            const token = req.headers.authorization.split(" ")[1]
+            const companyId = jwt.verify(token, process.env.JWT_SECRET);
+            req.company_id = companyId.company_id
             next()
         } catch (e) {
             res.status(500).send(e)
