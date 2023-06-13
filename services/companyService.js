@@ -43,20 +43,26 @@ class CompanyService {
     const result = await new companyModel(data);
 
     await result.save();
-    const userData = await this.prepareCompanyData(result);
 
     if (result) {
       return {
         status: true,
-        // message: customMessages.company.success.add,
-        data: userData,
+        data: result,
       };
     } else {
       return { status: false };
     }
   }
 
-  async updateCompany() {}
+  async updateCompany(id, updatedFields) {
+    const updatedCompany = await companyModel.findOneAndUpdate(
+      { _id: id },
+      { $set: updatedFields },
+      { new: true }
+    );
+
+    return updatedCompany;
+  }
 
   async deleteCompany(id) {
     if (!(await validationService.validateMongoId(id)))

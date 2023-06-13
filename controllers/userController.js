@@ -42,9 +42,9 @@ class UserController {
     try {
       const { token } = req.query;
       const result = await userService.getByToken(token);
-      return res.send(result);
+      return res.status(200).send(result);
     } catch (err) {
-      return res.status(500).send({ message: err });
+      return res.status(401).send({ message: { status: 401 } });
     }
   }
 
@@ -80,6 +80,9 @@ class UserController {
   async loginUser(req, res) {
     try {
       const result = await userService.login(req.body);
+      if (!result?.status) {
+        return res.status(401).send(result);
+      }
       return res.status(200).send(result);
     } catch (err) {
       return res.status(500).send({ message: err });

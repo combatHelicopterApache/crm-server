@@ -14,16 +14,25 @@ class CompanyController {
 
   async createCompany(req, res) {
     try {
-      const newOwnerUser = await userService.createOwnerUserForNewCompany(
-        req.body
+      const result = await companyService.createCompany(req.body);
+
+      const newOwnerUser = await userService.createOwnerUserForNewCompany({
+        ...req.body,
+        company_id: result.data._id.toString(),
+        company_name: result.data.company_name,
+      });
+
+      const setFiledsToCompany = companyService.updateCompany(
+        result.data._id.toString(),
+        {
+          owner_id: newOwnerUser.user._id.toString(),
+          owner: newOwnerUser.user._id.toString(),
+        }
       );
 
-      const result = await companyService.createCompany({
-        ...req.body,
-        owner_id: newOwnerUser.user.id,
-        owner: newOwnerUser.user.id,
-      });
-      return res.status(200).json({ ...result, owner: newOwnerUser.user });
+      return res
+        .status(200)
+        .json({ ...result, newOwnerUser, setFiledsToCompany });
     } catch (err) {
       return res.status(500).send({ message: err });
     }

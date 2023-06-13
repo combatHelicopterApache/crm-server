@@ -18,13 +18,13 @@ const companyModel = new Schema(
     title: { type: String, required: false, unique: false },
     notes: { type: String, required: false, unique: false },
     status: { type: Number, required: true, unique: false },
-    owner_id: { type: String, required: true, unique: false },
-    owner: { type: ObjectId, ref: "Users" },
+    owner_id: { type: String, required: false, unique: false },
+    owner: { type: ObjectId, ref: "Users", require: false },
   },
   {
     timestamps: {
-      createdAt: "createdAt",
-      updatedAt: "updatedAt",
+      createdAt: "created_at",
+      updatedAt: "updated_at",
     },
   }
 );

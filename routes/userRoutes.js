@@ -6,59 +6,62 @@ const { loginSchema } = require("../validators/auth.validator");
 const validator = require("../helpers/joi.validation.handler");
 
 router.get(
-    "/admin-user",
-    middlewares.checkAuthMiddleware,
-    middlewares.checkRoleMiddleware,
-    userController.getSuperAdminUsers
+  "/admin-user",
+  middlewares.checkAuthMiddleware,
+  middlewares.checkRoleMiddleware,
+  userController.getSuperAdminUsers
 );
 
-router.post("/create",
-    middlewares.checkAuthMiddleware,
-    middlewares.checkRoleMiddleware,
-    middlewares.validateUserDataMiddleware,
-    userController.crateUser
-);
-
-router.get("/",
-    middlewares.checkAuthMiddleware,
-    middlewares.checkRoleMiddleware,
-    middlewares.checkCompanyIdMiddleware,
-    userController.getAllUsers
+router.post(
+  "/create",
+  middlewares.checkAuthMiddleware,
+  middlewares.checkRoleMiddleware,
+  middlewares.validateUserDataMiddleware,
+  userController.crateUser
 );
 
 router.get(
-    "/items",
-    middlewares.checkAuthMiddleware,
-    middlewares.checkCompanyIdMiddleware,
-    userController.getUsersWithParams
+  "/",
+  middlewares.checkAuthMiddleware,
+  middlewares.checkRoleMiddleware,
+  middlewares.checkCompanyIdMiddleware,
+  userController.getAllUsers
 );
 
-router.post("/login",
-    validator(loginSchema),
-    userController.loginUser
+router.get(
+  "/items",
+  middlewares.checkAuthMiddleware,
+  middlewares.checkCompanyIdMiddleware,
+  userController.getUsersWithParams
 );
 
-router.get("/token",
-    middlewares.checkAuthMiddleware,
-    userController.getUserByToken
+router.post("/login", validator(loginSchema), userController.loginUser);
+
+router.get(
+  "/token",
+  middlewares.checkAuthMiddleware,
+  userController.getUserByToken
 );
 
-router.get("/:id",
-    middlewares.checkAuthMiddleware,
-    middlewares.checkRoleMiddleware,
-    userController.getUserById
+router.get(
+  "/:id",
+  middlewares.checkAuthMiddleware,
+  middlewares.checkRoleMiddleware,
+  userController.getUserById
 );
 
-router.put("/:id",
-    middlewares.checkAuthMiddleware,
-    middlewares.checkRoleMiddleware,
-    userController.updateUserByID
+router.put(
+  "/:id",
+  middlewares.checkAuthMiddleware,
+  middlewares.checkRoleMiddleware,
+  userController.updateUserByID
 );
 
-router.delete("/:id",
-    middlewares.checkAuthMiddleware,
-    middlewares.checkRoleMiddleware,
-    userController.deleteUserByID
+router.delete(
+  "/:id",
+  middlewares.checkAuthMiddleware,
+  middlewares.checkRoleMiddleware,
+  userController.deleteUserByID
 );
 
 module.exports = router;

@@ -42,6 +42,8 @@ const initialUser = {
   background_color: "#626ed4",
   user_identifier: generateRandomLetters(2),
   notes: "",
+  owner_id: null,
+  owner: null,
 };
 
 module.exports = {
