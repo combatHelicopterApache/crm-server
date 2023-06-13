@@ -12,7 +12,7 @@ class UserController {
 
   async getAllUsers(req, res) {
     try {
-      const result = await userService.getAll();
+      const result = await userService.getAll(req.company_id);
       return res.send(result);
     } catch (err) {
       return res.status(500).send({ message: err });
@@ -21,7 +21,7 @@ class UserController {
 
   async getUsersWithParams(req, res) {
     try {
-      const result = await userService.getAllWithParams(req.query);
+      const result = await userService.getAllWithParams(req);
       return res.send(result);
     } catch (err) {
       return res.status(500).send({ message: err });
@@ -59,7 +59,6 @@ class UserController {
     }
   }
   async getSuperAdminUsers(req, res) {
-    console.log(req);
     try {
       const result = await userService.getAllSuperAdmin();
       return res.status(200).send(result);
