@@ -5,26 +5,60 @@ const router = Router();
 const { loginSchema } = require("../validators/auth.validator");
 const validator = require("../helpers/joi.validation.handler");
 
-router.get("/admin-user", userController.getSuperAdminUsers);
-
-router.post(
-  "/create",
-  middlewares.validateUserDataMiddleware,
-  userController.crateUser
+router.get(
+    "/admin-user",
+    middlewares.checkAuthMiddleware,
+    middlewares.checkRoleMiddleware,
+    userController.getSuperAdminUsers
 );
 
-router.get("/", middlewares.checkRoleMiddleware, userController.getAllUsers);
+router.post("/create",
+    middlewares.checkAuthMiddleware,
+    middlewares.checkRoleMiddleware,
+    middlewares.validateUserDataMiddleware,
+    userController.crateUser
+);
 
-router.get("/items", userController.getUsersWithParams);
+router.get("/",
+    middlewares.checkAuthMiddleware,
+    middlewares.checkRoleMiddleware,
+    middlewares.checkCompanyIdMiddleware,
+    userController.getAllUsers
+);
 
-router.post("/login", validator(loginSchema), userController.loginUser);
+router.get(
+    "/items",
+    middlewares.checkAuthMiddleware,
+    middlewares.checkCompanyIdMiddleware,
+    userController.getUsersWithParams
+);
 
-router.get("/token", userController.getUserByToken);
+router.post("/login",
+    validator(loginSchema),
+    userController.loginUser
+);
 
-router.get("/:id", userController.getUserById);
+router.get("/token",
+    middlewares.checkAuthMiddleware,
+    userController.getUserByToken
+);
 
-router.put("/:id", userController.updateUserByID);
+router.get("/:id",
+    middlewares.checkAuthMiddleware,
+    middlewares.checkRoleMiddleware,
+    userController.getUserById
+);
 
-router.delete("/:id", userController.deleteUserByID);
+router.put("/:id",
+    middlewares.checkAuthMiddleware,
+    middlewares.checkRoleMiddleware,
+    userController.updateUserByID
+);
+
+router.delete("/:id",
+    middlewares.checkAuthMiddleware,
+    middlewares.checkRoleMiddleware,
+    userController.deleteUserByID
+);
 
 module.exports = router;
