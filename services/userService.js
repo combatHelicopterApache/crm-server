@@ -68,7 +68,7 @@ class UserService {
 
         const createdUser = await user.save();
 
-        const userData = await this.prepareUserData(createdUser);
+        const userData = this.prepareUserData(createdUser);
         if (createdUser) {
             return {
                 status: true,
@@ -76,14 +76,14 @@ class UserService {
                 user: userData,
             };
         } else {
-            return {status: false, message: customMessages.user.failed.add};
+            return { status: false, message: customMessages.user.failed.add };
         }
     }
 
     async getAll() {
         const users = await User.find().sort({created_at: 1});
 
-        const userData = await this.prepareUsArrayData(users)
+        const userData = this.prepareUserArrayData(users)
         if (users) {
             return {status: true, data: userData};
         } else {
@@ -97,7 +97,7 @@ class UserService {
     async getAllSuperAdmin() {
         const users = await User.find({role_id: 1});
 
-        const userData = await this.prepareUsArrayData(users)
+        const userData = this.prepareUserArrayData(users)
 
         if (users) {
             return {status: true, data: userData};
@@ -115,13 +115,21 @@ class UserService {
             order,
             page,
             per_page,
+            // filter fields
             full_name,
             email,
             phone,
             title,
-            role,
-            group,
+            role_id,
+            role_name,
+            company_id,
             company_name,
+            user_identifier,
+            last_login,
+            desk_id,
+            desk_name,
+            manager_id,
+            manager_name,
         } = data;
 
         const limit = per_page || 25;
@@ -135,15 +143,21 @@ class UserService {
         // filters field
         const filterOptions = {};
 
-        full_name ? (filterOptions.full_name    = {$regex: full_name, $options: "i"}) : null;
-        email ? (filterOptions.email            = {$regex: email, $options: "i"}) : null;
-        phone ? (filterOptions.phone            = {$regex: phone, $options: "i"}) : null;
-        title ? (filterOptions.title            = {$regex: title, $options: "i"}) : null;
-        role ? (filterOptions.role              = {$regex: role, $options: "i"}) : null;
-        group ? (filterOptions.group            = {$regex: group, $options: "i"}) : null;
-        company_name
-            ? (filterOptions.company_name = {$regex: company_name, $options: "i"})
-            : null;
+        full_name ? (filterOptions.full_name                = {$regex: full_name, $options: "i"}) : null;
+        email ? (filterOptions.email                        = {$regex: email, $options: "i"}) : null;
+        phone ? (filterOptions.phone                        = {$regex: phone, $options: "i"}) : null;
+        title ? (filterOptions.title                        = {$regex: title, $options: "i"}) : null;
+        company_name ? (filterOptions.company_name          = {$regex: company_name, $options: "i"}) : null;
+        role_name ? (filterOptions.role_name                = {$regex: role_name, $options: "i"}) : null;
+        user_identifier ? (filterOptions.user_identifier    = {$regex: user_identifier, $options: "i"}) : null;
+        last_login ? (filterOptions.last_login              = {$regex: last_login, $options: "i"}) : null;
+        desk_name ? (filterOptions.desk_name                = {$regex: desk_name, $options: "i"}) : null;
+        manager_name ? (filterOptions.manager_name          = {$regex: manager_name, $options: "i"}) : null;
+
+        role_id ? (filterOptions.role_id = parseInt(role_id)) : null;
+        company_id ? (filterOptions.company_id = parseInt(company_id)) : null;
+        desk_id ? (filterOptions.desk_id = parseInt(desk_id)) : null;
+        manager_id ? (filterOptions.manager_id = parseInt(manager_id)) : null;
 
         const total = await User.countDocuments();
 
@@ -152,10 +166,11 @@ class UserService {
             .skip(skip)
             .limit(limit);
 
+        const userData = this.prepareUserArrayData(users)
         if (users) {
             return {
                 status: true,
-                data: users,
+                data: userData,
                 meta: {
                     page,
                     per_page,
@@ -175,7 +190,7 @@ class UserService {
             return {status: false, message: customMessages.id.error, id: id};
 
         const foundUser = await User.findById({_id: id});
-        const userData = await this.prepareUserData(foundUser);
+        const userData = this.prepareUserData(foundUser);
 
         if (foundUser) {
             return {status: true, data: userData};
@@ -190,11 +205,11 @@ class UserService {
 
     async getByToken(token) {
         const userId = jwt.verify(token, process.env.JWT_SECRET).id;
+        const foundUser = await User.findById({_id: userId});
+        const userData = this.prepareUserData(foundUser);
 
-        const user = await this.getById(userId);
-
-        if (userId) {
-            return {user};
+        if (userId ) {
+            return {status: true, data: userData};
         } else {
             return {
                 status: false,
@@ -243,31 +258,37 @@ class UserService {
         }
     }
 
-    async prepareUserData(data) {
-        const userData = [data].reduce((acc, item) => {
-                (acc.id = item?._id),
-                (acc.full_name = item?.full_name),
-                (acc.title = item?.title),
-                (acc.phone = item?.phone),
-                (acc.email = item?.email),
-                (acc.role = item?.role),
-                (acc.role_id = item?.role_id),
-                (acc.group = item?.group),
-                (acc.is_admin = item?.is_admin),
-                (acc.parent_id = item?.parent_id),
-                (acc.child_id = item?.child_id),
-                (acc.company_id = item?.company_id),
-                (acc.created_at = item?.created_at),
-                (acc.updated_at = item?.updated_at);
-
+    prepareUserData(data) {
+        const user = [data].reduce((acc, item) => {
+                acc.id = item?._id,
+                acc.full_name = item?.full_name,
+                acc.title = item?.title,
+                acc.phone = item?.phone,
+                acc.email = item?.email,
+                acc.is_admin = item?.is_admin,
+                acc.active = item?.active,
+                acc.role_id = item?.role_id,
+                acc.role_name = item?.role_name,
+                acc.company_id = item?.company_id,
+                acc.company_name = item?.company_name,
+                acc.notes = item?.notes,
+                acc.user_identifier = item?.user_identifier,
+                acc.permissions = item?.permissions,
+                acc.last_login = item?.last_login,
+                acc.desk_id = item?.desk_id,
+                acc.desk_name = item?.desk_name,
+                acc.manager_id = item?.manager_id,
+                acc.manager_name = item?.manager_name,
+                acc.brands = item?.brands,
+                acc.pivot = item?.pivot
             return acc;
         }, {});
 
-        return userData;
+        return user;
     }
 
-    async prepareUsArrayData(data) {
-        const userData = data.reduce((acc, item) => {
+    prepareUserArrayData(data) {
+        const users = data.reduce((acc, item) => {
             acc.push({
                 id: item?._id,
                 full_name: item?.full_name,
@@ -298,7 +319,7 @@ class UserService {
             return acc;
         }, []);
 
-        return userData;
+        return users;
     }
 
     async login(data) {
@@ -306,13 +327,20 @@ class UserService {
             email: data.email,
         }).lean();
 
+        if (!user) {  return { status: false, message: customMessages.login.failed.match } }
 
-        // const userData = await this.prepareUserData(user);
+        const comparedPassword = await bcrypt.compare(data.password, user.password)
+
+        if (!comparedPassword) { return { status: false, message: customMessages.login.failed.match } }
+
+
+        const userData = this.prepareUserData(user);
 
         const tokenData = {
             id: user._id.toString(),
             full_name: user.full_name,
             role_id: user.role_id,
+            role_name: user.role_name,
             email: user.email,
             company_id: user.company_id,
         };
@@ -321,20 +349,14 @@ class UserService {
             expiresIn: "12h",
         });
 
-        if (!user) {
-            return {status: false, message: customMessages.login.failed.match};
-        } else {
-            await User.findByIdAndUpdate(user._id, {last_login: new Date()})
-            user.id = user._id;
-            delete user._id;
-            delete user.__v;
-            return {
-                status: true,
-                message: customMessages.login.success,
-                token: token,
-                data: user,
-            };
-        }
+        await User.findByIdAndUpdate(userData.id, {last_login: new Date()})
+        return {
+            status: true,
+            message: customMessages.login.success,
+            token: token,
+            data: userData,
+        };
+
     }
 
     async createOwnerUserForNewCompany(data) {
@@ -343,17 +365,17 @@ class UserService {
         const candidate = await User.findOne({email: admin_email});
 
         if (candidate) {
-            return {status: false};
+            return {status: false, message: customMessages.user.failed.exists};
         }
 
-        const defaultPassworrd = "Owner12345";
+        const defaultPassword = "Owner12345";
 
         const user = new User({
             ...initialUser,
             full_name: admin_name,
             phone: admin_phone,
             email: admin_email,
-            password: bcrypt.hash(defaultPassworrd, process.env.BCRYPT_ROUNDS),
+            password: bcrypt.hash(defaultPassword, process.env.BCRYPT_ROUNDS),
             role_name: "Owner",
             role_id: UserRole.OWNER,
             is_admin: false,
