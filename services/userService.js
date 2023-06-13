@@ -28,18 +28,18 @@ class UserService {
             desk_id,
             desk_name,
             manager_id,
-            manager_name,
-            pivot
+            manager_name
         } = data;
 
         const candidate = await User.findOne({email});
 
         if (candidate) {
-            return {status: false, message: customMessages.user.failed.exists};
+            return { status: false, message: customMessages.user.failed.exists };
         }
 
         const saltPass = await bcrypt.genSalt(10)
         const hashedPass = await bcrypt.hash(password, saltPass)
+
 
         const user = await new User({
             full_name,
@@ -62,11 +62,17 @@ class UserService {
             desk_id,
             desk_name,
             manager_id,
-            manager_name,
-            pivot
+            manager_name
         });
 
         const createdUser = await user.save();
+
+        createdUser.pivot = {
+            company_id,
+            role_id,
+            desk_id,
+            manager_id,
+        }
 
         const userData = this.prepareUserData(createdUser);
         if (createdUser) {
@@ -80,10 +86,10 @@ class UserService {
         }
     }
 
-    async getAll() {
-        const users = await User.find().sort({created_at: 1});
+    async getAll(company) {
+        const users = await User.find( { company } ).sort({ created_at: 1 });
 
-        const userData = this.prepareUserArrayData(users)
+        const userData = this.prepareUserArrayData( users )
         if (users) {
             return {status: true, data: userData};
         } else {
@@ -122,7 +128,6 @@ class UserService {
             title,
             role_id,
             role_name,
-            company_id,
             company_name,
             user_identifier,
             last_login,
@@ -130,7 +135,7 @@ class UserService {
             desk_name,
             manager_id,
             manager_name,
-        } = data;
+        } = data.query;
 
         const limit = per_page || 25;
         const skip = (page - 1) * per_page;
@@ -140,8 +145,12 @@ class UserService {
             sortOptions[sort] = order === "desc" ? -1 : 1;
         }
 
+        const company_id = data.company_id
+
         // filters field
         const filterOptions = {};
+        // default filter
+        company_id ? (filterOptions.company_id = parseInt(company_id)) : null;
 
         full_name ? (filterOptions.full_name                = {$regex: full_name, $options: "i"}) : null;
         email ? (filterOptions.email                        = {$regex: email, $options: "i"}) : null;
@@ -155,9 +164,9 @@ class UserService {
         manager_name ? (filterOptions.manager_name          = {$regex: manager_name, $options: "i"}) : null;
 
         role_id ? (filterOptions.role_id = parseInt(role_id)) : null;
-        company_id ? (filterOptions.company_id = parseInt(company_id)) : null;
         desk_id ? (filterOptions.desk_id = parseInt(desk_id)) : null;
         manager_id ? (filterOptions.manager_id = parseInt(manager_id)) : null;
+
 
         const total = await User.countDocuments();
 
@@ -187,7 +196,7 @@ class UserService {
 
     async getById(id) {
         if (!(await validationService.validateMongoId(id)))
-            return {status: false, message: customMessages.id.error, id: id};
+            return { status: false, message: customMessages.id.error, id: id };
 
         const foundUser = await User.findById({_id: id});
         const userData = this.prepareUserData(foundUser);
@@ -396,6 +405,7 @@ class UserService {
             return {status: false, message: customMessages.user.failed.add};
         }
     }
+
 }
 
 module.exports = new UserService();
