@@ -251,10 +251,11 @@ class UserService {
             const userData = this.prepareUserData(foundUser)
 
             if (foundUser) {
-                return {status: true, data: userData}
+                return {status: true, code: 200, data: userData}
             } else {
                 return {
                     status: false,
+                    code: 400,
                     message: customMessages.user.common.search.failed,
                     id: id,
                 }
@@ -270,6 +271,7 @@ class UserService {
     async getByToken(token) {
         try {
             const userId = jwt.verify(token, process.env.JWT_SECRET).id
+
             const foundUser = await User.findOne({_id: userId})
             const userData = this.prepareUserData(foundUser)
 
@@ -287,10 +289,11 @@ class UserService {
             })
 
             if (userId) {
-                return {status: true, data: userData, token: newToken}
+                return {status: true, code: 200, data: userData, token: newToken}
             } else {
                 return {
                     status: false,
+                    code: 400,
                     message: customMessages.user.common.search.failed,
                 }
             }
@@ -317,11 +320,12 @@ class UserService {
             if (resUpdate) {
                 return {
                     status: true,
+                    code: 200,
                     message: customMessages.user.success.update,
                     data: userData,
                 }
             } else {
-                return {status: false, message: customMessages.user.failed.update}
+                return {status: false, code: 400, message: customMessages.user.failed.update}
             }
         } catch (e) {
             return {
@@ -341,11 +345,12 @@ class UserService {
             if (resDelete) {
                 return {
                     status: true,
+                    code: 200,
                     message: customMessages.user.success.delete,
                     data: userData,
                 }
             } else {
-                return {status: false, message: customMessages.user.failed.delete}
+                return {status: false, code: 400, message: customMessages.user.failed.delete}
             }
         } catch (e) {
             return {
@@ -509,10 +514,11 @@ class UserService {
             if (createdUser) {
                 return {
                     status: true,
+                    code: 200,
                     user: createdUser,
                 }
             } else {
-                return {status: false, message: customMessages.user.failed.add}
+                return {status: false, code: 400, message: customMessages.user.failed.add}
             }
         } catch (e) {
             return {
