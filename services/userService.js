@@ -78,11 +78,12 @@ class UserService {
             if (createdUser) {
                 return {
                     status: true,
+                    code: 200,
                     message: customMessages.user.success.add,
                     user: userData,
                 }
             } else {
-                return {status: false, message: customMessages.user.failed.add}
+                return {status: false, code: 400, message: customMessages.user.failed.add}
             }
         } catch (e) {
             return {
@@ -124,10 +125,11 @@ class UserService {
             const userData = this.prepareUserArrayData(users)
 
             if (users) {
-                return {status: true, data: userData}
+                return {status: true, code: 200, data: userData}
             } else {
                 return {
                     status: false,
+                    code: 400,
                     message: customMessages.user.common.search.failed,
                 }
             }
