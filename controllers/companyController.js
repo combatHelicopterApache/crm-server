@@ -22,7 +22,7 @@ class CompanyController {
         company_name: result.data.company_name,
       });
 
-      const setFiledsToCompany = companyService.updateCompany(
+      const setFieldsToCompany = companyService.updateCompany(
         result.data._id.toString(),
         {
           owner_id: newOwnerUser.user._id.toString(),
@@ -32,7 +32,7 @@ class CompanyController {
 
       return res
         .status(200)
-        .json({ ...result, newOwnerUser, setFiledsToCompany });
+        .json({ ...result, newOwnerUser, setFieldsToCompany });
     } catch (err) {
       return res.status(500).send({ message: err });
     }
