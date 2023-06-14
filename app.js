@@ -14,6 +14,8 @@ app.use("/api/group", require("./routes/groupRoutes"));
 app.use("/api/user", require("./routes/userRoutes"));
 app.use("/api/lead", require("./routes/leadRoutes"));
 app.use("/api/company", require("./routes/companyRoutes"));
+app.use("/api/brand", require("./routes/brandRoutes"));
+app.use("/api/office", require("./routes/officeRoutes"));
 
 const serverStart = async () => {
   const PORT = process.env.PORT || 6000;
