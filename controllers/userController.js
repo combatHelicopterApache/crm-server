@@ -6,7 +6,7 @@ class UserController {
             const result = await userService.createNewUser(req.body)
             return res.status(result.code).send(result)
         } catch (err) {
-            return res.status(500).json(  {message: err.message} )
+            return res.status(500).json( {message: err.message} )
         }
     }
 
@@ -15,7 +15,7 @@ class UserController {
             const result = await userService.getAll(req.company_id)
             return res.status(result.code).send(result)
         } catch (err) {
-           return res.status(500).json(  {message: err.message} )
+           return res.status(500).json( {message: err.message} )
         }
     }
 
@@ -24,17 +24,16 @@ class UserController {
             const result = await userService.getAllWithParams(req)
             return res.status(result.code).send(result)
         } catch (err) {
-           return res.status(500).json(  {message: err.message} )
+           return res.status(500).json( {message: err.message} )
         }
     }
 
     async getUserById(req, res) {
         try {
             const result = await userService.getById(req.params.id)
-
             return res.status(result.code).send(result)
         } catch (err) {
-           return res.status(500).json(  {message: err.message} )
+           return res.status(500).json( {message: err.message} )
         }
     }
 
@@ -44,7 +43,7 @@ class UserController {
             const result = await userService.getByToken(token)
             return res.status(result.code).send(result)
         } catch (err) {
-           return res.status(500).json(  {message: err.message} )
+           return res.status(500).json( {message: err.message} )
         }
     }
 
@@ -56,7 +55,7 @@ class UserController {
             const result = await userService.updateByID(id, data)
             return res.status(result.code).send(result)
         } catch (err) {
-           return res.status(500).json(  {message: err.message} )
+           return res.status(500).json( {message: err.message} )
         }
     }
 
@@ -65,7 +64,7 @@ class UserController {
             const result = await userService.getAllSuperAdmin()
             return res.status(result.code).send(result)
         } catch (err) {
-           return res.status(500).json(  {message: err.message} )
+           return res.status(500).json(  { message: err.message } )
         }
     }
 
@@ -75,7 +74,7 @@ class UserController {
             const result = await userService.deleteByID(id)
             return res.status(result.code).send(result)
         } catch (err) {
-           return res.status(500).json(  {message: err.message} )
+           return res.status(500).json( {message: err.message} )
         }
     }
 
@@ -84,7 +83,7 @@ class UserController {
             const result = await userService.login(req.body)
             return res.status(result.code).send(result)
         } catch (err) {
-           return res.status(500).json(  {message: err.message} )
+           return res.status(500).json( {message: err.message} )
         }
     }
 }
