@@ -10,12 +10,12 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use("/api/group", require("./routes/groupRoutes"));
-app.use("/api/user", require("./routes/userRoutes"));
-app.use("/api/lead", require("./routes/leadRoutes"));
-app.use("/api/company", require("./routes/companyRoutes"));
-app.use("/api/brand", require("./routes/brandRoutes"));
-app.use("/api/office", require("./routes/officeRoutes"));
+app.use("/api/v1/group", require("./routes/groupRoutes"));
+app.use("/api/v1/user", require("./routes/userRoutes"));
+app.use("/api/v1/lead", require("./routes/leadRoutes"));
+app.use("/api/v1/company", require("./routes/companyRoutes"));
+app.use("/api/v1/brand", require("./routes/brandRoutes"));
+app.use("/api/v1/office", require("./routes/officeRoutes"));
 
 const serverStart = async () => {
   const PORT = process.env.PORT || 6000;
