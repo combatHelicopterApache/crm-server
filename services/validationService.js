@@ -59,10 +59,12 @@ class Validation {
 
 		if (login === "" || login === undefined) return {
 			status: false,
+			code: 400,
 			message: customMessages.login.failed.login.empty
 		}
 		if (!password || password === "" || password === undefined) return {
 			status: false,
+			code: 400,
 			message: customMessages.login.failed.password.empty
 		}
 
@@ -82,10 +84,10 @@ class Validation {
 
 		const { error } = loginSchema.validate(loginData)
 		if (error) {
-			return { status: false, message: error.details[0].message }
+			return { status: false, code: 400, message: error.details[0].message }
 		}
 
-		return { status: true }
+		return { status: true, code: 200, }
 
 	}
 

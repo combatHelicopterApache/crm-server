@@ -4,7 +4,7 @@ const officeModel = new Schema(
     {
         title: { type: String, required: false, default: "" },
         address: { type: String, required: false, default: "" },
-        note: { type: String, required: false, default: "" },
+        description: { type: String, required: false, default: "" },
         company_id: { type: ObjectId, ref: "Company", require: false },
         time_cards: {
             type: Object,

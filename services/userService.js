@@ -270,11 +270,9 @@ class UserService {
         }
     }
 
-    async getByToken(token) {
+    async getByToken(id) {
         try {
-            const userId = jwt.verify(token, process.env.JWT_SECRET).id
-
-            const foundUser = await User.findOne({_id: userId})
+            const foundUser = await User.findOne({_id: id})
             const userData = this.prepareUserData(foundUser)
 
             const tokenData = {
@@ -290,7 +288,7 @@ class UserService {
                 expiresIn: "12h",
             })
 
-            if (userId) {
+            if (foundUser) {
                 return {status: true, code: 200, data: userData, token: newToken}
             } else {
                 return {
@@ -433,13 +431,13 @@ class UserService {
             }).lean()
 
             if (!user) {
-                return {status: false, message: customMessages.login.failed.match}
+                return {status: false, code: 400, message: customMessages.login.failed.match}
             }
 
             const comparedPassword = await bcrypt.compare(data.password, user.password)
 
             if (!comparedPassword) {
-                return {status: false, message: customMessages.login.failed.match}
+                return {status: false, code: 400, message: customMessages.login.failed.match}
             }
 
             const userData = this.prepareUserData(user)
@@ -456,6 +454,7 @@ class UserService {
             const token = jwt.sign(tokenData, process.env.JWT_SECRET, {
                 expiresIn: "12h",
             })
+
 
             await User.findByIdAndUpdate(userData.id, {last_login: new Date()})
             return {

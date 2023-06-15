@@ -39,8 +39,8 @@ class UserController {
 
     async getUserByToken(req, res) {
         try {
-            const {token} = req.query
-            const result = await userService.getByToken(token)
+            const {id} = req.user
+            const result = await userService.getByToken(id)
             return res.status(result.code).send(result)
         } catch (err) {
            return res.status(500).json( {message: err.message} )
@@ -81,6 +81,7 @@ class UserController {
     async loginUser(req, res) {
         try {
             const result = await userService.login(req.body)
+            console.log(req)
             return res.status(result.code).send(result)
         } catch (err) {
            return res.status(500).json( {message: err.message} )

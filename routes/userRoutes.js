@@ -35,7 +35,11 @@ router.get(
   userController.getUsersWithParams
 );
 
-router.post("/login", validator(loginSchema), userController.loginUser);
+router.post(
+    "/login",
+    validator(loginSchema),
+    userController.loginUser
+);
 
 router.get(
   "/token",
