@@ -33,9 +33,10 @@ class Middlewares {
     async checkAuthMiddleware(req, res, next) {
         try {
             const token = req.headers.authorization?.split(" ")[1]
+            // console.log(token)
             if (!token) {
                 return res
-                    .status(403)
+                    .status(401)
                     .send({message: "Authorization required for this request!"})
             }
 
@@ -49,7 +50,7 @@ class Middlewares {
             req.user = verifiedToken
             next()
         } catch (e) {
-            res.status(500).json({message: e.message})
+            res.status(401).json({message: "Unauthorized!"})
         }
     }
 

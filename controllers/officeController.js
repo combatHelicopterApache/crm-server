@@ -21,7 +21,7 @@ class OfficeController {
 
     async getAllOffices (req, res) {
         try {
-            const result = await officeService.getAll()
+            const result = await officeService.getAll(req.company_id)
             return res.status(result.code).json(result)
         } catch (err) {
             return res.status(500).json(  { message: err.message } )

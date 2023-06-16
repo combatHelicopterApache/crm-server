@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken")
 const {initialUser, UserRole, UserStatus} = require("../const/user")
 const validationService = require("./validationService")
 const bcrypt = require("bcrypt")
+const UserDTO = require("../dtos/userDto");
+
 
 class UserService {
     async createNewUser(data) {
@@ -74,16 +76,19 @@ class UserService {
                 manager_id,
             }
 
-            const userData = this.prepareUserData(createdUser)
             if (createdUser) {
                 return {
                     status: true,
                     code: 200,
                     message: customMessages.user.success.add,
-                    user: userData,
+                    user: await UserDTO.userObject(createdUser),
                 }
             } else {
-                return {status: false, code: 400, message: customMessages.user.failed.add}
+                return {
+                    status: false,
+                    code: 400,
+                    message: customMessages.user.failed.add
+                }
             }
         } catch (e) {
             return {
@@ -94,15 +99,17 @@ class UserService {
 
     }
 
-    async getAll(company) {
+    async getAll(company_id) {
         try {
-            const users = await User.find({company_id: company}).sort({
-                created_at: 1,
-            })
-            const userData = this.prepareUserArrayData(users)
+            const users = await User.find({company_id: company_id})
+                .sort({  created_at: 1 })
 
-            if (users.length > 0) {
-                return {status: true, code: 200, data: userData}
+            if (users) {
+                return {
+                    status: true,
+                    code: 200,
+                    data: await UserDTO.userArray(users)
+                }
             } else {
                 return {
                     status: false,
@@ -122,10 +129,12 @@ class UserService {
         try {
             const users = await User.find({role_id: 1})
 
-            const userData = this.prepareUserArrayData(users)
-
             if (users) {
-                return {status: true, code: 200, data: userData}
+                return {
+                    status: true,
+                    code: 200,
+                    data: await UserDTO.userArray(users)
+                }
             } else {
                 return {
                     status: false,
@@ -218,11 +227,12 @@ class UserService {
                 .skip(skip)
                 .limit(limit)
 
-            const userData = this.prepareUserArrayData(users)
+
             if (users) {
                 return {
                     status: true,
-                    data: userData,
+                    code: 200,
+                    data: await UserDTO.userArray(users),
                     meta: {
                         page,
                         per_page,
@@ -232,6 +242,7 @@ class UserService {
             } else {
                 return {
                     status: false,
+                    code: 400,
                     message: customMessages.user.common.search.failed,
                 }
             }
@@ -246,14 +257,18 @@ class UserService {
 
     async getById(id) {
         try {
-            if (!(await validationService.validateMongoId(id)))
-                return {status: false, message: customMessages.id.error, id: id}
+            if (!await validationService.validateMongoId(id)) {
+                return {status: false, code: 400, message: customMessages.id.error, id: id}
+            }
 
-            const foundUser = await User.findById({_id: id})
-            const userData = this.prepareUserData(foundUser)
+            const user = await User.findById({_id: id})
 
-            if (foundUser) {
-                return {status: true, code: 200, data: userData}
+            if (user) {
+                return {
+                    status: true,
+                    code: 200,
+                    data: await UserDTO.userObject(user)
+                }
             } else {
                 return {
                     status: false,
@@ -273,7 +288,7 @@ class UserService {
     async getByToken(id) {
         try {
             const foundUser = await User.findOne({_id: id})
-            const userData = this.prepareUserData(foundUser)
+            const userData = await UserDTO.userObject(foundUser)
 
             const tokenData = {
                 id: userData.id.toString(),
@@ -285,21 +300,26 @@ class UserService {
             }
 
             const newToken = jwt.sign(tokenData, process.env.JWT_SECRET, {
-                expiresIn: "12h",
+                expiresIn: "1m",
             })
 
             if (foundUser) {
-                return {status: true, code: 200, data: userData, token: newToken}
+                return {
+                    status: true,
+                    code: 200,
+                    data: userData,
+                    token: newToken
+                }
             } else {
                 return {
                     status: false,
-                    code: 400,
+                    code: 401,
                     message: customMessages.user.common.search.failed,
                 }
             }
         } catch (e) {
             return {
-                code: 500,
+                code: 401,
                 error: e.message
             }
         }
@@ -307,25 +327,28 @@ class UserService {
 
     async updateByID(id, data) {
         try {
-            if (!(await validationService.validateMongoId(id)))
-                return {status: false, message: customMessages.id.error, id: id}
+            if (!await validationService.validateMongoId(id)) {
+                return {status: false, code: 400, message: customMessages.id.error, id: id}
+            }
             const filter = {_id: id}
 
-            const resUpdate = await User.findByIdAndUpdate(filter, data, {
+            const updated = await User.findByIdAndUpdate(filter, data, {
                 new: true,
             })
 
-            const userData = await this.prepareUserData(resUpdate)
-
-            if (resUpdate) {
+            if (updated) {
                 return {
                     status: true,
                     code: 200,
                     message: customMessages.user.success.update,
-                    data: userData,
+                    data: await UserDTO.userObject(updated)
                 }
             } else {
-                return {status: false, code: 400, message: customMessages.user.failed.update}
+                return {
+                    status: false,
+                    code: 400,
+                    message: customMessages.user.failed.update
+                }
             }
         } catch (e) {
             return {
@@ -337,20 +360,24 @@ class UserService {
 
     async deleteByID(id) {
         try {
-            if (!(await validationService.validateMongoId(id)))
-                return {status: false, message: customMessages.id.error, id: id}
+            if (!await validationService.validateMongoId(id)) {
+                return {status: false, code: 400, message: customMessages.id.error, id: id}
+            }
+            const deleted = await User.findByIdAndDelete(id)
 
-            const resDelete = await User.findByIdAndDelete(id)
-            const userData = await this.prepareUserData(resDelete)
-            if (resDelete) {
+            if (deleted) {
                 return {
                     status: true,
                     code: 200,
                     message: customMessages.user.success.delete,
-                    data: userData,
+                    data: await UserDTO.userObject(deleted)
                 }
             } else {
-                return {status: false, code: 400, message: customMessages.user.failed.delete}
+                return {
+                    status: false,
+                    code: 400,
+                    message: customMessages.user.failed.delete
+                }
             }
         } catch (e) {
             return {
@@ -358,70 +385,6 @@ class UserService {
                 error: e.message
             }
         }
-    }
-
-    prepareUserData(data) {
-        const user = [data].reduce((acc, item) => {
-            (acc.id = item?._id),
-                (acc.full_name = item?.full_name),
-                (acc.title = item?.title),
-                (acc.phone = item?.phone),
-                (acc.email = item?.email),
-                (acc.is_admin = item?.is_admin),
-                (acc.active = item?.active),
-                (acc.role_id = item?.role_id),
-                (acc.role_name = item?.role_name),
-                (acc.company_id = item?.company_id),
-                (acc.company_name = item?.company_name),
-                (acc.notes = item?.notes),
-                (acc.user_identifier = item?.user_identifier),
-                (acc.permissions = item?.permissions),
-                (acc.last_login = item?.last_login),
-                (acc.desk_id = item?.desk_id),
-                (acc.desk_name = item?.desk_name),
-                (acc.manager_id = item?.manager_id),
-                (acc.manager_name = item?.manager_name),
-                (acc.brands = item?.brands),
-                (acc.pivot = item?.pivot)
-            return acc
-        }, {})
-
-        return user
-    }
-
-    prepareUserArrayData(data) {
-        const users = data.reduce((acc, item) => {
-            acc.push({
-                id: item?._id,
-                full_name: item?.full_name,
-                title: item?.title,
-                phone: item?.phone,
-                email: item?.email,
-                is_admin: item?.is_admin,
-                active: item?.active,
-                role_id: item?.role_id,
-                role_name: item?.role_name,
-                company_id: item?.company_id,
-                company_name: item?.company_name,
-                notes: item?.notes,
-                user_identifier: item?.user_identifier,
-                permissions: item?.permissions,
-                last_login: item?.last_login,
-                brands: item?.brands,
-                desk_id: item?.desk_id,
-                desk_name: item?.desk_name,
-                manager_id: item?.manager_id,
-                manager_name: item?.manager_name,
-                pivot: item?.pivot,
-
-                created_at: item?.created_at,
-                updated_at: item?.updated_at,
-            })
-
-            return acc
-        }, [])
-
-        return users
     }
 
     async login(data) {
@@ -440,23 +403,23 @@ class UserService {
                 return {status: false, code: 400, message: customMessages.login.failed.match}
             }
 
-            const userData = this.prepareUserData(user)
+            const userData = await UserDTO.userObject(user)
 
             const tokenData = {
-                id: user._id.toString(),
-                full_name: user.full_name,
-                role_id: user.role_id,
-                role_name: user.role_name,
-                email: user.email,
-                company_id: user.company_id,
+                id: userData?.id.toString(),
+                full_name: userData.full_name,
+                role_id: userData.role_id,
+                role_name: userData.role_name,
+                email: userData.email,
+                company_id: userData.company_id,
             }
 
             const token = jwt.sign(tokenData, process.env.JWT_SECRET, {
                 expiresIn: "12h",
             })
 
-
             await User.findByIdAndUpdate(userData.id, {last_login: new Date()})
+
             return {
                 status: true,
                 code: 200,
@@ -486,7 +449,7 @@ class UserService {
             const candidate = await User.findOne({email: admin_email})
 
             if (candidate) {
-                return {status: false, message: customMessages.user.failed.exists}
+                return { status: false, code: 400, message: customMessages.user.failed.exists}
             }
 
             const defaultPassword = "Owner12345"
@@ -516,10 +479,14 @@ class UserService {
                 return {
                     status: true,
                     code: 200,
-                    user: createdUser,
+                    user: await UserDTO.userObject(createdUser)
                 }
             } else {
-                return {status: false, code: 400, message: customMessages.user.failed.add}
+                return {
+                    status: false,
+                    code: 400,
+                    message: customMessages.user.failed.add
+                }
             }
         } catch (e) {
             return {

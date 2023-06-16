@@ -6,6 +6,7 @@ const officeModel = new Schema(
         address: { type: String, required: false, default: "" },
         description: { type: String, required: false, default: "" },
         company_id: { type: ObjectId, ref: "Company", require: false },
+        active: { type: Boolean, required: false, default: true},
         time_cards: {
             type: Object,
             required: false,

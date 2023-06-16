@@ -1,3 +1,4 @@
+
 const ErrorMessages = {
     "server": {
         "error": "Server error!"
@@ -93,9 +94,48 @@ const ErrorMessages = {
             "add": "The lead has been successfully added",
         },
         "failed": {
-            "match" : "Сompany with combination Login-password is not found",
             "update": "The company update was failed",
             "delete" : "The company removal was failed",
+            "get": "An error while receiving data",
+            "add": "An error when adding data",
+        },
+        "common": {
+            "search": {
+                "success": "Item(s) is found",
+                "failed": "Item(s) not found"
+            }
+        }
+    },
+    "brand": {
+        "success": {
+            "update": "The brand was successfully updated",
+            "delete" : "The brand was successfully deleted",
+            "get": "The brand data received successfully",
+            "add": "The brand has been successfully added",
+        },
+        "failed": {
+            "update": "The brand update was failed",
+            "delete" : "The brand removal was failed",
+            "get": "An error while receiving data",
+            "add": "An error when adding data",
+        },
+        "common": {
+            "search": {
+                "success": "Item(s) is found",
+                "failed": "Item(s) not found"
+            }
+        }
+    },
+    "office": {
+        "success": {
+            "update": "The office was successfully updated",
+            "delete" : "The office was successfully deleted",
+            "get": "The office data received successfully",
+            "add": "The office has been successfully added",
+        },
+        "failed": {
+            "update": "The office update was failed",
+            "delete" : "The office removal was failed",
             "get": "An error while receiving data",
             "add": "An error when adding data",
         },
