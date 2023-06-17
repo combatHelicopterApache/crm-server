@@ -7,12 +7,11 @@ const mongoose = require("mongoose");
 class BrandService {
   async createNew(data) {
     try {
-      const { title, description, company_id, site, platform } = data;
+      const { title, description, site, platform } = data;
 
       const brand = await new Brand({
         title,
         description,
-        company_id,
         site,
         platform,
       });
@@ -43,17 +42,17 @@ class BrandService {
 
   async getAll(company_id) {
     try {
-      if (!validationService.validateMongoId(company_id)) {
-        return {
-          status: false,
-          code: 400,
-          message: customMessages.id.error,
-          id: company_id,
-        };
-      }
+      //  if (!validationService.validateMongoId(company_id)) {
+      //    return {
+      //      status: false,
+      //      code: 400,
+      //      message: customMessages.id.error,
+      //      id: company_id,
+      //    };
+      //  }
 
       const brands = await Brand.find({
-        company_id: new mongoose.Types.ObjectId(company_id),
+        // company_id: new mongoose.Types.ObjectId(company_id),
       }).sort({ created_at: 1 });
 
       if (brands) {

@@ -2,14 +2,13 @@ const { model, Schema, ObjectId } = require("mongoose");
 
 const brandModel = new Schema(
   {
-    title: { type: String, required: false, default: "Rozetka" },
+    title: { type: String, required: false, default: "" },
     description: { type: String, required: false, default: "" },
-    company_id: { type: ObjectId, ref: "Company", require: false },
     active: { type: Boolean, required: false, default: true },
     logo: { type: String, required: false, default: "" },
     site: [
       {
-        site_id: { type: Number, require: false },
+        site_id: { type: String, require: false },
         site_logo: { type: String, require: false },
         site_name: { type: String, require: false },
         site_domains: { type: Array, require: false, unique: true },
@@ -17,7 +16,7 @@ const brandModel = new Schema(
     ],
     platform: [
       {
-        cfd_id: { type: Number, require: false },
+        cfd_id: { type: String, require: false },
         cfd_logo: { type: String, require: false },
         cfd_name: { type: String, require: false },
         cfd_domain: { type: String, require: false },

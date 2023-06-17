@@ -20,6 +20,7 @@ app.use("/api/v1/upload", require("./routes/uploadRoutes"));
 
 const serverStart = async () => {
   const PORT = process.env.PORT || 6000;
+
   try {
     await mongo.connect(process.env.MONGO_URI, {
       useNewUrlParser: true,
