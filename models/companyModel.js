@@ -22,6 +22,7 @@ const companyModel = new Schema(
         owner: {type: ObjectId, ref: "Users", require: false},
         brands: [
             { type: ObjectId, ref: "Brands", require: false }
+
         ]
     },
     {
