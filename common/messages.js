@@ -90,8 +90,8 @@ const ErrorMessages = {
         "success": {
             "update": "The company was successfully updated",
             "delete" : "The company was successfully deleted",
-            "get": "The lead data received successfully",
-            "add": "The lead has been successfully added",
+            "get": "The company data received successfully",
+            "add": "The company has been successfully added",
         },
         "failed": {
             "update": "The company update was failed",

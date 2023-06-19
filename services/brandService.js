@@ -2,7 +2,6 @@ const Brand = require("../models/brandModel");
 const customMessages = require("../common/messages");
 const BrandDTO = require("../dtos/brandDto");
 const validationService = require("./validationService");
-const mongoose = require("mongoose");
 
 class BrandService {
     async createNew(data) {
@@ -102,6 +101,31 @@ class BrandService {
         }
     }
 
+    // async getListIds() {
+    //     try {
+    //
+    //         const brands = await Brand.find({}, 'id, title').sort({created_at: 1});
+    //
+    //         if (brands) {
+    //             return {
+    //                 status: true,
+    //                 code: 200,
+    //                 data: await BrandDTO.brandArray(brands),
+    //             };
+    //         } else {
+    //             return {
+    //                 status: false,
+    //                 code: 400,
+    //                 message: customMessages.brand.common.search.failed,
+    //             };
+    //         }
+    //     } catch (e) {
+    //         return {
+    //             code: 500,
+    //             error: e.message,
+    //         };
+    //     }
+    // }
 
     async getById(id) {
         try {

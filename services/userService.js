@@ -504,6 +504,8 @@ class UserService {
         company_name,
       });
 
+      console.log(user)
+
       const createdUser = await user.save();
 
       if (createdUser) {

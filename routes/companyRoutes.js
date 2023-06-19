@@ -6,8 +6,10 @@ const {
 const router = Router();
 
 router.get("/companies-list", getCompanies);
+// router.get("/company/:id", getCompany);
 router.post("/company-create", createCompany);
-router.put("/company-update", updateCompany);
-router.delete("/company-delete", deleteCompany);
+router.put("/company-update/:id", updateCompany);
+router.delete("/company-delete/:id", deleteCompany);
 
 module.exports = router;
+

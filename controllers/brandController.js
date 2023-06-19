@@ -38,6 +38,16 @@ class BrandController {
         }
     }
 
+    // async getBrandListIds(req, res) {
+    //     try {
+    //         const result = await brandService.getListIds();
+    //         return res.status(result.code).send(result);
+    //
+    //     } catch (err) {
+    //         return res.status(500).json({message: err.message});
+    //     }
+    // }
+
     async updateBrandById(req, res) {
         try {
             const id = req.params.id;
