@@ -3,33 +3,32 @@ const brandController = require("../controllers/brandController");
 const middlewares = require("../middlewares/middlewares");
 const router = Router();
 
-
-
 router.post(
-    "/create",
-    middlewares.checkAuthMiddleware,
-    middlewares.checkRoleMiddleware,
-    brandController.createBrand
+  "/create",
+  middlewares.checkAuthMiddleware,
+  middlewares.checkRoleMiddleware,
+  brandController.createBrand
 );
 
 router.get(
-    "/",
-    middlewares.checkAuthMiddleware,
-    middlewares.checkRoleMiddleware,
-    middlewares.checkCompanyIdMiddleware,
-    brandController.getAllBrands
+  "/",
+  middlewares.checkAuthMiddleware,
+  middlewares.checkRoleMiddleware,
+  middlewares.checkCompanyIdMiddleware,
+  brandController.getAllBrands
 );
 
 router.get(
-    "/brand-list",
-    middlewares.checkAuthMiddleware,
-    middlewares.checkRoleMiddleware,
-    middlewares.checkCompanyIdMiddleware,
-    brandController.getBrandList
+  "/brand-list",
+  middlewares.checkAuthMiddleware,
+  middlewares.checkRoleMiddleware,
+  middlewares.checkCompanyIdMiddleware,
+  brandController.getBrandList
 );
 
 // router.get(
 //     "/ids",
+//     checkPerm(['affiliates']),
 //     middlewares.checkAuthMiddleware,
 //     middlewares.checkRoleMiddleware,
 //     middlewares.checkCompanyIdMiddleware,
@@ -37,24 +36,24 @@ router.get(
 // );
 
 router.get(
-    "/:id",
-    middlewares.checkAuthMiddleware,
-    middlewares.checkRoleMiddleware,
-    brandController.getBrandById
+  "/:id",
+  middlewares.checkAuthMiddleware,
+  middlewares.checkRoleMiddleware,
+  brandController.getBrandById
 );
 
 router.put(
-    "/:id",
-    middlewares.checkAuthMiddleware,
-    middlewares.checkRoleMiddleware,
-    brandController.updateBrandById
+  "/:id",
+  middlewares.checkAuthMiddleware,
+  middlewares.checkRoleMiddleware,
+  brandController.updateBrandById
 );
 
 router.delete(
-    "/:id",
-    middlewares.checkAuthMiddleware,
-    middlewares.checkRoleMiddleware,
-    brandController.deleteBrandById
+  "/:id",
+  middlewares.checkAuthMiddleware,
+  middlewares.checkRoleMiddleware,
+  brandController.deleteBrandById
 );
 
 module.exports = router;
