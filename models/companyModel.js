@@ -19,7 +19,7 @@ const companyModel = new Schema(
         notes: {type: String, required: false, unique: false},
         status: {type: String, required: true, unique: false},
         owner_id: {type: String, required: false, unique: false},
-        owner: {type: ObjectId, ref: "Users", require: false},
+        owner_name: {type: ObjectId, ref: "Users", require: false},
         brands: [
             { type: ObjectId, ref: "Brands", require: false }
         ]
