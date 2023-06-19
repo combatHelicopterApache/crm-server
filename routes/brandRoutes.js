@@ -20,6 +20,13 @@ router.get(
     brandController.getAllBrands
 );
 
+router.get(
+    "/brand-list",
+    middlewares.checkAuthMiddleware,
+    middlewares.checkRoleMiddleware,
+    middlewares.checkCompanyIdMiddleware,
+    brandController.getBrandList
+);
 
 
 router.get(
