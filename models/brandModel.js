@@ -2,7 +2,7 @@ const { model, Schema, ObjectId } = require("mongoose");
 
 const brandModel = new Schema(
   {
-    title: { type: String, required: false, default: "" },
+    title: { type: String, required: false, default: "Default brand" },
     description: { type: String, required: false, default: "" },
     active: { type: Boolean, required: false, default: true },
     logo: { type: String, required: false, default: "" },
@@ -11,7 +11,7 @@ const brandModel = new Schema(
         site_id: { type: String, require: false },
         site_logo: { type: String, require: false },
         site_name: { type: String, require: false },
-        site_domains: { type: Array, require: false, unique: true },
+        site_domains: { type: Array, require: false, unique: false },
       },
     ],
     platform: [

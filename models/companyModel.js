@@ -17,7 +17,7 @@ const companyModel = new Schema(
         address: {type: String, required: true, unique: false},
         title: {type: String, required: false, unique: false},
         notes: {type: String, required: false, unique: false},
-        status: {type: String, required: true, unique: false},
+        status: {type: Number, required: true, unique: false},
         owner_id: {type: String, required: false, unique: false},
         owner_name: {type: ObjectId, ref: "Users", require: false},
         brands: [

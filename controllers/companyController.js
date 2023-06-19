@@ -15,12 +15,14 @@ class CompanyController {
     async createCompany(req, res) {
         try {
             const result = await companyService.createCompany(req.body);
-console.log(result)
+
             const newOwnerUser = await userService.createOwnerUserForNewCompany({
                 ...req.body,
                 company_id: result.data.id.toString(),
                 company_name: result.data.company_name,
             });
+
+            if(!newOwnerUser.status) { return res.status(result.code).json(newOwnerUser)}
 
             const setFieldsToCompany = companyService.updateCompany(
                 result.data.id.toString(),
@@ -38,7 +40,7 @@ console.log(result)
 
     async updateCompany(req, res) {
         try {
-            const result = await companyService.updateCompany();
+            const result = await companyService.updateCompany(req.params.id, req.body);
             return res.status(result.code).send(result);
         } catch (err) {
             return res.status(500).json({message: err.message})

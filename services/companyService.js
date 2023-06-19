@@ -84,7 +84,7 @@ class CompanyService {
 
     async deleteCompany(id) {
         try {
-            const result = await companyModel.findByIdAndDelete({id});
+            const result = await companyModel.findByIdAndDelete({_id: id});
 
             if (result) {
                 return {
