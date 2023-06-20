@@ -5,6 +5,7 @@ const router = Router();
 const { loginSchema } = require("../validators/auth.validator");
 const validator = require("../helpers/joi.validation.handler");
 
+
 router.get(
   "/admin-user",
   middlewares.checkAuthMiddleware,
@@ -33,6 +34,14 @@ router.get(
   middlewares.checkAuthMiddleware,
   middlewares.checkCompanyIdMiddleware,
   userController.getUsersWithParams
+);
+
+router.get(
+    "/user-list",
+    middlewares.checkAuthMiddleware,
+    middlewares.checkRoleMiddleware,
+    middlewares.checkCompanyIdMiddleware,
+    userController.getUsersList
 );
 
 router.post(

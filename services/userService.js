@@ -107,9 +107,35 @@ class UserService {
 
     async getAll(company_id) {
         try {
-
-            console.log(company_id)
             const users = await User.find({company_id: company_id}).sort({
+                created_at: 1,
+            });
+
+            if (users) {
+                return {
+                    status: true,
+                    code: 200,
+                    message: Response.get('users', true),
+                    data: await UserDTO.userArray(users),
+                };
+            } else {
+                return {
+                    status: false,
+                    code: 400,
+                    message: Response.search('user', false),
+                };
+            }
+        } catch (e) {
+            return {
+                code: 500,
+                error: e.message,
+            };
+        }
+    }
+
+    async getList(company_id) {
+        try {
+            const users = await User.find({company_id: company_id}, "id, full_name").sort({
                 created_at: 1,
             });
 
