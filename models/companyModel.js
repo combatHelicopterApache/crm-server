@@ -18,9 +18,9 @@ const companyModel = new Schema(
     title: { type: String, required: false, unique: false },
     notes: { type: String, required: false, unique: false },
     status: { type: Number, required: true, unique: false },
-    owner_id: { type: String, required: false, unique: false },
-    owner_name: { type: ObjectId, ref: "Users", required: false },
-    brands: [{ type: ObjectId, ref: "Brand", required: false }],
+    owner_id: { type: ObjectId, ref: "Users", unique: false },
+    owner_name: { type: String, required: false },
+    brands: { type: [ObjectId], ref: "Brands", required: false },
   },
   {
     timestamps: {
@@ -30,4 +30,4 @@ const companyModel = new Schema(
   }
 );
 
-module.exports = model("Company", companyModel);
+module.exports = model("Companies", companyModel);

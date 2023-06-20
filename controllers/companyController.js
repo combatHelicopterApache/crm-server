@@ -64,7 +64,7 @@ class CompanyController {
 
   async getCompany(req, res) {
     try {
-      const result = await companyService.getCompany(req.query.id);
+      const result = await companyService.getCompany(req.params.id);
       return res.status(result.code).send(result);
     } catch (error) {
       return res.status(500).json({ message: error.message });

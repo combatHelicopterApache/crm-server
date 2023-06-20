@@ -20,4 +20,4 @@ const lead = new Schema( {
     }
 )
 
-module.exports = model('leads', lead)
+module.exports = model('Leads', lead)

@@ -1,11 +1,11 @@
-const { model, Schema, ObjectId } = require("mongoose");
+const { model, Schema, Types: { ObjectId } } = require("mongoose");
 
 const officeModel = new Schema(
     {
         title: { type: String, required: false, default: "" },
         address: { type: String, required: false, default: "" },
         description: { type: String, required: false, default: "" },
-        company_id: { type: ObjectId, ref: "Company", require: false },
+        company_id: { type: ObjectId, ref: "Companies", require: false },
         active: { type: Boolean, required: false, default: true},
         time_cards: {
             type: Object,
@@ -21,4 +21,4 @@ const officeModel = new Schema(
     }
 );
 
-module.exports = model("Office", officeModel);
+module.exports = model("Offices", officeModel);

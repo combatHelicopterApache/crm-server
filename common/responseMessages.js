@@ -1,12 +1,13 @@
 class ResponseMessages {
     // element - usage element (company: string)
     // status - operation status (true/false: boolean)
+    // target - target element (user: string)
     get (element, status) {
         return !status ? `An error while receiving ${element} data`  : `The ${element} data received successfully`
     }
 
     update (element, status) {
-        return !status ? `The ${element} update was failed` : `The ${element} was successfully updated`
+        return !status ? `The ${element}fa update was failed` : `The ${element} was successfully updated`
     }
 
     post (element, status) {
@@ -20,12 +21,15 @@ class ResponseMessages {
     search (element, status) {
         return !status ? `The ${element} not found` : `The ${element} is found`
     }
+    exists (element, target) {
+        return `${element} with this ${target} address already exists`
+    }
 
     login (status) {
         let result = ''
         switch (status) {
-            case 'success': result = "Server error!"; break;
-            case 'failed_match': result = "Your ip is not whitelisted"; break;
+            case 'success': result = "Authorization success!"; break;
+            case 'failed_match': result = "User with combination Login-password is not found"; break;
             case 'empty_login': result = "Please enter the Login"; break;
             case 'bad_login': result = "Bad Login"; break;
             case 'empty_password': result = "Please enter the password"; break;

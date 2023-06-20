@@ -22,6 +22,8 @@ class UserDTO {
                 desk_name: item?.desk_name,
                 manager_id: item?.manager_id,
                 manager_name: item?.manager_name,
+                owner_id: item?.owner_id,
+                owner_name: item?.owner_name,
                 pivot: item?.pivot,
                 created_at: item?.created_at,
                 updated_at: item?.updated_at,
@@ -51,6 +53,8 @@ class UserDTO {
                 acc.desk_name = item?.desk_name,
                 acc.manager_id = item?.manager_id,
                 acc.manager_name = item?.manager_name,
+                acc.mowner_id = item?.mowner_id,
+                acc.owner_name = item?.owner_name,
                 acc.pivot = item?.pivot,
                 acc.created_at = item?.created_at,
                 acc.updated_at = item?.updated_at

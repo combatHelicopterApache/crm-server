@@ -1,10 +1,10 @@
 const User = require("../models/userModel");
-const customMessages = require("../common/messages");
 const jwt = require("jsonwebtoken");
 const {initialUser, UserRole, UserStatus} = require("../const/user");
 const validationService = require("./validationService");
 const bcrypt = require("bcrypt");
 const UserDTO = require("../dtos/userDto");
+const Response = require("../common/responseMessages");
 
 class UserService {
     async createNewUser(data) {
@@ -31,6 +31,8 @@ class UserService {
                 desk_name,
                 manager_id,
                 manager_name,
+                owner_id,
+                owner_name
             } = data;
 
             const candidate = await User.findOne({email});
@@ -39,7 +41,7 @@ class UserService {
                 return {
                     status: false,
                     code: 422,
-                    message: customMessages.user.failed.exists,
+                    message: Response.exists('user', 'email'),
                 };
             }
 
@@ -68,6 +70,8 @@ class UserService {
                 desk_name,
                 manager_id,
                 manager_name,
+                owner_id,
+                owner_name
             });
 
             const createdUser = await user.save();
@@ -83,14 +87,14 @@ class UserService {
                 return {
                     status: true,
                     code: 200,
-                    message: customMessages.user.success.add,
+                    message: Response.post('user', true),
                     user: await UserDTO.userObject(createdUser),
                 };
             } else {
                 return {
                     status: false,
                     code: 400,
-                    message: customMessages.user.failed.add,
+                    message: Response.post('user', false),
                 };
             }
         } catch (e) {
@@ -103,6 +107,8 @@ class UserService {
 
     async getAll(company_id) {
         try {
+
+            console.log(company_id)
             const users = await User.find({company_id: company_id}).sort({
                 created_at: 1,
             });
@@ -111,13 +117,14 @@ class UserService {
                 return {
                     status: true,
                     code: 200,
+                    message: Response.get('users', true),
                     data: await UserDTO.userArray(users),
                 };
             } else {
                 return {
                     status: false,
                     code: 400,
-                    message: customMessages.user.common.search.failed,
+                    message: Response.search('user', false),
                 };
             }
         } catch (e) {
@@ -136,13 +143,14 @@ class UserService {
                 return {
                     status: true,
                     code: 200,
+                    message: Response.get('admin users', true),
                     data: await UserDTO.userArray(users),
                 };
             } else {
                 return {
                     status: false,
                     code: 400,
-                    message: customMessages.user.common.search.failed,
+                    message: Response.search('admin users', false),
                 };
             }
         } catch (e) {
@@ -234,6 +242,7 @@ class UserService {
                 return {
                     status: true,
                     code: 200,
+                    message: Response.get('users', true),
                     data: await UserDTO.userArray(users),
                     meta: {
                         page,
@@ -245,7 +254,7 @@ class UserService {
                 return {
                     status: false,
                     code: 400,
-                    message: customMessages.user.common.search.failed,
+                    message: Response.search('users', false),
                 };
             }
         } catch (e) {
@@ -262,7 +271,7 @@ class UserService {
                 return {
                     status: false,
                     code: 400,
-                    message: customMessages.id.error,
+                    message: Response.errors('id'),
                     id: id,
                 };
             }
@@ -273,13 +282,14 @@ class UserService {
                 return {
                     status: true,
                     code: 200,
+                    message: Response.get('user', true),
                     data: await UserDTO.userObject(user),
                 };
             } else {
                 return {
                     status: false,
                     code: 400,
-                    message: customMessages.user.common.search.failed,
+                    message: Response.search('user', false),
                     id: id,
                 };
             }
@@ -313,6 +323,7 @@ class UserService {
                 return {
                     status: true,
                     code: 200,
+                    message: Response.get('user', true),
                     data: userData,
                     token: newToken,
                 };
@@ -320,7 +331,7 @@ class UserService {
                 return {
                     status: false,
                     code: 401,
-                    message: customMessages.user.common.search.failed,
+                    message: Response.search('user', true),
                 };
             }
         } catch (e) {
@@ -337,7 +348,7 @@ class UserService {
                 return {
                     status: false,
                     code: 400,
-                    message: customMessages.id.error,
+                    message: Response.errors('id'),
                     id: id,
                 };
             }
@@ -351,14 +362,14 @@ class UserService {
                 return {
                     status: true,
                     code: 200,
-                    message: customMessages.user.success.update,
+                    message: Response.update('user', true),
                     data: await UserDTO.userObject(updated),
                 };
             } else {
                 return {
                     status: false,
                     code: 400,
-                    message: customMessages.user.failed.update,
+                    message: Response.update('user', false),
                 };
             }
         } catch (e) {
@@ -375,7 +386,7 @@ class UserService {
                 return {
                     status: false,
                     code: 400,
-                    message: customMessages.id.error,
+                    message: Response.errors('id'),
                     id: id,
                 };
             }
@@ -385,14 +396,14 @@ class UserService {
                 return {
                     status: true,
                     code: 200,
-                    message: customMessages.user.success.delete,
+                    message: Response.delete('user', true),
                     data: await UserDTO.userObject(deleted),
                 };
             } else {
                 return {
                     status: false,
                     code: 400,
-                    message: customMessages.user.failed.delete,
+                    message: Response.delete('user', false),
                 };
             }
         } catch (e) {
@@ -413,7 +424,7 @@ class UserService {
                 return {
                     status: false,
                     code: 400,
-                    message: customMessages.login.failed.match,
+                    message: Response.login('failed_match'),
                 };
             }
 
@@ -426,7 +437,7 @@ class UserService {
                 return {
                     status: false,
                     code: 400,
-                    message: customMessages.login.failed.match,
+                    message: Response.login('failed_match'),
                 };
             }
 
@@ -450,7 +461,7 @@ class UserService {
             return {
                 status: true,
                 code: 200,
-                message: customMessages.login.success,
+                message: Response.login('success'),
                 token: token,
                 data: userData,
             };
@@ -479,7 +490,7 @@ class UserService {
                 return {
                     status: false,
                     code: 400,
-                    message: "Admin user with this email address already exists",
+                    message: Response.exists('Admin user', 'email'),
                 };
             }
 
@@ -504,7 +515,6 @@ class UserService {
                 company_name,
             });
 
-            console.log(user)
 
             const createdUser = await user.save();
 
@@ -512,13 +522,14 @@ class UserService {
                 return {
                     status: true,
                     code: 200,
+                    message: Response.post('admin user', true),
                     user: await UserDTO.userObject(createdUser),
                 };
             } else {
                 return {
                     status: false,
                     code: 400,
-                    message: customMessages.user.failed.add,
+                    message: Response.post('admin user', false),
                 };
             }
         } catch (e) {

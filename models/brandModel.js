@@ -1,4 +1,4 @@
-const { model, Schema, ObjectId } = require("mongoose");
+const { model, Schema, Types: { ObjectId } } = require("mongoose");
 
 const brandModel = new Schema(
   {
@@ -8,15 +8,15 @@ const brandModel = new Schema(
     logo: { type: String, required: false, default: "" },
     site: [
       {
-        site_id: { type: String, require: false },
+        site_id: { type: ObjectId, require: false },
         site_logo: { type: String, require: false },
         site_name: { type: String, require: false },
-        site_domains: { type: Array, require: false, unique: false },
+        site_domains: { type: [String], require: false, unique: false },
       },
     ],
     platform: [
       {
-        cfd_id: { type: String, require: false },
+        cfd_id: { type: ObjectId, require: false },
         cfd_logo: { type: String, require: false },
         cfd_name: { type: String, require: false },
         cfd_domain: { type: String, require: false },
@@ -31,4 +31,4 @@ const brandModel = new Schema(
   }
 );
 
-module.exports = model("Brand", brandModel);
+module.exports = model("Brands", brandModel);

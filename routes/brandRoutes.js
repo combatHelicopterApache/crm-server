@@ -26,15 +26,6 @@ router.get(
   brandController.getBrandList
 );
 
-// router.get(
-//     "/ids",
-//     checkPerm(['affiliates']),
-//     middlewares.checkAuthMiddleware,
-//     middlewares.checkRoleMiddleware,
-//     middlewares.checkCompanyIdMiddleware,
-//     brandController.getBrandListIds
-// );
-
 router.get(
   "/:id",
   middlewares.checkAuthMiddleware,

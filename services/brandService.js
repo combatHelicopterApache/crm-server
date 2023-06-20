@@ -1,7 +1,7 @@
 const Brand = require("../models/brandModel");
-const customMessages = require("../common/messages");
 const BrandDTO = require("../dtos/brandDto");
 const validationService = require("./validationService");
+const Response = require('../common/responseMessages')
 
 class BrandService {
   async createNew(data) {
@@ -21,14 +21,14 @@ class BrandService {
         return {
           status: true,
           code: 200,
-          message: customMessages.brand.success.add,
+          message: Response.post('brand', true),
           data: await BrandDTO.brandObject(createdBrand),
         };
       } else {
         return {
           status: false,
           code: 400,
-          message: customMessages.brand.failed.add,
+          message: Response.post('brand', false),
         };
       }
     } catch (e) {
@@ -41,30 +41,20 @@ class BrandService {
 
   async getAll(company_id) {
     try {
-      //  if (!validationService.validateMongoId(company_id)) {
-      //    return {
-      //      status: false,
-      //      code: 400,
-      //      message: customMessages.id.error,
-      //      id: company_id,
-      //    };
-      //  }
-
-      const brands = await Brand.find({
-        // company_id: new mongoose.Types.ObjectId(company_id),
-      }).sort({ created_at: 1 });
+      const brands = await Brand.find().sort({ created_at: 1 });
 
       if (brands) {
         return {
           status: true,
           code: 200,
+          message: Response.get('brand', true),
           data: await BrandDTO.brandArray(brands),
         };
       } else {
         return {
           status: false,
           code: 400,
-          message: customMessages.brand.common.search.failed,
+          message: Response.search('brand', false),
         };
       }
     } catch (e) {
@@ -83,13 +73,14 @@ class BrandService {
         return {
           status: true,
           code: 200,
+          message: Response.get('brands', true),
           data: await BrandDTO.brandArray(brands),
         };
       } else {
         return {
           status: false,
           code: 400,
-          message: customMessages.brand.common.search.failed,
+          message: Response.search('brands', false),
         };
       }
     } catch (e) {
@@ -100,31 +91,6 @@ class BrandService {
     }
   }
 
-  // async getListIds() {
-  //     try {
-  //
-  //         const brands = await Brand.find({}, 'id, title').sort({created_at: 1});
-  //
-  //         if (brands) {
-  //             return {
-  //                 status: true,
-  //                 code: 200,
-  //                 data: await BrandDTO.brandArray(brands),
-  //             };
-  //         } else {
-  //             return {
-  //                 status: false,
-  //                 code: 400,
-  //                 message: customMessages.brand.common.search.failed,
-  //             };
-  //         }
-  //     } catch (e) {
-  //         return {
-  //             code: 500,
-  //             error: e.message,
-  //         };
-  //     }
-  // }
 
   async getById(id) {
     try {
@@ -132,7 +98,7 @@ class BrandService {
         return {
           status: false,
           code: 400,
-          message: customMessages.id.error,
+          message: Response.errors('id'),
           id: id,
         };
       }
@@ -142,13 +108,14 @@ class BrandService {
         return {
           status: true,
           code: 200,
+          message: Response.get('brand', true),
           data: await BrandDTO.brandObject(brand),
         };
       } else {
         return {
           status: false,
           code: 400,
-          message: customMessages.brand.common.search.failed,
+          message: Response.get('brand', false),
           id: id,
         };
       }
@@ -166,7 +133,7 @@ class BrandService {
         return {
           status: false,
           code: 400,
-          message: customMessages.id.error,
+          message: Response.errors('id'),
           id: id,
         };
       }
@@ -178,14 +145,14 @@ class BrandService {
         return {
           status: true,
           code: 200,
-          message: customMessages.brand.success.update,
+          message: Response.update('brand', true),
           data: await BrandDTO.brandObject(updated),
         };
       } else {
         return {
           status: false,
           code: 400,
-          message: customMessages.brand.failed.update,
+          message: Response.update('brand', false),
         };
       }
     } catch (e) {
@@ -202,7 +169,7 @@ class BrandService {
         return {
           status: false,
           code: 400,
-          message: customMessages.id.error,
+          message: Response.errors('id'),
           id: id,
         };
       }
@@ -213,14 +180,14 @@ class BrandService {
         return {
           status: true,
           code: 200,
-          message: customMessages.brand.success.delete,
+          message: Response.delete('brand', true),
           data: await BrandDTO.brandObject(deleted),
         };
       } else {
         return {
           status: false,
           code: 400,
-          message: customMessages.brand.failed.delete,
+          message: Response.delete('brand', false),
         };
       }
     } catch (e) {

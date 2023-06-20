@@ -18,7 +18,7 @@ const ErrorMessages = {
         },
         "failed": {
             "update": "The group update was failed",
-            "delete" : "The group  removal  was failed",
+            "delete" : "The group  removal was failed",
             "get": "An error while receiving data",
             "add": "An error when adding data",
         },

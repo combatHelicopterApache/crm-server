@@ -1,4 +1,4 @@
-const {model, Schema} = require("mongoose");
+const {model, Schema, Types: { ObjectId }} = require("mongoose");
 
 const userModel = new Schema(
     {
@@ -9,10 +9,10 @@ const userModel = new Schema(
         password: {type: String, required: true},
         is_admin: {type: Boolean, required: true, default: false},
         active: {type: Boolean, default: true},
-        role_id: {type: Number, required: true, default: 3},
-        role_name: {type: String, required: true, default: "ADMIN"},
-        company_id: {type: String, required: true},
-        company_name: {type: String, required: true},
+        role_id: {type: Number, required: true, default: 6},
+        role_name: {type: String, required: true, default: "AGENT"},
+        company_id: {type: ObjectId, required: true, default: new ObjectId},
+        company_name: {type: String, required: true, default:"Admin"},
         background_color: {type: String, required: false, default: "#626ed4"},
         notes: {type: String, default: "", required: false},
         user_identifier: {type: String, default: "AM", required: false},
@@ -20,15 +20,15 @@ const userModel = new Schema(
         last_login: {type: Date, default: null},
         brands: [
             {
-                brand_id: {type: Number, default: ""},
+                brand_id: {type: ObjectId, default: ""},
                 brand_name: {type: String, default: ""},
             },
         ],
-        desk_id: {type: String, default: null},
+        desk_id: {type: ObjectId, default: null},
         desk_name: {type: String, default: null},
-        manager_id: {type: String, default: null},
+        manager_id: {type: ObjectId, default: null},
         manager_name: {type: String, default: null},
-        owner_id: {type: String, default: null},
+        owner_id: {type: ObjectId, default: null},
         owner_name: {type: String, default: null},
         pivot: {
             company_id: {type: Number, default: ""},
@@ -36,7 +36,7 @@ const userModel = new Schema(
             desk_id: {type: Number, default: ""},
             brands: [
                 {
-                    brand_id: {type: Number, default: ""},
+                    brand_id: {type: ObjectId, default: ""},
                     brand_name: {type: String, default: ""},
                 },
             ],
