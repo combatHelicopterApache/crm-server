@@ -9,6 +9,12 @@ router.post(
   middlewares.checkRoleMiddleware,
   brandController.createBrand
 );
+router.patch(
+  "/update/:id",
+  middlewares.checkAuthMiddleware,
+  middlewares.checkRoleMiddleware,
+  brandController.updateBrand
+);
 
 router.get(
   "/",

@@ -62,6 +62,7 @@ class CompanyDTO {
       acc.owner = item.owner;
       acc.brands = item.brands;
       acc.key = idx;
+      acc.created_at = item.created_at;
       return acc;
     }, {});
   }

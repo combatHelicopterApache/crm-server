@@ -61,10 +61,18 @@ class CompanyController {
       return res.status(500).json({ message: err.message });
     }
   }
+  async updateCompanyByKey(req, res) {
+    try {
+      const result = await companyService.updateCompanyByKey(req);
+      return res.status(result.code).send(result);
+    } catch (err) {
+      return res.status(500).json({ message: err.message });
+    }
+  }
 
   async getCompany(req, res) {
     try {
-      const result = await companyService.getCompany(req.params.id);
+      const result = await companyService.getCompany(req.query.id);
       return res.status(result.code).send(result);
     } catch (error) {
       return res.status(500).json({ message: error.message });

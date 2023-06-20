@@ -1,7 +1,7 @@
 const Brand = require("../models/brandModel");
 const BrandDTO = require("../dtos/brandDto");
 const validationService = require("./validationService");
-const Response = require('../common/responseMessages')
+const Response = require("../common/responseMessages");
 
 class BrandService {
   async createNew(data) {
@@ -21,14 +21,14 @@ class BrandService {
         return {
           status: true,
           code: 200,
-          message: Response.post('brand', true),
+          message: Response.post("brand", true),
           data: await BrandDTO.brandObject(createdBrand),
         };
       } else {
         return {
           status: false,
           code: 400,
-          message: Response.post('brand', false),
+          message: Response.post("brand", false),
         };
       }
     } catch (e) {
@@ -47,14 +47,14 @@ class BrandService {
         return {
           status: true,
           code: 200,
-          message: Response.get('brand', true),
+          message: Response.get("brand", true),
           data: await BrandDTO.brandArray(brands),
         };
       } else {
         return {
           status: false,
           code: 400,
-          message: Response.search('brand', false),
+          message: Response.search("brand", false),
         };
       }
     } catch (e) {
@@ -73,14 +73,14 @@ class BrandService {
         return {
           status: true,
           code: 200,
-          message: Response.get('brands', true),
+          message: Response.get("brands", true),
           data: await BrandDTO.brandArray(brands),
         };
       } else {
         return {
           status: false,
           code: 400,
-          message: Response.search('brands', false),
+          message: Response.search("brands", false),
         };
       }
     } catch (e) {
@@ -91,14 +91,13 @@ class BrandService {
     }
   }
 
-
   async getById(id) {
     try {
       if (!(await validationService.validateMongoId(id))) {
         return {
           status: false,
           code: 400,
-          message: Response.errors('id'),
+          message: Response.errors("id"),
           id: id,
         };
       }
@@ -108,14 +107,14 @@ class BrandService {
         return {
           status: true,
           code: 200,
-          message: Response.get('brand', true),
+          message: Response.get("brand", true),
           data: await BrandDTO.brandObject(brand),
         };
       } else {
         return {
           status: false,
           code: 400,
-          message: Response.get('brand', false),
+          message: Response.get("brand", false),
           id: id,
         };
       }
@@ -133,7 +132,7 @@ class BrandService {
         return {
           status: false,
           code: 400,
-          message: Response.errors('id'),
+          message: Response.errors("id"),
           id: id,
         };
       }
@@ -145,14 +144,14 @@ class BrandService {
         return {
           status: true,
           code: 200,
-          message: Response.update('brand', true),
+          message: Response.update("brand", true),
           data: await BrandDTO.brandObject(updated),
         };
       } else {
         return {
           status: false,
           code: 400,
-          message: Response.update('brand', false),
+          message: Response.update("brand", false),
         };
       }
     } catch (e) {
@@ -169,7 +168,7 @@ class BrandService {
         return {
           status: false,
           code: 400,
-          message: Response.errors('id'),
+          message: Response.errors("id"),
           id: id,
         };
       }
@@ -180,17 +179,55 @@ class BrandService {
         return {
           status: true,
           code: 200,
-          message: Response.delete('brand', true),
+          message: Response.delete("brand", true),
           data: await BrandDTO.brandObject(deleted),
         };
       } else {
         return {
           status: false,
           code: 400,
-          message: Response.delete('brand', false),
+          message: Response.delete("brand", false),
         };
       }
     } catch (e) {
+      return {
+        code: 500,
+        error: e.message,
+      };
+    }
+  }
+  async update(req) {
+    const brandId = req.params.id;
+    const updates = req.body;
+
+    try {
+      const brand = await Brand.findById(brandId);
+
+      if (!brand) {
+        return {
+          status: false,
+          code: 400,
+          message: Response.errors("id"),
+          id: brandId,
+        };
+      }
+
+      for (const field in updates) {
+        if (field in brand) {
+          brand[field] = updates[field];
+        }
+      }
+
+      await brand.save();
+
+      return {
+        status: true,
+        code: 200,
+        message: Response.post("brand", true),
+        data: [],
+      };
+    } catch (error) {
+      console.error(error);
       return {
         code: 500,
         error: e.message,
