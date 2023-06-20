@@ -1,7 +1,5 @@
 const Response = require('../common/responseMessages')
 const companyModel = require("../models/companyModel");
-const brandModel = require("../models/brandModel");
-const validationService = require("./validationService");
 const CompanyDTO = require("../dtos/companyDto");
 const mongoose = require("mongoose");
 

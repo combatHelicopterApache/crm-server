@@ -8,7 +8,7 @@ const brandModel = new Schema(
     logo: { type: String, required: false, default: "" },
     site: [
       {
-        site_id: { type: ObjectId, require: false },
+        site_id: { type: ObjectId, require: false, default: new ObjectId },
         site_logo: { type: String, require: false },
         site_name: { type: String, require: false },
         site_domains: { type: [String], require: false, unique: false },
@@ -16,7 +16,7 @@ const brandModel = new Schema(
     ],
     platform: [
       {
-        cfd_id: { type: ObjectId, require: false },
+        cfd_id: { type: ObjectId, require: false, default: new ObjectId },
         cfd_logo: { type: String, require: false },
         cfd_name: { type: String, require: false },
         cfd_domain: { type: String, require: false },
