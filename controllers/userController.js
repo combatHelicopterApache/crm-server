@@ -113,6 +113,17 @@ class UserController {
       return res.status(500).json({ message: err.message });
     }
   }
+
+  async changeUserPassword(req, res) {
+    try {
+      const id = req.params.id;
+      const {password} = req.body;
+      const result = await userService.changePassword(id, password);
+      return res.status(result.code).send(result);
+    } catch (err) {
+      return res.status(500).json({ message: err.message });
+    }
+  }
 }
 
 module.exports = new UserController();
