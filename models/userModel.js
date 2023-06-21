@@ -12,6 +12,7 @@ const userModel = new Schema(
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     is_admin: { type: Boolean, required: true, default: false },
+    user_logo: { type: String, required: false, default: ''},
     active: { type: Boolean, default: true },
     role_id: { type: Number, required: true, default: 6 },
     role_name: { type: String, required: true, default: "AGENT" },
@@ -20,7 +21,16 @@ const userModel = new Schema(
     background_color: { type: String, required: false, default: "#626ed4" },
     notes: { type: String, default: "", required: false },
     user_identifier: { type: String, default: "AM", required: false },
-    permissions: { type: Object, required: true },
+    permissions: {
+        leads: { type: Boolean, default: true },
+        affiliates: { type: Boolean, default: true },
+        deposits: { type: Boolean, default: true },
+        calendar: { type: Boolean, default: true },
+        groups: { type: Boolean, default: true },
+        users: { type: Boolean, default: true },
+        analytics: { type: Boolean, default: true },
+        settings: { type: Boolean, default: true },
+    },
     last_login: { type: Date, default: null },
     login_from_admin: { type: Boolean, required: false, default: false },
     brands: [
@@ -35,17 +45,6 @@ const userModel = new Schema(
     manager_name: { type: String, default: null },
     owner_id: { type: ObjectId, default: null },
     owner_name: { type: String, default: null },
-    pivot: {
-      company_id: { type: Number, default: "" },
-      manager_id: { type: Number, default: "" },
-      desk_id: { type: Number, default: "" },
-      brands: [
-        {
-          brand_id: { type: ObjectId, default: "" },
-          brand_name: { type: String, default: "" },
-        },
-      ],
-    },
     time_cards: {
       type: Object,
       required: false,
