@@ -127,12 +127,7 @@ class CompanyService {
             as: "brands",
           },
         },
-        {
-          $unwind: {
-            path: "$brands",
-            preserveNullAndEmptyArrays: true,
-          },
-        },
+
       ]);
 
       return {
