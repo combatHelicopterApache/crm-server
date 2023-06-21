@@ -14,9 +14,11 @@ router.get(
 
 router.post(
   "/create",
+
   middlewares.checkAuthMiddleware,
   middlewares.checkRoleMiddleware,
-  middlewares.validateUserDataMiddleware,
+
+  // middlewares.validateUserDataMiddleware,
   userController.crateUser
 );
 
@@ -43,15 +45,13 @@ router.get(
   userController.getUsersList
 );
 
-
 router.put(
-    "/change-password/:id",
-    middlewares.checkAuthMiddleware,
-    middlewares.checkRoleMiddleware,
-    middlewares.checkCompanyIdMiddleware,
-    userController.changeUserPassword
+  "/change-password/:id",
+  middlewares.checkAuthMiddleware,
+  middlewares.checkRoleMiddleware,
+  middlewares.checkCompanyIdMiddleware,
+  userController.changeUserPassword
 );
-
 
 router.post("/login", validator(loginSchema), userController.loginUser);
 
