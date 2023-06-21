@@ -67,7 +67,7 @@ class Middlewares {
             }
             next()
         } catch (e) {
-            res.status(500).send(e)
+            res.status(500).json({message: e.message})
         }
     }
 
@@ -79,7 +79,15 @@ class Middlewares {
 
             next()
         } catch (e) {
-            res.status(500).send(e)
+            res.status(500).json({message: e.message})
+        }
+    }
+
+    async checkPermissionMiddleware (req, res, next) {
+        try {
+
+        } catch (e) {
+            res.status(500).json({message: e.message})
         }
     }
 }
