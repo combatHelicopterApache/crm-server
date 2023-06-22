@@ -11,6 +11,6 @@ const uploadSchema = new Schema(
   { timestamps: true }
 );
 
-const uploadModel = mongoose.model("upload", uploadSchema);
+const uploadModel = mongoose.model("Uploads", uploadSchema);
 
 module.exports = uploadModel;
