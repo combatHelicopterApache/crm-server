@@ -1,27 +1,28 @@
-const {model, Schema, Types: { ObjectId }} = require('mongoose')
+const {model, Schema, Types: {ObjectId}} = require('mongoose')
 
-const lead = new Schema( {
-    uid:            { type: String, required: true },
-    first_name:     { type: String, required: true },
-    last_name:      { type: String, required: true },
-    phone:          { type: String, required: true, unique: true },
-    email:          { type: String, required: true, unique: true, match: /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/ },
-    affiliate:      { type: String, required: true },
-    source:         { type: String, required: true, lowercase: true },
-    manager_id:     { type: ObjectId, required: true, default: '' },
-    status:         { type: String, required: true, default: 'NEW' },
-    balance:        { type: Number, default: 0 },
-    brand_id:       { type: ObjectId, required: true, default: 'N/A' },
-    ip:             { type: Number, required: true, default: '0.0.0.0'  },
-    call:           {
-        call_count: { type: Number, required: true, default: 0 },
-        call_start: { type: String, required: true, default: '' },
-        call_end:   { type: String, required: true, default: '' },
-    },
-    geo:            { type: String, required: false, default: '' },
-    comment:        { type: String, required: false, default: '' },
-    comment:        { type: String, required: false, default: '' },
-},  {
+const lead = new Schema({
+        lead_uid: {type: String, required: true},
+        lead_first_name: {type: String, required: true},
+        lead_last_name: {type: String, required: true},
+        lead_phone: {type: String, required: true, unique: true},
+        lead_email: {type: String, required: true, unique: true, match: /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/},
+        lead_affiliate: {type: String, required: true},
+        lead_source: {type: String, required: true, lowercase: true},
+        lead_manager_id: {type: ObjectId, required: true, default: ''},
+        lead_status_id: {type: ObjectId, required: true, default: ''},
+        lead_status: {type: String, required: true, default: 'NEW'},
+        lead_balance: {type: Number, default: 0},
+        lead_brand_id: {type: ObjectId, required: true, default: 'N/A'},
+        lead_ip: {type: Number, required: true, default: '0.0.0.0'},
+        lead_call: {
+            lead_call_count: {type: Number, required: true, default: 0},
+            lead_call_start: {type: String, required: true, default: ''},
+            lead_call_end: {type: String, required: true, default: ''},
+        },
+        lead_geo: {type: String, required: false, default: ''},
+        lead_type: {type: String, required: false, default: 'sale'}, // sale/retention
+        lead_comment: {type: String, required: false, default: ''},
+    }, {
         timestamps: {
             createdAt: "createdAt",
             updatedAt: "updatedAt",
