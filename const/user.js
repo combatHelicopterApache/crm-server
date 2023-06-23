@@ -27,6 +27,15 @@ const UserStatus = {
   PENDING: 3,
 };
 
+const UserCRUD = {
+  CREATE: 1,
+  UPDATE: 2,
+  DELETE: 3,
+  REMOVE: 4,
+  READ: 5,
+  ALL: 6
+}
+
 const initialUser = {
   full_name: "",
   email: "",
@@ -51,4 +60,5 @@ module.exports = {
   UserRole,
   UserStatus,
   initialUser,
+  UserCRUD
 };
