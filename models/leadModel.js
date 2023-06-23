@@ -14,13 +14,9 @@ const lead = new Schema({
         lead_balance: {type: Number, default: 0},
         lead_brand_id: {type: ObjectId, required: true, default: 'N/A'},
         lead_ip: {type: Number, required: true, default: '0.0.0.0'},
-        lead_call: {
-            lead_call_count: {type: Number, required: true, default: 0},
-            lead_call_start: {type: String, required: true, default: ''},
-            lead_call_end: {type: String, required: true, default: ''},
-        },
+        lead_call_id: {type: ObjectId, ref: 'Calls', required: false,  default: () => new ObjectId()},
         lead_geo: {type: String, required: false, default: ''},
-        lead_type: {type: String, required: false, default: 'sale'}, // sale/retention
+        lead_type: {type: String, required: false, default: 'Sales'}, // sales/retention
         lead_comment: {type: String, required: false, default: ''},
     }, {
         timestamps: {
