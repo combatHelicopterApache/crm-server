@@ -1,14 +1,18 @@
 const mongoose = require("mongoose");
-const {
-    Schema,
-    Types: { ObjectId },
-} = mongoose;
+const { Schema, Types: { ObjectId }} = mongoose;
 const callSchema = new Schema(
     {
-        count: { type: String, required: true, unique: true },
-        key: { type: String, required: true, unique: true },
-    },
-    { timestamps: true }
+        duration: { type: Number, required: false },
+        call_start: { type: String, required: false },
+        call_end: { type: String, required: false, unique: true },
+        user_id: { type: ObjectId, ref:'Users', required: false },
+        lead_id: { type: ObjectId, ref:'Leads', required: false },
+    }, {
+        timestamps: {
+            createdAt: "createdAt",
+            updatedAt: "updatedAt",
+        }
+    }
 );
 
 const uploadModel = mongoose.model("Calls", callSchema);

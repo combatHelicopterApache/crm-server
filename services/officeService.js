@@ -1,6 +1,5 @@
 const Office = require("../models/officeModel");
 const OfficeDTO = require("../dtos/officeDto");
-const validationService = require("./validationService");
 const Response = require('../common/responseMessages')
 
 class OfficeService {
@@ -41,14 +40,6 @@ class OfficeService {
 
   async getAll(company_id) {
     try {
-      if (!(await validationService.validateMongoId(company_id))) {
-        return {
-          status: false,
-          code: 400,
-          message: Response.errors('id'),
-          id: company_id,
-        };
-      }
       const offices = await Office.find({
         company_id: company_id.toString(),
       }).sort({ created_at: 1 });
@@ -77,9 +68,6 @@ class OfficeService {
 
   async getById(id) {
     try {
-      if (!(await validationService.validateMongoId(id))) {
-        return { status: false, message: Response.errors('id'), id: id };
-      }
 
       const office = await Office.findById({ _id: id });
       if (office) {
@@ -108,14 +96,6 @@ class OfficeService {
 
   async updateById(id, data) {
     try {
-      if (!(await validationService.validateMongoId(id))) {
-        return {
-          status: false,
-          code: 400,
-          message: Response.errors('id'),
-          id: id,
-        };
-      }
       const filter = { _id: id };
       const updated = await Office.findByIdAndUpdate(filter, data, {
         new: true,
@@ -144,15 +124,6 @@ class OfficeService {
 
   async deleteById(id) {
     try {
-      if (!(await validationService.validateMongoId(id))) {
-        return {
-          status: false,
-          code: 400,
-          message: Response.errors('id'),
-          id: id,
-        };
-      }
-
       const deleted = await Office.findByIdAndDelete(id);
 
       if (deleted) {

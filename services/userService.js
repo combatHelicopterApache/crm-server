@@ -455,6 +455,7 @@ class UserService {
           message: Response.login("failed_match"),
         };
       }
+
       //   const saltPass = await bcrypt.genSalt(10);
       //   const hashedPass = await bcrypt.hash(data.password, saltPass);
 

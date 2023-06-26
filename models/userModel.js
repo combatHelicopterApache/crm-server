@@ -23,7 +23,7 @@ const userModel = new Schema(
         address: {type: String, default: "", required: false},
         user_identifier: {type: String, default: "AM", required: false},
         user_sales_role_id: {type: Number, default: 1, required: false},
-        user_sales_role: {type: String, default: "Sales", required: false},
+        user_sales_role: {type: String, default: "sales", required: false},
         avatar_id: {type: ObjectId, ref: "Uploads", required: false},
         permissions: {
             leads: {type: Boolean, default: true},

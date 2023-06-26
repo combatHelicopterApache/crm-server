@@ -21,6 +21,7 @@ const companyModel = new Schema(
     owner_id: { type: ObjectId, ref: "Users", unique: false },
     owner_name: { type: String, required: false },
     brands: { type: [ObjectId], ref: "Brands", required: false },
+    company_logo: { type: String, required: false },
   },
   {
     timestamps: {

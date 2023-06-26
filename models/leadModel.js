@@ -1,23 +1,36 @@
 const {model, Schema, Types: {ObjectId}} = require('mongoose')
 
 const lead = new Schema({
-        lead_uid: {type: String, required: true},
-        lead_first_name: {type: String, required: true},
-        lead_last_name: {type: String, required: true},
-        lead_phone: {type: String, required: true, unique: true},
-        lead_email: {type: String, required: true, unique: true, match: /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/},
-        lead_affiliate: {type: String, required: true},
-        lead_source: {type: String, required: true, lowercase: true},
-        lead_manager_id: {type: ObjectId, required: true, default: ''},
-        lead_status_id: {type: ObjectId, required: true, default: ''},
-        lead_status: {type: String, required: true, default: 'NEW'},
-        lead_balance: {type: Number, default: 0},
-        lead_brand_id: {type: ObjectId, required: true, default: 'N/A'},
-        lead_ip: {type: Number, required: true, default: '0.0.0.0'},
-        lead_call_id: {type: ObjectId, ref: 'Calls', required: false,  default: () => new ObjectId()},
-        lead_geo: {type: String, required: false, default: ''},
-        lead_type: {type: String, required: false, default: 'Sales'}, // sales/retention
-        lead_comment: {type: String, required: false, default: ''},
+        uid: {type: String, required: true},
+        first_name: {type: String, required: true},
+        last_name: {type: String, required: true},
+        phone: {type: String, required: true, unique: true},
+        email: {type: String, required: true, unique: true, match: /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/},
+        affiliate: {type: String, required: false},
+        password: {type: String, required: false, default: '123456Ads!'},
+        source: {type: String, required: false, lowercase: true},
+        ip: {type: Number, required: false, default: '0.0.0.0'},
+        geo: {type: String, required: false, default: 'N/A'},
+        funnel_name: {type: String, required: false, default: ''},
+
+        manager_id: {type: ObjectId, required: false, default: ''},
+        manager_name: {type: String, required: false, default: ''},
+        status_id: {type: ObjectId, required: true, default: ''},
+        status_name: {type: String, required: false, default: 'NEW'},
+        brand_id: {type: ObjectId, required: false, default: ''},
+        brand_name: {type: String, required: false, default: ''},
+
+        client_type: {type: String, required: false, default: 'Sales'}, // sales/retention
+        calls: {type: ObjectId, ref: 'Calls', required: false},
+        comments: {type: ObjectId, ref: 'Comments', required: false, default: ''},
+        logs: {type: ObjectId, ref: 'Logs', required: false, default: ''},
+        payments:  {
+            deposits: {type: ObjectId, ref: 'Deposits', required: false, default: ''},
+            withdrawals: {type: ObjectId, ref: 'Withdrawals', required: false, default: ''},
+            accounts: {type: ObjectId, ref: 'Accounts', required: false, default: ''},
+            cfd_orders: {type: ObjectId, ref: 'Orders', required: false, default: ''},
+            documents: {type: ObjectId, ref: 'Documents', required: false, default: ''},
+        }
     }, {
         timestamps: {
             createdAt: "createdAt",
