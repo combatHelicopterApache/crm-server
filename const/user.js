@@ -31,9 +31,8 @@ const UserCRUD = {
   CREATE: 1,
   UPDATE: 2,
   DELETE: 3,
-  REMOVE: 4,
-  READ: 5,
-  ALL: 6
+  READ: 4,
+  ALL: 5
 }
 
 const initialUser = {

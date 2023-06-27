@@ -1,5 +1,6 @@
 const validationService = require("../services/validationService")
 const jwt = require("jsonwebtoken")
+const User = require('../models/userModel')
 
 class Middlewares {
     async validateLoginDataMiddleware(req, res, next) {
@@ -83,13 +84,6 @@ class Middlewares {
         }
     }
 
-    async checkPermissionMiddleware (req, res, next) {
-        try {
-
-        } catch (e) {
-            res.status(500).json({message: e.message})
-        }
-    }
 }
 
 module.exports = new Middlewares()
