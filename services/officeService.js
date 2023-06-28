@@ -1,17 +1,21 @@
 const Office = require("../models/officeModel");
 const OfficeDTO = require("../dtos/officeDto");
-const Response = require('../common/responseMessages')
+const Response = require("../common/responseMessages");
 
 class OfficeService {
-  async createNew(data) {
+  async createNew(req) {
     try {
-      const { title, address, description, company_id } = data;
+      const { title, address, description, manager_id, active, time_cards } =
+        req.body;
 
       const office = await new Office({
+        active,
         title,
         address,
         description,
-        company_id,
+        company_id: req.user.company_id,
+        manager_id,
+        time_cards,
       });
 
       const createdOffice = await office.save();
@@ -20,14 +24,14 @@ class OfficeService {
         return {
           status: true,
           code: 200,
-          message: Response.post('office', true),
+          message: Response.post("office", true),
           data: await OfficeDTO.officeObject(createdOffice),
         };
       } else {
         return {
           status: false,
           code: 400,
-          message: Response.post('office', false),
+          message: Response.post("office", false),
         };
       }
     } catch (e) {
@@ -48,14 +52,14 @@ class OfficeService {
         return {
           status: true,
           code: 200,
-          message: Response.get('office', true),
+          message: Response.get("office", true),
           data: await OfficeDTO.officeArray(offices),
         };
       } else {
         return {
           status: false,
           code: 400,
-          message: Response.search('office', false),
+          message: Response.search("office", false),
         };
       }
     } catch (e) {
@@ -68,21 +72,19 @@ class OfficeService {
 
   async getById(id) {
     try {
-
       const office = await Office.findById({ _id: id });
       if (office) {
         return {
           status: true,
           code: 200,
-          message: Response.get('office', true),
+          message: Response.get("office", true),
           data: await OfficeDTO.officeObject(office),
-
         };
       } else {
         return {
           status: false,
           code: 400,
-          message: Response.search('office', false),
+          message: Response.search("office", false),
           id: id,
         };
       }
@@ -104,14 +106,14 @@ class OfficeService {
         return {
           status: true,
           code: 200,
-          message: Response.update('office', true),
+          message: Response.update("office", true),
           data: await OfficeDTO.officeObject(updated),
         };
       } else {
         return {
           status: false,
           code: 400,
-          message: Response.get('office', false),
+          message: Response.get("office", false),
         };
       }
     } catch (e) {
@@ -130,14 +132,14 @@ class OfficeService {
         return {
           status: true,
           code: 200,
-          message: Response.delete('office', true),
+          message: Response.delete("office", true),
           data: await OfficeDTO.officeObject(deleted),
         };
       } else {
         return {
           status: false,
           code: 400,
-          message: Response.delete('office', false),
+          message: Response.delete("office", false),
         };
       }
     } catch (e) {

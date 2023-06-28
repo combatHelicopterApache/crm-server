@@ -10,7 +10,7 @@ const officeModel = new Schema(
     address: { type: String, required: false, default: "" },
     description: { type: String, required: false, default: "" },
     company_id: { type: ObjectId, ref: "Companies", require: false },
-    manager_id: { type: ObjectId, require: true },
+    manager_id: { type: String, require: false },
     active: { type: Boolean, required: false, default: true },
     time_cards: {
       type: Object,
