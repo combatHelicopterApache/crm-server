@@ -27,7 +27,7 @@ const UserStatus = {
   PENDING: 3,
 };
 
-const UserCRUD = {
+const UserAccess = {
   CREATE: 1,
   UPDATE: 2,
   DELETE: 3,
@@ -59,5 +59,5 @@ module.exports = {
   UserRole,
   UserStatus,
   initialUser,
-  UserCRUD
+  UserAccess
 };

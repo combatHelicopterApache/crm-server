@@ -32,8 +32,10 @@ class UserController {
     try {
       const result = await userService.getAllWithParams(req);
       return res.status(result.code).send(result);
-    } catch (err) {}
-    return res.status(500).json({ message: err.message });
+    } catch (err) {
+      return res.status(500).json({ message: err.message });
+    }
+
   }
 
   async getUserById(req, res) {

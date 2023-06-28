@@ -27,7 +27,7 @@ const userModel = new Schema(
     address: { type: String, default: "", required: false },
     user_identifier: { type: String, default: "AM", required: false },
     user_sales_role_id: { type: Number, default: 1, required: false },
-    user_sales_role: { type: String, default: "sales", required: false },
+    user_sales_role: { type: String, default: "sales", required: false }, // sales/retention/both
     avatar_id: { type: ObjectId, ref: "Uploads", required: false },
     permissions: {
       leads: { type: Boolean, default: true },
@@ -42,30 +42,30 @@ const userModel = new Schema(
       company_info: { type: Boolean, default: true },
     },
     restrictions: {
-      lead: {
+      leads: {
         lead_upload: { type: Boolean, default: true },
         lead_download: { type: Boolean, default: true },
-        lead_events: { type: [Number], default: [2, 5] },
+        lead_access: { type: [Number], default: [4] },
       },
       affiliates: {
-        affiliates_events: { type: [Number], default: [2, 5] },
+        affiliates_access: { type: [Number], default: [4] },
       },
       deposits: {
-        deposits_events: { type: [Number], default: [2, 5] },
+        deposits_access: { type: [Number], default: [4] },
       },
       calendar: {
-        calendar_events: { type: [Number], default: [2, 5] },
+        calendar_access: { type: [Number], default: [4] },
       },
       groups: {
-        groups_events: { type: [Number], default: [2, 5] },
+        groups_access: { type: [Number], default: [4] },
       },
       analytics: {
-        analytics_events: { type: [Number], default: [2, 5] },
+        analytics_access: { type: [Number], default: [4] },
       },
       settings: {
-        user_events: { type: [Number], default: [5] },
-        office_events: { type: [Number], default: [5] },
-        company_events: { type: [Number], default: [5] },
+        user_access: { type: [Number], default: [4] },
+        office_access: { type: [Number], default: [4] },
+        company_access: { type: [Number], default: [4] },
       },
     },
     user_ips: { type: [String], default: [""] },

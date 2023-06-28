@@ -1,15 +1,15 @@
 const {model, Schema, Types: {ObjectId}} = require('mongoose')
 
 const lead = new Schema({
-        uid: {type: String, required: true},
+        uid: {type: String, required: true, unique: false},
         first_name: {type: String, required: true},
         last_name: {type: String, required: true},
-        phone: {type: String, required: true, unique: true},
-        email: {type: String, required: true, unique: true, match: /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/},
+        phone: {type: String, required: true, unique: false},
+        email: {type: String, required: true, unique: false, match: /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/},
         affiliate: {type: String, required: false},
         password: {type: String, required: false, default: '123456Ads!'},
         source: {type: String, required: false, lowercase: true},
-        ip: {type: Number, required: false, default: '0.0.0.0'},
+        ip: {type: String, required: false, default: '0.0.0.0'},
         geo: {type: String, required: false, default: 'N/A'},
         funnel_name: {type: String, required: false, default: ''},
 
@@ -20,7 +20,7 @@ const lead = new Schema({
         brand_id: {type: ObjectId, required: false, default: ''},
         brand_name: {type: String, required: false, default: ''},
 
-        client_type: {type: String, required: false, default: 'Sales'}, // sales/retention
+        client_type: {type: String, required: false, default: 'sales'}, // sales/retention
         calls: {type: ObjectId, ref: 'Calls', required: false},
         comments: {type: ObjectId, ref: 'Comments', required: false, default: ''},
         logs: {type: ObjectId, ref: 'Logs', required: false, default: ''},

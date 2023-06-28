@@ -1,43 +1,48 @@
 const { Router } = require("express");
 const officeController = require("../controllers/officeController");
-const middlewares = require("../middlewares/middlewares");
+const checkRestriction = require('../middlewares/restrictionMiddleware')
+const checkPermissions = require('../middlewares/permisssionsMiddleware')
+const checkAuthMiddleware = require('../middlewares/authMiddleware')
+const checkRoleMiddleware = require('../middlewares/roleMiddleware')
+const checkCompanyIdMiddleware = require('../middlewares/companyMiddleware')
+
 const router = Router();
 
 
 
 router.post(
     "/create",
-    middlewares.checkAuthMiddleware,
-    middlewares.checkRoleMiddleware,
+    checkAuthMiddleware,
+    checkRoleMiddleware,
     officeController.createOffice
 );
 
 router.get(
     "/",
-    middlewares.checkAuthMiddleware,
-    middlewares.checkRoleMiddleware,
-    middlewares.checkCompanyIdMiddleware,
+    checkAuthMiddleware,
+    checkRoleMiddleware,
+    checkCompanyIdMiddleware,
     officeController.getAllOffices
 );
 
 router.get(
     "/:id",
-    middlewares.checkAuthMiddleware,
-    middlewares.checkRoleMiddleware,
+    checkAuthMiddleware,
+    checkRoleMiddleware,
     officeController.getOfficeById
 );
 
 router.put(
     "/:id",
-    middlewares.checkAuthMiddleware,
-    middlewares.checkRoleMiddleware,
+    checkAuthMiddleware,
+    checkRoleMiddleware,
     officeController.updateOfficeById
 );
 
 router.delete(
     "/:id",
-    middlewares.checkAuthMiddleware,
-    middlewares.checkRoleMiddleware,
+    checkAuthMiddleware,
+    checkRoleMiddleware,
     officeController.deleteOfficeById
 );
 

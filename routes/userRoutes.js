@@ -1,55 +1,60 @@
 const { Router } = require("express");
 const userController = require("../controllers/userController");
-const middlewares = require("../middlewares/middlewares");
+
 const router = Router();
 const { loginSchema } = require("../validators/auth.validator");
 const validator = require("../helpers/joi.validation.handler");
+const checkRestriction = require('../middlewares/restrictionMiddleware')
+const checkPermissions = require('../middlewares/permisssionsMiddleware')
+const checkAuthMiddleware = require('../middlewares/authMiddleware')
+const checkRoleMiddleware = require('../middlewares/roleMiddleware')
+const checkCompanyIdMiddleware = require('../middlewares/companyMiddleware')
 
 router.get(
   "/admin-user",
-  middlewares.checkAuthMiddleware,
-  middlewares.checkRoleMiddleware,
+  checkAuthMiddleware,
+  checkRoleMiddleware,
   userController.getSuperAdminUsers
 );
 
 router.post(
   "/create",
 
-  middlewares.checkAuthMiddleware,
-  middlewares.checkRoleMiddleware,
+  checkAuthMiddleware,
+  checkRoleMiddleware,
 
-  // middlewares.validateUserDataMiddleware,
+  // validateUserDataMiddleware,
   userController.crateUser
 );
 
 router.get(
   "/",
-  middlewares.checkAuthMiddleware,
-  middlewares.checkRoleMiddleware,
-  middlewares.checkCompanyIdMiddleware,
+  checkAuthMiddleware,
+  checkRoleMiddleware,
+  checkCompanyIdMiddleware,
   userController.getAllUsers
 );
 
 router.get(
   "/items",
-  middlewares.checkAuthMiddleware,
-  middlewares.checkCompanyIdMiddleware,
+  checkAuthMiddleware,
+  checkCompanyIdMiddleware,
   userController.getUsersWithParams
 );
 
 router.get(
   "/user-list",
-  middlewares.checkAuthMiddleware,
-  middlewares.checkRoleMiddleware,
-  middlewares.checkCompanyIdMiddleware,
+  checkAuthMiddleware,
+  checkRoleMiddleware,
+  checkCompanyIdMiddleware,
   userController.getUsersList
 );
 
 router.put(
   "/change-password/:id",
-  middlewares.checkAuthMiddleware,
-  middlewares.checkRoleMiddleware,
-  middlewares.checkCompanyIdMiddleware,
+  checkAuthMiddleware,
+  checkRoleMiddleware,
+  checkCompanyIdMiddleware,
   userController.changeUserPassword
 );
 
@@ -57,43 +62,43 @@ router.post("/login", validator(loginSchema), userController.loginUser);
 
 router.post(
   "/login-to-company",
-  middlewares.checkAuthMiddleware,
-  middlewares.checkRoleMiddleware,
-  middlewares.checkCompanyIdMiddleware,
+  checkAuthMiddleware,
+  checkRoleMiddleware,
+  checkCompanyIdMiddleware,
   userController.loginToCompany
 );
 router.post(
   "/back-to-admin",
-  middlewares.checkAuthMiddleware,
-  middlewares.checkRoleMiddleware,
-  middlewares.checkCompanyIdMiddleware,
+  checkAuthMiddleware,
+  checkRoleMiddleware,
+  checkCompanyIdMiddleware,
   userController.backToAdmin
 );
 
 router.get(
   "/token",
-  middlewares.checkAuthMiddleware,
+  checkAuthMiddleware,
   userController.getUserByToken
 );
 
 router.get(
   "/:id",
-  middlewares.checkAuthMiddleware,
-  middlewares.checkRoleMiddleware,
+  checkAuthMiddleware,
+  checkRoleMiddleware,
   userController.getUserById
 );
 
 router.put(
   "/:id",
-  middlewares.checkAuthMiddleware,
-  middlewares.checkRoleMiddleware,
+  checkAuthMiddleware,
+  checkRoleMiddleware,
   userController.updateUserByID
 );
 
 router.delete(
   "/:id",
-  middlewares.checkAuthMiddleware,
-  middlewares.checkRoleMiddleware,
+  checkAuthMiddleware,
+  checkRoleMiddleware,
   userController.deleteUserByID
 );
 

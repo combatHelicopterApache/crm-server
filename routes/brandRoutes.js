@@ -1,55 +1,59 @@
 const { Router } = require("express");
 const brandController = require("../controllers/brandController");
-const middlewares = require("../middlewares/middlewares");
+const checkRestriction = require('../middlewares/restrictionMiddleware')
+const checkPermissions = require('../middlewares/permisssionsMiddleware')
+const checkAuthMiddleware = require('../middlewares/authMiddleware')
+const checkRoleMiddleware = require('../middlewares/roleMiddleware')
+const checkCompanyIdMiddleware = require('../middlewares/companyMiddleware')
 const router = Router();
 
 router.post(
   "/create",
-  middlewares.checkAuthMiddleware,
-  middlewares.checkRoleMiddleware,
+  checkAuthMiddleware,
+  checkRoleMiddleware,
   brandController.createBrand
 );
 router.patch(
   "/update/:id",
-  middlewares.checkAuthMiddleware,
-  middlewares.checkRoleMiddleware,
+  checkAuthMiddleware,
+  checkRoleMiddleware,
   brandController.updateBrand
 );
 
 router.get(
   "/",
-  middlewares.checkAuthMiddleware,
-  middlewares.checkRoleMiddleware,
-  middlewares.checkCompanyIdMiddleware,
+  checkAuthMiddleware,
+  checkRoleMiddleware,
+  checkCompanyIdMiddleware,
   brandController.getAllBrands
 );
 
 router.get(
   "/brand-list",
-  middlewares.checkAuthMiddleware,
-  middlewares.checkRoleMiddleware,
-  middlewares.checkCompanyIdMiddleware,
+  checkAuthMiddleware,
+  checkRoleMiddleware,
+  checkCompanyIdMiddleware,
   brandController.getBrandList
 );
 
 router.get(
   "/:id",
-  middlewares.checkAuthMiddleware,
-  middlewares.checkRoleMiddleware,
+  checkAuthMiddleware,
+  checkRoleMiddleware,
   brandController.getBrandById
 );
 
 router.put(
   "/:id",
-  middlewares.checkAuthMiddleware,
-  middlewares.checkRoleMiddleware,
+  checkAuthMiddleware,
+  checkRoleMiddleware,
   brandController.updateBrandById
 );
 
 router.delete(
   "/:id",
-  middlewares.checkAuthMiddleware,
-  middlewares.checkRoleMiddleware,
+  checkAuthMiddleware,
+  checkRoleMiddleware,
   brandController.deleteBrandById
 );
 

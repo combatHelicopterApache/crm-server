@@ -1,42 +1,56 @@
 const {Router} = require('express')
-const {
-    CreateNewLead,
-    GetLeads,
-    GetLeadById,
-    UpdateLeadByID,
-    DeleteLeadByID
-} = require("../controllers/leadController");
-const middlewares = require('../middlewares/middlewares')
+const leadController = require("../controllers/leadController");
 const checkRestriction = require('../middlewares/restrictionMiddleware')
+const checkPermissions = require('../middlewares/permisssionsMiddleware')
+const checkAuthMiddleware = require('../middlewares/authMiddleware')
+const checkRoleMiddleware = require('../middlewares/roleMiddleware')
 
 const router = Router()
 
 router.post(
     '/create',
-    CreateNewLead
+    checkAuthMiddleware,
+    checkRoleMiddleware,
+    checkPermissions('leads'),
+    checkRestriction('leads', 'lead_access'),
+    leadController.createNewLead
 )
 
 router.get(
     '/',
-    middlewares.checkAuthMiddleware,
-    middlewares.checkRoleMiddleware,
-    checkRestriction('lead', 'general', 'lead_events'),
-    GetLeads
+    checkAuthMiddleware,
+    checkRoleMiddleware,
+    checkPermissions('leads'),
+    checkRestriction('leads', 'lead_access'),
+    leadController.getLeads
 )
 
 router.get(
     '/:id',
-    GetLeadById
+
+    checkAuthMiddleware,
+    checkRoleMiddleware,
+    checkPermissions('leads'),
+    checkRestriction('leads', 'lead_access'),
+    leadController.getLeadById
 )
 
 router.put(
     '/:id',
-    UpdateLeadByID
+    checkAuthMiddleware,
+    checkRoleMiddleware,
+    checkPermissions('leads'),
+    checkRestriction('leads', 'lead_access'),
+    leadController.updateLeadById
 )
 
 router.delete(
     '/:id',
-    DeleteLeadByID
+    checkAuthMiddleware,
+    checkRoleMiddleware,
+    checkPermissions('leads'),
+    checkRestriction('leads', 'lead_access'),
+    leadController.deleteLeadById
 )
 
 
