@@ -26,6 +26,15 @@ router.get(
 )
 
 router.get(
+    '/full',
+    checkAuthMiddleware,
+    checkRoleMiddleware,
+    checkPermissions('leads'),
+    checkRestriction('leads', 'lead_access'),
+    leadController.getLeads
+)
+
+router.get(
     '/:id',
 
     checkAuthMiddleware,
@@ -54,6 +63,31 @@ router.delete(
 )
 
 
-//
+// deposit
+
+router.post(
+    '/deposit/create',
+
+)
+
+router.get(
+    '/deposit/'
+)
+
+router.get(
+    '/deposit/:id'
+)
+
+router.put(
+    '/deposit/:id',
+
+)
+
+router.delete(
+    '/deposit/:id',
+
+)
+
+
 
 module.exports = router

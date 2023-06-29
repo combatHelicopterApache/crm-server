@@ -16,7 +16,6 @@ const lead = new Schema({
         manager_id: {type: ObjectId, required: false, default: ''},
         manager_name: {type: String, required: false, default: ''},
         status_id: {type: ObjectId, required: true, default: ''},
-        status_name: {type: String, required: false, default: 'NEW'},
         brand_id: {type: ObjectId, required: false, default: ''},
         brand_name: {type: String, required: false, default: ''},
 

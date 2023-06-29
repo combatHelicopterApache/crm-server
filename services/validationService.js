@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const customMessages = require("../common/messages");
 const Joi = require("joi");
 
 class Validation {
@@ -53,47 +52,6 @@ class Validation {
 		return { status: true }
 	}
 
-	async validateLoginData(data) {
-		const login = data.hasOwnProperty("email") ? data.email.split(" ").join("") : undefined
-		const password = data.hasOwnProperty("password") ? data.password.split(" ").join("") : undefined
-
-		if (login === "" || login === undefined) return {
-			status: false,
-			code: 400,
-			message: customMessages.login.failed.login.empty
-		}
-		if (!password || password === "" || password === undefined) return {
-			status: false,
-			code: 400,
-			message: customMessages.login.failed.password.empty
-		}
-
-		const loginSchema = Joi.object({
-			login: Joi.string()
-				.email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } }),
-			password: Joi.string()
-				.min(8)
-				.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{7,19}[@$!#%*?&A-Za-z\d]$/)
-				.required()
-		})
-
-		const loginData = {
-			login,
-			password
-		}
-
-		const { error } = loginSchema.validate(loginData)
-		if (error) {
-			return { status: false, code: 400, message: error.details[0].message }
-		}
-
-		return { status: true, code: 200, }
-
-	}
-
-	async checkUserPermissions () {
-
-	}
 }
 
 module.exports =  new Validation()

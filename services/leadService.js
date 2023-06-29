@@ -1,6 +1,8 @@
 const Lead = require("../models/leadModel");
 const bcrypt = require("bcrypt");
 const Response = require("../common/responseMessages");
+const LeadDTO = require('../dtos/leadDto')
+const mongoose = require("mongoose");
 
 class LeadService {
     async createNewLead(ip, data) {
@@ -84,7 +86,7 @@ class LeadService {
                     status: true,
                     code: 200,
                     message: Response.post("lead", true),
-                    data: createdLeadSave
+                    data: LeadDTO.leadObject(createdLeadSave)
                 }
             }
 
@@ -98,7 +100,17 @@ class LeadService {
 
     async getById(id) {
         try {
-            const lead = await Lead.findById({_id: id})
+            const lead = await Lead.aggregate([
+                { $match: { _id: new mongoose.Types.ObjectId(id) } },
+                {
+                    $lookup: {
+                        from: "statuses",
+                        localField: "status_id",
+                        foreignField: "_id",
+                        as: "status",
+                    },
+                },
+            ])
 
 
             if (lead) {
@@ -106,7 +118,7 @@ class LeadService {
                     status: true,
                     code: 200,
                     message: Response.get("lead", true),
-                    data: lead,
+                    data:  LeadDTO.leadObject(lead)
                 };
             } else {
                 return {
@@ -133,7 +145,7 @@ class LeadService {
                     status: true,
                     code: 200,
                     message: Response.get("leads", true),
-                    data: leads
+                    data:  LeadDTO.leadArray(leads)
                 };
             } else {
                 return {
@@ -163,7 +175,7 @@ class LeadService {
                     status: true,
                     code: 200,
                     message: Response.update("lead", true),
-                    data: updated,
+                    data: LeadDTO.leadObject(updated)
                 };
             } else {
                 return {
@@ -189,7 +201,7 @@ class LeadService {
                     status: true,
                     code: 200,
                     message: Response.delete("lead", true),
-                    data: deleted,
+                    data:  LeadDTO.leadObject(deleted)
                 };
             } else {
                 return {

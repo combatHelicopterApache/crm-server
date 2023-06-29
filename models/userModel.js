@@ -8,9 +8,9 @@ const userModel = new Schema(
   {
     full_name: { type: String, required: true },
     title: { type: String, required: false, default: "" },
-    phone: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    phone: { type: String, required: false },
+    email: { type: String, required: false, unique: true },
+    password: { type: String, required: false },
     is_admin: { type: Boolean, required: true, default: false },
     user_logo: { type: String, required: false, default: "" },
     active: { type: Boolean, default: true },
@@ -18,7 +18,7 @@ const userModel = new Schema(
     role_name: { type: String, required: true, default: "AGENT" },
     company_id: {
       type: ObjectId,
-      required: true,
+      required: false,
     },
     company_name: { type: String, required: true, default: "Default Company" },
     background_color: { type: String, required: false, default: "#626ed4" },

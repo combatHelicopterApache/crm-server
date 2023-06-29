@@ -1,92 +1,51 @@
-const customError = require('../common/messages')
 const groupServices = require('../services/groupService')
 
-const CreateNewGroup = async (req, res) => {
-    try {
-        const result = await groupServices.CreateNewGroupService(req.body)
 
-        if(result.status !== true) {
-            return res.status(400).json(result)
-        } else {
-            return res.status(200).json(result)
+class GroupController {
+    async CreateNewGroup(req, res) {
+        try {
+            const result = await groupServices.createNewGroup(req.body)
+            return res.status(result.code).send(result);
+        } catch (err) {
+            return res.status(500).json({message: err.message});
         }
-    } catch ( err ) {
-        return res.status(500).json({
-            message: customError.server.error,
-            server: err
-        })
+    }
+
+    async GetGroups(req, res) {
+        try {
+            const result = await groupServices.getAll()
+            return res.status(result.code).send(result);
+        } catch (err) {
+            return res.status(500).json({message: err.message});
+        }
+    }
+
+    async GetGroupById(req, res) {
+        try {
+            const result = await groupServices.getById(req.params.id)
+            return res.status(result.code).send(result);
+        } catch (err) {
+            return res.status(500).json({message: err.message});
+        }
+    }
+
+    async UpdateGroupByID(req, res) {
+        try {
+            const result = await groupServices.updateById(req)
+            return res.status(result.code).send(result);
+        } catch (err) {
+            return res.status(500).json({message: err.message});
+        }
+    }
+
+    async DeleteGroupByID(req, res) {
+        try {
+            const result = await groupServices.deleteById(req.params.id)
+            return res.status(result.code).send(result);
+        } catch (err) {
+            return res.status(500).json({message: err.message});
+        }
     }
 }
 
-const GetGroups = async (req, res) => {
-    try {
-        const result = await groupServices.GetGroupsService()
-
-        if(result.status !== true) {
-            return res.status(400).json(result)
-        } else {
-            return res.status(200).json(result)
-        }
-    } catch ( err ) {
-        return res.status(500).json({message: customError.server.error, error: err})
-    }
-}
-
-const GetGroupById = async (req, res) => {
-    try {
-        const result = await groupServices.GetGroupByIdService(req.params.id)
-
-        if(result.status !== true) {
-            return res.status(400).json(result)
-        } else {
-            return res.status(200).json(result)
-        }
-    } catch ( err ) {
-        return res.status(500).json({message: customError.server.error, error: err})
-    }
-}
-
-
-const UpdateGroupByID = async (req, res) => {
-    try {
-
-        const result = await groupServices.UpdateGroupByIdService(req)
-
-        if(result.status !== true) {
-            return res.status(400).json(result)
-        } else {
-            return res.status(200).json(result)
-        }
-
-    } catch ( err ) {
-        return res.status(500).json({
-            message: customError.server.error,
-            server: err
-        })
-    }
-}
-
-
-const DeleteGroupByID = async (req, res) => {
-    try {
-        const result = await groupServices.DeleteGroupByIdService(req.params.id)
-
-        if(result.status !== true) {
-            return res.status(400).json(result)
-        } else {
-            return res.status(200).json(result)
-        }
-
-    } catch ( err ) {
-        return res.status(500).json({message: customError.server.error, error: err})
-    }
-}
-
-
-module.exports = {
-    CreateNewGroup,
-    GetGroups,
-    GetGroupById,
-    UpdateGroupByID,
-    DeleteGroupByID
-}
+module.exports = new GroupController()

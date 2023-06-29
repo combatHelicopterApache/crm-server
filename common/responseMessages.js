@@ -21,8 +21,8 @@ class ResponseMessages {
     search (element, status) {
         return !status ? `The ${element} not found` : `The ${element} is found`
     }
-    exists (element, target) {
-        return `${element} with this ${target} address already exists`
+    exists (target) {
+        return `The '${target}' already exists`
     }
 
     login (status) {

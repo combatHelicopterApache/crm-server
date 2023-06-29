@@ -1,8 +1,8 @@
 const {model, Schema} = require('mongoose')
 
-const lead = new Schema( {
+const status = new Schema( {
         title:      { type: String, required: true },
-        color:      { type: String, required: true },
+        color:      { type: String, required: true, default: "#ffffff" },
         order:      { type: Number, required: false },
     },  {
         timestamps: {
@@ -12,4 +12,4 @@ const lead = new Schema( {
     }
 )
 
-module.exports = model('Leads', lead)
+module.exports = model('Statuses', status)
