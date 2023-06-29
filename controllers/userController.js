@@ -3,7 +3,7 @@ const userService = require("../services/userService");
 class UserController {
   async crateUser(req, res) {
     try {
-      const result = await userService.createNewUser(req.body);
+      const result = await userService.createNewUser(req);
       return res.status(result.code).send(result);
     } catch (err) {
       return res.status(500).json({ message: err.message });
@@ -35,7 +35,6 @@ class UserController {
     } catch (err) {
       return res.status(500).json({ message: err.message });
     }
-
   }
 
   async getUserById(req, res) {
@@ -119,7 +118,7 @@ class UserController {
   async changeUserPassword(req, res) {
     try {
       const id = req.params.id;
-      const {password} = req.body;
+      const { password } = req.body;
       const result = await userService.changePassword(id, password);
       return res.status(result.code).send(result);
     } catch (err) {

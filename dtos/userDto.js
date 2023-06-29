@@ -33,36 +33,18 @@ class UserDTO {
     }, []);
   }
   async userObject(data) {
-    return Array(data).reduce((acc, item) => {
-      (acc.id = item?._id),
-        (acc.full_name = item?.full_name),
-        (acc.title = item?.title),
-        (acc.phone = item?.phone),
-        (acc.email = item?.email),
-        (acc.is_admin = item?.is_admin),
-        (acc.active = item?.active),
-        (acc.role_id = item?.role_id),
-        (acc.role_name = item?.role_name),
-        (acc.company_id = item?.company_id),
-        (acc.company_name = item?.company_name),
-        (acc.notes = item?.notes),
-        (acc.user_identifier = item?.user_identifier),
-        (acc.permissions = item?.permissions),
-        (acc.restrictions = item?.restrictions),
-        (acc.last_login = item?.last_login),
-        (acc.brands = item?.brands),
-        (acc.desk_id = item?.desk_id),
-        (acc.desk_name = item?.desk_name),
-        (acc.manager_id = item?.manager_id),
-        (acc.manager_name = item?.manager_name),
-        (acc.mowner_id = item?.mowner_id),
-        (acc.owner_name = item?.owner_name),
-        (acc.pivot = item?.pivot),
-        (acc.created_at = item?.created_at),
-        (acc.updated_at = item?.updated_at),
-        (acc.login_from_admin = item?.login_from_admin);
-      return acc;
-    }, {});
+    const result = {};
+
+    for (const [key, value] of Object.entries(data)) {
+      result[key] = value;
+    }
+
+    result.id = data._id;
+    delete result._id;
+    delete result.__v;
+    delete result.password;
+
+    return result;
   }
 }
 

@@ -19,15 +19,13 @@ const userModel = new Schema(
     company_id: {
       type: ObjectId,
       required: true,
-      default: () => new ObjectId(),
     },
     company_name: { type: String, required: true, default: "Default Company" },
     background_color: { type: String, required: false, default: "#626ed4" },
     notes: { type: String, default: "", required: false },
     address: { type: String, default: "", required: false },
     user_identifier: { type: String, default: "AM", required: false },
-    user_sales_role_id: { type: Number, default: 1, required: false },
-    user_sales_role: { type: String, default: "sales", required: false }, // sales/retention/both
+    user_sales_role_id: { type: Array, default: [1], required: false }, // sales-1/retention-2/both-3
     avatar_id: { type: ObjectId, ref: "Uploads", required: false },
     permissions: {
       leads: { type: Boolean, default: true },
@@ -40,6 +38,7 @@ const userModel = new Schema(
       offices: { type: Boolean, default: true },
       users: { type: Boolean, default: true },
       company_info: { type: Boolean, default: true },
+      dashboard: { type: Boolean, default: true },
     },
     restrictions: {
       leads: {
@@ -71,23 +70,19 @@ const userModel = new Schema(
     user_ips: { type: [String], default: [""] },
     last_login: { type: Date, default: null },
     login_from_admin: { type: Boolean, required: false, default: false },
-    brands: [
-      {
-        brand_id: { type: ObjectId, default: "" },
-        brand_name: { type: String, default: "" },
-      },
-    ],
-    desk_id: { type: ObjectId, default: null, required: false },
+    brands: { type: [String], default: [""] },
+    desk_id: { type: String, default: null, required: false },
     desk_name: { type: String, default: null, required: false },
-    manager_id: { type: ObjectId, default: null, required: false },
+    manager_id: { type: String, default: null, required: false },
     manager_name: { type: String, default: null, required: false },
-    owner_id: { type: ObjectId, default: null, required: false },
+    owner_id: { type: String, default: null, required: false },
     owner_name: { type: String, default: null, required: false },
     time_cards: {
       type: Object,
       required: false,
       default: () => ({ time_start: "10:00", time_end: "19:00" }),
     },
+    languages: { type: Array, default: [], required: false },
   },
   {
     timestamps: {

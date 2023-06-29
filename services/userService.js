@@ -8,36 +8,11 @@ const UserDTO = require("../dtos/userDto");
 const Response = require("../common/responseMessages");
 
 class UserService {
-  async createNewUser(data) {
+  async createNewUser(req) {
     try {
-      const {
-        full_name,
-        title,
-        phone,
-        email,
-        password,
-        is_admin,
-        active,
-        role_id,
-        role_name,
-        company_id,
-        company_name,
-        background_color,
-        notes,
-        user_identifier,
-        permissions,
-        last_login,
-        brands,
-        desk_id,
-        desk_name,
-        manager_id,
-        manager_name,
-        owner_id,
-        owner_name,
-        address,
-      } = data;
+      const { email, password } = req.body;
 
-      const candidate = await User.findOne({ email });
+      const candidate = await User.findOne({ email }).lean();
 
       if (candidate) {
         return {
@@ -51,30 +26,10 @@ class UserService {
       const hashedPass = await bcrypt.hash(password, saltPass);
 
       const user = await new User({
-        full_name,
-        title,
-        phone,
-        email,
+        ...req.body,
         password: hashedPass,
-        is_admin,
-        active,
-        role_id,
-        role_name,
-        company_id,
-        company_name,
-        background_color,
-        notes,
-        user_identifier,
-        permissions,
-        last_login,
-        brands,
-        desk_id,
-        desk_name,
-        manager_id,
-        manager_name,
-        owner_id,
-        owner_name,
-        address,
+        company_id: req.user.company_id,
+        company_name: req.user.company_name,
       });
 
       const createdUser = await user.save();
@@ -304,7 +259,7 @@ class UserService {
         };
       }
 
-      const user = await User.findById({ _id: id });
+      const user = await User.findById({ _id: id }).lean();
 
       if (user) {
         return {
@@ -331,7 +286,7 @@ class UserService {
 
   async getByToken(id) {
     try {
-      const foundUser = await User.findOne({ _id: id });
+      const foundUser = await User.findOne({ _id: id }).lean();
       const userData = await UserDTO.userObject(foundUser);
 
       const tokenData = {
@@ -384,7 +339,7 @@ class UserService {
 
       const updated = await User.findByIdAndUpdate(filter, data, {
         new: true,
-      });
+      }).lean();
 
       if (updated) {
         return {
@@ -418,7 +373,7 @@ class UserService {
           id: id,
         };
       }
-      const deleted = await User.findByIdAndDelete(id);
+      const deleted = await User.findByIdAndDelete(id).lean();
 
       if (deleted) {
         return {
@@ -702,7 +657,7 @@ class UserService {
         {
           new: true,
         }
-      );
+      ).lean();
 
       if (changedUserPassword) {
         return {
