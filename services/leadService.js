@@ -138,8 +138,16 @@ class LeadService {
 
     async getAll() {
         try {
-            const leads = await Lead.find().sort({"createdAt": -1})
-
+            const leads = await Lead.aggregate([
+                {
+                    $lookup: {
+                        from: "statuses",
+                        localField: "status_id",
+                        foreignField: "_id",
+                        as: "status",
+                    },
+                },
+            ])
             if (leads) {
                 return {
                     status: true,

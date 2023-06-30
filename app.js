@@ -18,6 +18,7 @@ app.use("/api/v1/brand", require("./routes/brandRoutes"));
 app.use("/api/v1/office", require("./routes/officeRoutes"));
 app.use("/api/v1/upload", require("./routes/uploadRoutes"));
 app.use("/api/v1/status", require("./routes/statusRoutes"));
+app.use("/api/v1/comment", require("./routes/commentRoutes"));
 
 const serverStart = async () => {
   const PORT = process.env.PORT || 6000;

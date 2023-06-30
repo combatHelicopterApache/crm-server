@@ -12,14 +12,11 @@ const lead = new Schema({
         ip: {type: String, required: false, default: '0.0.0.0'},
         geo: {type: String, required: false, default: 'N/A'},
         funnel_name: {type: String, required: false, default: ''},
+        client_type: {type: String, required: false, default: 'sales'}, // sales/retention
 
         manager_id: {type: ObjectId, required: false, default: ''},
-        manager_name: {type: String, required: false, default: ''},
         status_id: {type: ObjectId, required: true, default: ''},
         brand_id: {type: ObjectId, required: false, default: ''},
-        brand_name: {type: String, required: false, default: ''},
-
-        client_type: {type: String, required: false, default: 'sales'}, // sales/retention
         calls: {type: ObjectId, ref: 'Calls', required: false},
         comments: {type: ObjectId, ref: 'Comments', required: false, default: ''},
         logs: {type: ObjectId, ref: 'Logs', required: false, default: ''},

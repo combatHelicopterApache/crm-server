@@ -47,7 +47,7 @@ class LeadDTO {
             acc.funnel_name = item.funnel_name;
             acc.manager_id = item.manager_id;
             acc.manager_name = item.manager_name;
-            acc.status_id = item.status_id;
+            acc.status = StatusDTO.statusObject(item.status),
             acc.brand_id = item.brand_id;
             acc.brand_name = item.brand_name;
             acc.client_type = item.client_type;
