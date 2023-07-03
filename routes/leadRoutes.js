@@ -4,6 +4,7 @@ const checkRestriction = require('../middlewares/restrictionMiddleware')
 const checkPermissions = require('../middlewares/permisssionsMiddleware')
 const checkAuthMiddleware = require('../middlewares/authMiddleware')
 const checkRoleMiddleware = require('../middlewares/roleMiddleware')
+const checkCompanyIdMiddleware = require("../middlewares/companyMiddleware");
 
 const router = Router()
 
@@ -20,6 +21,7 @@ router.get(
     '/',
     checkAuthMiddleware,
     checkRoleMiddleware,
+    checkCompanyIdMiddleware,
     checkPermissions('leads'),
     checkRestriction('leads', 'lead_access'),
     leadController.getLeads
@@ -29,6 +31,7 @@ router.get(
     '/full',
     checkAuthMiddleware,
     checkRoleMiddleware,
+    checkCompanyIdMiddleware,
     checkPermissions('leads'),
     checkRestriction('leads', 'lead_access'),
     leadController.getLeads
@@ -36,9 +39,9 @@ router.get(
 
 router.get(
     '/:id',
-
     checkAuthMiddleware,
     checkRoleMiddleware,
+    checkCompanyIdMiddleware,
     checkPermissions('leads'),
     checkRestriction('leads', 'lead_access'),
     leadController.getLeadById

@@ -19,14 +19,6 @@ class CommentController {
         }
     }
 
-    async updateCommentById(req, res) {
-        try {
-            const result = await commentService.updateByID(req.params);
-            return res.status(result.code).send(result);
-        } catch (err) {
-            return res.status(500).json({message: err.message});
-        }
-    }
 
     async deleteCommentById(req, res) {
         try {

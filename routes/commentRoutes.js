@@ -19,13 +19,6 @@ router.get(
     commentController.getCommentById
 )
 
-router.put(
-    '/:element/:id',
-    checkAuthMiddleware,
-    checkRoleMiddleware,
-    commentController.updateCommentById
-)
-
 router.delete(
     '/:id',
     checkAuthMiddleware,

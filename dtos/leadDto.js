@@ -1,4 +1,5 @@
 const StatusDTO = require('./statusDto')
+const BrandsDTO = require('./brandDto')
 class LeadDTO {
     leadArray(data) {
         return data.reduce((acc, item) => {
@@ -17,9 +18,8 @@ class LeadDTO {
                 funnel_name: item.funnel_name,
                 manager_id: item.manager_id,
                 manager_name: item.manager_name,
-                brand_id: item.brand_id,
-                brand_name: item.brand_name,
-                status: StatusDTO.statusObject(item.status),
+                status: StatusDTO.statusObject(item?.status),
+                brand : BrandsDTO.brandArray(item?.brand),
                 client_type: item.client_type,
                 calls: item.calls,
                 comments: item.comments,
@@ -31,9 +31,12 @@ class LeadDTO {
             return acc;
         }, []);
     }
+
+
     leadObject(data) {
-        return Object(data).reduce((acc, item) => {
-            acc.id = item._id;
+
+        return data.reduce((acc, item) => {
+            acc.id = item?._id;
             acc.uid = item.title;
             acc.first_name = item.first_name;
             acc.last_name = item.last_name;
@@ -47,9 +50,8 @@ class LeadDTO {
             acc.funnel_name = item.funnel_name;
             acc.manager_id = item.manager_id;
             acc.manager_name = item.manager_name;
-            acc.status = StatusDTO.statusObject(item.status),
-            acc.brand_id = item.brand_id;
-            acc.brand_name = item.brand_name;
+            acc.status = StatusDTO.statusObject(item?.status);
+            acc.brand = BrandsDTO.brandObject(item?.brand);
             acc.client_type = item.client_type;
             acc.calls = item.calls;
             acc.comments = item.comments;

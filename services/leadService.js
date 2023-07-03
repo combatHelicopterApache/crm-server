@@ -18,13 +18,11 @@ class LeadService {
                 ip,
                 geo,
                 funnel_name,
-                manager_id,
-                manager_name,
-                status_id,
-                status_name,
-                brand_id,
-                brand_name,
                 client_type,
+                company_id,
+                manager_id,
+                status_id,
+                brand_id,
                 calls,
                 comments,
                 logs,
@@ -56,11 +54,9 @@ class LeadService {
                 geo,
                 funnel_name,
                 manager_id,
-                manager_name,
+                company_id,
                 status_id,
-                status_name,
                 brand_id,
-                brand_name,
                 client_type,
                 calls,
                 comments,
@@ -110,6 +106,14 @@ class LeadService {
                         as: "status",
                     },
                 },
+                {
+                    $lookup: {
+                        from: 'brands',
+                        localField: 'brand_id',
+                        foreignField: '_id',
+                        as: 'brand'
+                    }
+                }
             ])
 
 
@@ -136,24 +140,40 @@ class LeadService {
         }
     }
 
-    async getAll() {
+    async getAll(company_id) {
         try {
-            const leads = await Lead.aggregate([
+            const pipeline = [
+                {
+                    $match: {
+                        company_id: new mongoose.Types.ObjectId(company_id)
+                    }
+                },
                 {
                     $lookup: {
-                        from: "statuses",
-                        localField: "status_id",
-                        foreignField: "_id",
-                        as: "status",
-                    },
+                        from: 'statuses',
+                        localField: 'status_id',
+                        foreignField: '_id',
+                        as: 'status'
+                    }
                 },
-            ])
+                {
+                    $lookup: {
+                        from: 'brands',
+                        localField: 'brand_id',
+                        foreignField: '_id',
+                        as: 'brand'
+                    }
+                }
+            ];
+            const leads = await Lead.aggregate(pipeline)
+
+            // console.log(leads)
             if (leads) {
                 return {
                     status: true,
                     code: 200,
                     message: Response.get("leads", true),
-                    data:  LeadDTO.leadArray(leads)
+                    data: LeadDTO.leadArray(leads)
                 };
             } else {
                 return {

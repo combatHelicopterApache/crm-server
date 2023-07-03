@@ -1,5 +1,6 @@
 const Response = require("../common/responseMessages");
 const commentModel = require('../models/commentModel')
+const CommentDTO = require('../dtos/commentDto')
 const mongoose = require("mongoose");
 
 class CommentService {
@@ -18,12 +19,9 @@ class CommentService {
                return await this.addCommentToElementByID(data)
             }
 
-
-
             const createComment = await commentModel.create({
                 path: data.params.element,
                 elem_id: data.params.id,
-
                 comments: {
                     user_name: full_name,
                     user_id: id,
@@ -39,17 +37,16 @@ class CommentService {
                     status: true,
                     code: 200,
                     message: Response.post("comment", true),
-                    data: saveComment,
+                    data: CommentDTO.commentArray(saveComment),
                 };
             } else {
                 return {
                     status: false,
                     code: 400,
                     message: Response.post("comment", false),
-                    data: createComment,
+                    data: CommentDTO.commentArray(createComment),
                 };
             }
-
         } catch (e) {
             return {
                 code: 500,
@@ -64,39 +61,20 @@ class CommentService {
 
             const comments = await commentModel.aggregate([
                 {$match: {path: element, elem_id: new mongoose.Types.ObjectId(id)} },
-                // {
-                //     $lookup: {
-                //         from: "users",
-                //         localField: "user_id",
-                //         foreignField: "_id",
-                //         as: "user",
-                //     },
-                //
-                // },
-                // {
-                //     $addFields: {
-                //         full_name: { $arrayElemAt: ["$user.full_name", 0] }
-                //     }
-                // },
-                // {
-                //     $project: {
-                //         user: 0
-                //     }
-                // }
             ])
             if (comments) {
                 return {
                     status: true,
                     code: 200,
                     message: Response.get("comment", true),
-                    data: comments,
+                    data: CommentDTO.commentArray(comments),
                 };
             } else {
                 return {
                     status: false,
                     code: 400,
                     message: Response.get("comment", false),
-                    data: comments,
+                    data: CommentDTO.commentArray(comments),
                 };
             }
 
@@ -108,36 +86,6 @@ class CommentService {
         }
     }
 
-
-    async updateByID(id, data) {
-        try {
-            const filter = { _id: id };
-
-            const updated = await commentModel.findByIdAndUpdate(filter, data, {
-                new: true,
-            }).lean();
-
-            if (updated) {
-                return {
-                    status: true,
-                    code: 200,
-                    message: Response.update("comment", true),
-                    data: updated,
-                };
-            } else {
-                return {
-                    status: false,
-                    code: 400,
-                    message: Response.update("comment", false),
-                };
-            }
-        } catch (e) {
-            return {
-                code: 500,
-                error: e.message,
-            };
-        }
-    }
     async addCommentToElementByID(data) {
         try {
             const {
@@ -180,6 +128,7 @@ class CommentService {
             };
         }
     }
+
     async deleteByID(id, data) {
         try {
 
@@ -200,7 +149,6 @@ class CommentService {
                     status: true,
                     code: 200,
                     message: Response.delete("comment", true),
-                    data: updated,
                 };
             } else {
                 return {
@@ -219,3 +167,4 @@ class CommentService {
 }
 
 module.exports = new CommentService()
+

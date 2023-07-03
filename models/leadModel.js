@@ -14,18 +14,19 @@ const lead = new Schema({
         funnel_name: {type: String, required: false, default: ''},
         client_type: {type: String, required: false, default: 'sales'}, // sales/retention
 
-        manager_id: {type: ObjectId, required: false, default: ''},
-        status_id: {type: ObjectId, required: true, default: ''},
-        brand_id: {type: ObjectId, required: false, default: ''},
+        company_id: {type: ObjectId, ref: 'Companies', required: true },
+        manager_id: {type: ObjectId, ref: 'Users', required: false, default: null},
+        status_id: {type: ObjectId, ref: 'Statuses', required: false, default: null},
+        brand_id: {type: ObjectId, ref: 'Brands', required: false, default: null},
         calls: {type: ObjectId, ref: 'Calls', required: false},
-        comments: {type: ObjectId, ref: 'Comments', required: false, default: ''},
-        logs: {type: ObjectId, ref: 'Logs', required: false, default: ''},
+        comments: {type: ObjectId, ref: 'Comments', required: false, default: null},
+        logs: {type: ObjectId, ref: 'Logs', required: false, default: null},
         payments:  {
-            deposits: {type: ObjectId, ref: 'Deposits', required: false, default: ''},
-            withdrawals: {type: ObjectId, ref: 'Withdrawals', required: false, default: ''},
-            accounts: {type: ObjectId, ref: 'Accounts', required: false, default: ''},
-            cfd_orders: {type: ObjectId, ref: 'Orders', required: false, default: ''},
-            documents: {type: ObjectId, ref: 'Documents', required: false, default: ''},
+            deposits: {type: ObjectId, ref: 'Deposits', required: false, default: null},
+            withdrawals: {type: ObjectId, ref: 'Withdrawals', required: false, default: null},
+            accounts: {type: ObjectId, ref: 'Accounts', required: false, default: null},
+            cfd_orders: {type: ObjectId, ref: 'Orders', required: false, default: null},
+            documents: {type: ObjectId, ref: 'Documents', required: false, default: null},
         }
     }, {
         timestamps: {

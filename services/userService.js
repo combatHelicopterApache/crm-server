@@ -61,6 +61,7 @@ class UserService {
       const users = await User.find({
         company_id: company_id,
         is_admin: false,
+        role_id: { $ne: 1 }
       }).sort({
         created_at: 1,
       });
