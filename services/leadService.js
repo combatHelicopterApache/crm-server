@@ -2,7 +2,6 @@ const Lead = require("../models/leadModel");
 const bcrypt = require("bcrypt");
 const Response = require("../common/responseMessages");
 const LeadDTO = require('../dtos/leadDto')
-const DTO = require('../dtos/dto')
 const mongoose = require("mongoose");
 
 class LeadService {
@@ -136,8 +135,21 @@ class LeadService {
                         as: 'comments_list'
                     }
                 },
+
                 {
                     $addFields: {
+                        brand: {
+                            $map: {
+                                input: '$brand',
+                                as: 'br',
+                                in: {
+                                    id: '$$br._id',
+                                    title: '$$br.title',
+                                    active: '$$br.active'
+                                },
+                            },
+                        },
+
                         manager: {
                             $map: {
                                 input: '$manager',
@@ -161,17 +173,6 @@ class LeadService {
                             }
                         },
 
-                        brand: {
-                            $map: {
-                                input: '$brands',
-                                as: 'brand',
-                                in: {
-                                    id: '$$brand._id',
-                                    title: '$$brand.title',
-                                    color: '$$brand.active'
-                                }
-                            }
-                        },
                         comments: {
                             $map: {
                                 input: '$comments_list',
@@ -185,8 +186,21 @@ class LeadService {
                     }
                 },
                 {
+                    $unwind: '$brand'
+                },
+                {
+                    $unwind: '$status'
+                },
+                {
+                    $unwind: '$manager'
+                },
+                {
+                    $unwind: '$comments_list'
+                },
+                {
                     $project: {
-                        __v: 0
+                        __v: 0,
+                        password: 0,
                     }
                 }
             ];
