@@ -204,7 +204,7 @@ class LeadService {
                     }
                 }
             ];
-            const lead = await Lead.aggregate(pipeline)
+            const lead = await Lead.aggregate(pipeline).exec()
 
             if (lead) {
                 return {
@@ -232,7 +232,7 @@ class LeadService {
     async getAll(company_id) {
         try {
 
-            const pipeline = [
+            const pipelineAll = [
                 {
                     $match: {
                         company_id: new mongoose.Types.ObjectId(company_id)
@@ -270,7 +270,6 @@ class LeadService {
                         as: 'comments_list'
                     }
                 },
-
                 {
                     $addFields: {
                         id: '$_id',
@@ -288,10 +287,10 @@ class LeadService {
                         manager: {
                             $map: {
                                 input: '$manager',
-                                as: 'manager',
+                                as: 'mg',
                                 in: {
-                                    id: '$$manager._id',
-                                    full_name: '$$manager.full_name'
+                                    id: '$$mg._id',
+                                    full_name: '$$mg.full_name'
                                 }
                             }
                         },
@@ -307,13 +306,32 @@ class LeadService {
                                 }
                             }
                         },
-                        comments: {
+                        comments_list: {
                             $map: {
                                 input: '$comments_list',
                                 as: 'cl',
                                 in: {
                                     id: '$$cl._id',
-                                    path: '$$cl.path'
+                                    path: '$$cl.path',
+                                    elem_id: '$$cl.elem_id',
+                                    commentary_list: {
+                                        $map: {
+                                            input: '$$cl.comments',
+                                            as: 'comment',
+                                            in: {
+                                                user_id: '$$comment.user_id',
+                                                user_name: '$$comment.user_name',
+                                                description: '$$comment.description',
+                                                deleted_by: '$$comment.deleted_by',
+                                                deleted_by_name: '$$comment.deleted_at',
+                                                deleted_at: '$$comment.deleted_at',
+                                                updated_by: '$$comment.updated_by',
+                                                updated_by_name: '$$comment.updated_by_name',
+                                                updated_at: '$$comment.updated_at',
+                                                id: '$$comment._id'
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         },
@@ -336,13 +354,11 @@ class LeadService {
                         _id: 0,
                         __v: 0,
                         password: 0,
-                        comments: 0,
-
                     }
                 }
             ];
 
-            const leads = await Lead.aggregate(pipeline)
+            const leads = await Lead.aggregate(pipelineAll).exec()
 
             // console.log(leads)
             if (leads) {
