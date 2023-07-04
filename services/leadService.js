@@ -231,7 +231,7 @@ class LeadService {
 
     async getAll(company_id) {
         try {
-            console.log(company_id)
+
             const pipeline = [
                 {
                     $match: {
@@ -273,6 +273,7 @@ class LeadService {
 
                 {
                     $addFields: {
+                        id: '$_id',
                         brand: {
                             $map: {
                                 input: '$brand',
@@ -284,7 +285,6 @@ class LeadService {
                                 },
                             },
                         },
-
                         manager: {
                             $map: {
                                 input: '$manager',
@@ -307,7 +307,6 @@ class LeadService {
                                 }
                             }
                         },
-
                         comments: {
                             $map: {
                                 input: '$comments_list',
@@ -334,8 +333,11 @@ class LeadService {
                 },
                 {
                     $project: {
+                        _id: 0,
                         __v: 0,
                         password: 0,
+                        comments: 0,
+
                     }
                 }
             ];
