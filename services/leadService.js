@@ -234,7 +234,7 @@ class LeadService {
             const pipeline = [
                 {
                     $match: {
-                        company_id: new mongoose.Types.ObjectId(company_id)
+                        _id: new mongoose.Types.ObjectId(company_id)
                     }
                 },
                 {
@@ -264,13 +264,26 @@ class LeadService {
                 {
                     $lookup: {
                         from: 'comments',
-                        localField: 'comments_id',
-                        foreignField: '_id',
+                        localField: '_id',
+                        foreignField: 'elem_id',
                         as: 'comments_list'
                     }
                 },
+
                 {
                     $addFields: {
+                        brand: {
+                            $map: {
+                                input: '$brand',
+                                as: 'br',
+                                in: {
+                                    id: '$$br._id',
+                                    title: '$$br.title',
+                                    active: '$$br.active'
+                                },
+                            },
+                        },
+
                         manager: {
                             $map: {
                                 input: '$manager',
@@ -293,22 +306,35 @@ class LeadService {
                                 }
                             }
                         },
-                        brand: {
+
+                        comments: {
                             $map: {
-                                input: '$brand',
-                                as: 'brand',
+                                input: '$comments_list',
+                                as: 'cl',
                                 in: {
-                                    id: '$$brand._id',
-                                    title: '$$brand.title',
-                                    color: '$$brand.active'
+                                    id: '$$cl._id',
+                                    path: '$$cl.path'
                                 }
                             }
                         },
                     }
                 },
                 {
+                    $unwind: '$brand'
+                },
+                {
+                    $unwind: '$status'
+                },
+                {
+                    $unwind: '$manager'
+                },
+                {
+                    $unwind: '$comments_list'
+                },
+                {
                     $project: {
-                        __v: 0
+                        __v: 0,
+                        password: 0,
                     }
                 }
             ];
