@@ -1,5 +1,6 @@
 const StatusDTO = require('./statusDto')
 const BrandsDTO = require('./brandDto')
+const CommentsDTO = require('./commentDto')
 class LeadDTO {
     leadArray(data) {
         return data.reduce((acc, item) => {
@@ -11,30 +12,26 @@ class LeadDTO {
                 phone: item.phone,
                 email: item.email,
                 affiliate: item.affiliate,
-                password: item.password,
                 source: item.source,
                 ip: item.ip,
                 geo: item.geo,
                 funnel_name: item.funnel_name,
-                manager_id: item.manager_id,
-                manager_name: item.manager_name,
+                manager: item.manager,
                 status: StatusDTO.statusObject(item?.status),
                 brand : BrandsDTO.brandArray(item?.brand),
                 client_type: item.client_type,
                 calls: item.calls,
-                comments: item.comments,
+                comments: CommentsDTO.commentObject(item.comments_list),
                 logs: item.logs,
                 payments: item.payments,
-                created_at: item.created_at,
-                updated_at: item.updated_at,
+                created_at: item.createdAt,
+                updated_at: item.updatedAt,
             });
             return acc;
         }, []);
     }
 
-
     leadObject(data) {
-
         return data.reduce((acc, item) => {
             acc.id = item?._id;
             acc.uid = item.title;
@@ -48,21 +45,20 @@ class LeadDTO {
             acc.ip = item.ip;
             acc.geo = item.geo;
             acc.funnel_name = item.funnel_name;
-            acc.manager_id = item.manager_id;
-            acc.manager_name = item.manager_name;
+            acc.manager = item.manager;
             acc.status = StatusDTO.statusObject(item?.status);
             acc.brand = BrandsDTO.brandObject(item?.brand);
             acc.client_type = item.client_type;
             acc.calls = item.calls;
-            acc.comments = item.comments;
+            acc.comments = CommentsDTO.commentObject(item?.comments_list);
             acc.logs = item.logs;
             acc.payments = item.payments;
-
-            acc.created_at = item.created_at;
-            acc.updated_at = item.updated_at;
+            acc.created_at = item.createdAt;
+            acc.updated_at = item.updatedAt;
             return acc;
         }, {});
     }
+
 }
 
 module.exports = new LeadDTO();

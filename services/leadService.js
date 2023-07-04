@@ -2,6 +2,7 @@ const Lead = require("../models/leadModel");
 const bcrypt = require("bcrypt");
 const Response = require("../common/responseMessages");
 const LeadDTO = require('../dtos/leadDto')
+const DTO = require('../dtos/dto')
 const mongoose = require("mongoose");
 
 class LeadService {
@@ -71,6 +72,7 @@ class LeadService {
 
             const createdLeadSave = await createdLead.save()
 
+
             if (!createdLeadSave) {
                 return {
                     status: false,
@@ -96,15 +98,19 @@ class LeadService {
 
     async getById(id) {
         try {
-            const lead = await Lead.aggregate([
-                { $match: { _id: new mongoose.Types.ObjectId(id) } },
+            const pipeline = [
+                {
+                    $match: {
+                        _id: new mongoose.Types.ObjectId(id)
+                    }
+                },
                 {
                     $lookup: {
-                        from: "statuses",
-                        localField: "status_id",
-                        foreignField: "_id",
-                        as: "status",
-                    },
+                        from: 'statuses',
+                        localField: 'status_id',
+                        foreignField: '_id',
+                        as: 'status'
+                    }
                 },
                 {
                     $lookup: {
@@ -113,16 +119,85 @@ class LeadService {
                         foreignField: '_id',
                         as: 'brand'
                     }
-                }
-            ])
+                },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'manager_id',
+                        foreignField: '_id',
+                        as: 'manager'
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'comments',
+                        localField: '_id',
+                        foreignField: 'elem_id',
+                        as: 'comments_list'
+                    }
+                },
+                {
+                    $addFields: {
+                        manager: {
+                            $map: {
+                                input: '$manager',
+                                as: 'manager',
+                                in: {
+                                    id: '$$manager._id',
+                                    full_name: '$$manager.full_name'
+                                }
+                            }
+                        },
+                        status: {
+                            $map: {
+                                input: '$status',
+                                as: 'st',
+                                in: {
+                                    id: '$$st._id',
+                                    title: '$$st.title',
+                                    color: '$$st.color',
+                                    order: '$$st.order'
+                                }
+                            }
+                        },
 
+                        brand: {
+                            $map: {
+                                input: '$brands',
+                                as: 'brand',
+                                in: {
+                                    id: '$$brand._id',
+                                    title: '$$brand.title',
+                                    color: '$$brand.active'
+                                }
+                            }
+                        },
+                        comments: {
+                            $map: {
+                                input: '$comments_list',
+                                as: 'cl',
+                                in: {
+                                    id: '$$cl._id',
+                                    path: '$$cl.path'
+                                }
+                            }
+                        },
+                    }
+                },
+                {
+                    $project: {
+                        __v: 0
+                    }
+                }
+            ];
+            const lead = await Lead.aggregate(pipeline)
 
             if (lead) {
                 return {
                     status: true,
                     code: 200,
                     message: Response.get("lead", true),
-                    data:  LeadDTO.leadObject(lead)
+                    data: lead
                 };
             } else {
                 return {
@@ -163,8 +238,67 @@ class LeadService {
                         foreignField: '_id',
                         as: 'brand'
                     }
+                },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'manager_id',
+                        foreignField: '_id',
+                        as: 'manager'
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'comments',
+                        localField: 'comments_id',
+                        foreignField: '_id',
+                        as: 'comments_list'
+                    }
+                },
+                {
+                    $addFields: {
+                        manager: {
+                            $map: {
+                                input: '$manager',
+                                as: 'manager',
+                                in: {
+                                    id: '$$manager._id',
+                                    full_name: '$$manager.full_name'
+                                }
+                            }
+                        },
+                        status: {
+                            $map: {
+                                input: '$status',
+                                as: 'st',
+                                in: {
+                                    id: '$$st._id',
+                                    title: '$$st.title',
+                                    color: '$$st.color',
+                                    order: '$$st.order'
+                                }
+                            }
+                        },
+                        brand: {
+                            $map: {
+                                input: '$brand',
+                                as: 'brand',
+                                in: {
+                                    id: '$$brand._id',
+                                    title: '$$brand.title',
+                                    color: '$$brand.active'
+                                }
+                            }
+                        },
+                    }
+                },
+                {
+                    $project: {
+                        __v: 0
+                    }
                 }
             ];
+
             const leads = await Lead.aggregate(pipeline)
 
             // console.log(leads)
@@ -173,7 +307,7 @@ class LeadService {
                     status: true,
                     code: 200,
                     message: Response.get("leads", true),
-                    data: LeadDTO.leadArray(leads)
+                    data: leads
                 };
             } else {
                 return {

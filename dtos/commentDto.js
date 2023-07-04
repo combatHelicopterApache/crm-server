@@ -33,7 +33,7 @@ class CommentDTO {
     }
 
     commentObject(data) {
-        return Array(data).reduce((acc, item, idx ) => {
+        return data.reduce((acc, item, idx ) => {
             acc.id = item?._id;
             acc.user_id = item?.user_id;
             acc.user_name = item?.user_name;
