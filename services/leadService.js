@@ -231,10 +231,11 @@ class LeadService {
 
     async getAll(company_id) {
         try {
+            console.log(company_id)
             const pipeline = [
                 {
                     $match: {
-                        _id: new mongoose.Types.ObjectId(company_id)
+                        company_id: new mongoose.Types.ObjectId(company_id)
                     }
                 },
                 {
