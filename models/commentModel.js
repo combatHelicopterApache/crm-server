@@ -28,9 +28,9 @@ const comment = new Schema({
         ]
     }, {
         timestamps: {
-            created_at: "createdAt",
-            updated_at: "updatedAt",
-        }
+            createdAt: "created_at",
+            updatedAt: "updated_at",
+        },
     }
 )
 

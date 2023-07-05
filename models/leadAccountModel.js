@@ -15,9 +15,9 @@ const account = new Schema({
         actions: {type: String, required: false, default: ''}
     }, {
         timestamps: {
-            createdAt: "createdAt",
-            updatedAt: "updatedAt",
-        }
+            createdAt: "created_at",
+            updatedAt: "updated_at",
+        },
     }
 )
 

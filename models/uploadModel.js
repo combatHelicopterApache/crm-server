@@ -9,9 +9,9 @@ const uploadSchema = new Schema(
     key: { type: String, required: true, unique: true },
   }, {
         timestamps: {
-            createdAt: "createdAt",
-            updatedAt: "updatedAt",
-        }
+            createdAt: "created_at",
+            updatedAt: "updated_at",
+        },
     }
 );
 

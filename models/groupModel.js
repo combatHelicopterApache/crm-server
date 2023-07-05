@@ -5,11 +5,11 @@ const groupModel = new Schema({
     title_en:         { type: String, required: true, unique: true },
     code:             { type: String, required: true, unique: true },
     users_uid:        { type: Array, default: [] }
-}, {
+},{
     timestamps: {
-        createdAt: "createdAt",
-        updatedAt: "updatedAt",
-    }
+        createdAt: "created_at",
+        updatedAt: "updated_at",
+    },
 })
 
 module.exports = model('Groups', groupModel )

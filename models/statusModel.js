@@ -7,9 +7,9 @@ const status = new Schema( {
         order:      { type: Number, required: false },
     },  {
         timestamps: {
-            createdAt: "createdAt",
-            updatedAt: "updatedAt",
-        }
+            createdAt: "created_at",
+            updatedAt: "updated_at",
+        },
     }
 )
 
