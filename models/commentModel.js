@@ -21,13 +21,15 @@ const comment = new Schema({
                 updated_by_name: {type: String, ref: "Users", required: false},
                 updated_at: {type: Date, default: ''},
 
+                created_at: {type: Date, default: ''},
+
                 attached_files: {type: ObjectId, ref: "Uploads", required: false}
             }
         ]
     }, {
         timestamps: {
-            createdAt: "createdAt",
-            updatedAt: "updatedAt",
+            created_at: "createdAt",
+            updated_at: "updatedAt",
         }
     }
 )
