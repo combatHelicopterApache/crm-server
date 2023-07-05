@@ -368,18 +368,7 @@ class LeadService {
                         password: 0,
                     }
                 },
-                {
-                    $group: {
-                        _id: null,
-                        leads: { $push: '$$ROOT' }
-                    }
-                },
-                {
-                    $project: {
-                        _id: 0,
-                        leads: 1
-                    }
-                }
+
             ];
 
             const leads = await Lead.aggregate(pipelineAll).exec()
