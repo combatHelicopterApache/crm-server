@@ -2,7 +2,6 @@ const Response = require("../common/responseMessages");
 const commentModel = require('../models/commentModel')
 const CommentDTO = require('../dtos/commentDto')
 const mongoose = require("mongoose");
-const Lead = require("../models/leadModel")
 
 class CommentService {
     async createNew(data) {
@@ -34,11 +33,12 @@ class CommentService {
             const saveComment = await createComment.save()
 
             if (saveComment) {
+
                 return {
                     status: true,
                     code: 200,
                     message: Response.post("comment", true),
-                    data: CommentDTO.commentObject(saveComment),
+                    data: CommentDTO.commentObject(createComment),
                 };
             } else {
                 return {
@@ -148,7 +148,7 @@ class CommentService {
                     status: true,
                     code: 200,
                     message: Response.post("comment", true),
-                    data: added,
+                    data: CommentDTO.commentObject(added.comments),
                 };
             } else {
                 return {

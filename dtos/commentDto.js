@@ -44,6 +44,7 @@ class CommentDTO {
             acc.updated_by = item?.updated_by;
             acc.updated_by_name = item?.updated_by_name;
             acc.updated_at = item?.updated_at;
+            acc.created_at = item?.created_at;
             acc.attached_files = item?.attached_files;
             acc.key = idx;
             return acc;
