@@ -21,7 +21,7 @@ const comment = new Schema({
                 updated_by_name: {type: String, ref: "Users", required: false},
                 updated_at: {type: Date, default: ''},
 
-                created_at: {type: Date, default: ''},
+                created_at: {type: Date, default: Date.now()},
 
                 attached_files: {type: ObjectId, ref: "Uploads", required: false}
             }
