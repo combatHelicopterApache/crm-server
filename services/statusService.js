@@ -9,7 +9,7 @@ class StatusService {
                 title,
                 color,
                 order,
-                defaultStatus
+                default_status
             } = data.body
 
             const {id} = data.user
@@ -26,7 +26,7 @@ class StatusService {
                 title,
                 color,
                 order,
-                defaultStatus,
+                default_status,
                 created_by_id: id,
                 company_id: !default_status ? null: data.company_id
             })
@@ -118,8 +118,8 @@ class StatusService {
     async getAll(company_id) {
         try {
 
-            const defaultStatuses = await Status.find({ defaultStatus: true })
-            const companyStatuses = await Status.find({ company_id, defaultStatus: false })
+            const defaultStatuses = await Status.find({ default_status: true })
+            const companyStatuses = await Status.find({ company_id, default_status: false })
             const statuses = [...defaultStatuses, ...companyStatuses]
 
             if (statuses) {
