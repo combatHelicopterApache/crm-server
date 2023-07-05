@@ -270,6 +270,7 @@ class LeadService {
                         as: 'comments_list'
                     }
                 },
+
                 {
                     $addFields: {
                         id: '$_id',
@@ -283,6 +284,7 @@ class LeadService {
                                     active: '$$br.active'
                                 },
                             },
+
                         },
                         manager: {
                             $map: {
@@ -347,7 +349,17 @@ class LeadService {
                     $unwind: '$manager'
                 },
                 {
-                    $unwind: '$comments_list'
+                    $unwind: {
+                        path: '$comments_list',
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $addFields: {
+                        comments_list: {
+                            $ifNull: ['$comments_list', []]
+                        }
+                    }
                 },
                 {
                     $project: {
@@ -355,12 +367,24 @@ class LeadService {
                         __v: 0,
                         password: 0,
                     }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        leads: { $push: '$$ROOT' }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        leads: 1
+                    }
                 }
             ];
 
             const leads = await Lead.aggregate(pipelineAll).exec()
 
-            // console.log(leads)
+            console.log(leads)
             if (leads) {
                 return {
                     status: true,
