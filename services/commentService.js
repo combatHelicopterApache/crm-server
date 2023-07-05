@@ -61,14 +61,48 @@ class CommentService {
             const {element, id} = params
 
             const comments = await commentModel.aggregate([
-                {$match: {path: element, elem_id: new mongoose.Types.ObjectId(id)} },
+                {
+                    $match: {
+                        path: element,
+                        elem_id: new mongoose.Types.ObjectId(id)
+                    }
+                },  {
+                    $addFields: {
+                        id: '$_id',
+                        comments: {
+                            $map: {
+                                input: '$comments',
+                                as: 'comment',
+                                in: {
+                                    user_id: '$$comment.user_id',
+                                    user_name: '$$comment.user_name',
+                                    description: '$$comment.description',
+                                    deleted_by: '$$comment.deleted_by',
+                                    deleted_by_name: '$$comment.deleted_at',
+                                    deleted_at: '$$comment.deleted_at',
+                                    updated_by: '$$comment.updated_by',
+                                    updated_by_name: '$$comment.updated_by_name',
+                                    updated_at: '$$comment.updated_at',
+                                    id: '$$comment._id'
+                                }
+                            }
+                        }
+                    },
+
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        __v: 0,
+                    }
+                },
             ])
             if (comments) {
                 return {
                     status: true,
                     code: 200,
                     message: Response.get("comment", true),
-                    data: CommentDTO.commentArray(comments),
+                    data: comments[0],
                 };
             } else {
                 return {

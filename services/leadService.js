@@ -3,8 +3,10 @@ const bcrypt = require("bcrypt");
 const Response = require("../common/responseMessages");
 const LeadDTO = require('../dtos/leadDto')
 const mongoose = require("mongoose");
+const generateUid = require('../helpers/generateUid')
 
 class LeadService {
+
     async createNewLead(ip, data) {
         try {
             const {
@@ -39,10 +41,12 @@ class LeadService {
 
             const saltPass = await bcrypt.genSalt(10);
             const hashedPass = await bcrypt.hash(password, saltPass);
+            // Find the last element based on a field representing the ordering or timestamp
 
+            const lastItem = await Lead.findOne({}, 'createdAt uid').sort({ createdAt: -1 })
 
             const createdLead = await new Lead({
-                uid: Math.floor(Date.now() / 1000),
+                uid: generateUid(lastItem),
                 first_name,
                 last_name,
                 phone,
@@ -232,6 +236,7 @@ class LeadService {
     async getAll(company_id) {
         try {
 
+
             const pipelineAll = [
                 {
                     $match: {
@@ -340,13 +345,22 @@ class LeadService {
                     }
                 },
                 {
-                    $unwind: '$brand'
+                    $unwind: {
+                        path: '$brand',
+                        preserveNullAndEmptyArrays: true
+                    }
                 },
                 {
-                    $unwind: '$status'
+                    $unwind: {
+                        path: '$status',
+                        preserveNullAndEmptyArrays: true
+                    }
                 },
                 {
-                    $unwind: '$manager'
+                    $unwind: {
+                        path: '$manager',
+                        preserveNullAndEmptyArrays: true
+                    }
                 },
                 {
                     $unwind: {
@@ -373,7 +387,7 @@ class LeadService {
 
             const leads = await Lead.aggregate(pipelineAll).exec()
 
-            console.log(leads)
+
             if (leads) {
                 return {
                     status: true,

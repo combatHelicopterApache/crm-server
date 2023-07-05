@@ -1,7 +1,7 @@
 const {model, Schema, Types: {ObjectId}} = require('mongoose')
 
 const lead = new Schema({
-        uid: {type: String, required: true, unique: false},
+        uid: {type: String, required: true, unique: true},
         first_name: {type: String, required: true},
         last_name: {type: String, required: true},
         phone: {type: String, required: true, unique: false},
