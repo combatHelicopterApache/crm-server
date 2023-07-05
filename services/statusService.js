@@ -28,7 +28,7 @@ class StatusService {
                 order,
                 defaultStatus,
                 created_by_id: id,
-                company_id: !defaultStatus ? null: data.company_id
+                company_id: !default_status ? null: data.company_id
             })
 
             const createdStatusSave = await createdStatus.save()
@@ -88,8 +88,8 @@ class StatusService {
     async getList(company_id) {
         try {
 
-            const defaultStatuses = await Status.find({ defaultStatus: true }, 'id title color order')
-            const companyStatuses = await Status.find({ company_id, defaultStatus: false }, 'id title color order')
+            const defaultStatuses = await Status.find({ default_status: true }, 'id title color order')
+            const companyStatuses = await Status.find({ company_id, default_status: false }, 'id title color order')
             const statuses = [...defaultStatuses, ...companyStatuses]
 
             if (statuses) {
