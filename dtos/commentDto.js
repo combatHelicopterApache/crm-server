@@ -32,24 +32,39 @@ class CommentDTO {
         }, []);
     }
 
-    commentObject(data) {
-        return data.reduce((acc, item, idx ) => {
-            acc.id = item?._id;
-            acc.user_id = item?.user_id;
-            acc.user_name = item?.user_name;
-            acc.description = item?.description;
-            acc.deleted_by = item?.deleted_by;
-            acc.deleted_by_name = item?.deleted_by_name;
-            acc.deleted_at = item?.deleted_at;
-            acc.updated_by = item?.updated_by;
-            acc.updated_by_name = item?.updated_by_name;
-            acc.updated_at = item?.updated_at;
-            acc.created_at = item?.created_at;
-            acc.attached_files = item?.attached_files;
-            acc.key = idx;
-            return acc;
-        }, {});
+    async commentObject(data) {
+        const result = {};
+
+        for (const [key, value] of Object.entries(data)) {
+            result[key] = value;
+        }
+
+        result.id = data._id;
+        delete result._id;
+        delete result.__v;
+
+        return result;
     }
+// }
+
+    // commentObject(data) {
+    //     return data.reduce((acc, item, idx ) => {
+    //         acc.id = item?._id;
+    //         acc.user_id = item?.user_id;
+    //         acc.user_name = item?.user_name;
+    //         acc.description = item?.description;
+    //         acc.deleted_by = item?.deleted_by;
+    //         acc.deleted_by_name = item?.deleted_by_name;
+    //         acc.deleted_at = item?.deleted_at;
+    //         acc.updated_by = item?.updated_by;
+    //         acc.updated_by_name = item?.updated_by_name;
+    //         acc.updated_at = item?.updated_at;
+    //         acc.created_at = item?.created_at;
+    //         acc.attached_files = item?.attached_files;
+    //         acc.key = idx;
+    //         return acc;
+    //     }, {});
+    // }
 
 }
 

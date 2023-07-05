@@ -6,6 +6,10 @@ class StatusDTO {
                 title: item.title,
                 color: item.color,
                 order: item.order,
+                defaultStatus: item.defaultStatus,
+                created_by_id: item.created_by_id,
+                updated_by_id: item.updated_by_id,
+                company_id: item.company_id,
                 created_at: item.created_at,
                 updated_at: item.updated_at,
             });
@@ -13,15 +17,18 @@ class StatusDTO {
         }, []);
     }
     statusObject(data) {
-        return data.reduce((acc, item) => {
-            acc.id = item._id;
-            acc.title = item.title;
-            acc.color = item.color;
-            acc.order = item.order;
-            acc.created_at = item.created_at;
-            acc.updated_at = item.updated_at;
-            return acc;
-        }, {});
+         return {
+             id: data._id,
+             title: data.title,
+             color: data.color,
+             order: data.order,
+             defaultStatus: data.defaultStatus,
+             created_by_id: data.created_by_id,
+             updated_by_id: data.updated_by_id,
+             company_id: data.company_id,
+             created_at: data.created_at,
+             updated_at: data.updated_at
+         }
     }
 }
 

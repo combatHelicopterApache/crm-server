@@ -9,10 +9,13 @@ class StatusService {
                 title,
                 color,
                 order,
+                defaultStatus
+            } = data.body
 
-            } = data
+            const {id} = data.user
 
             const candidate = await Status.findOne({title: title})
+
             if(candidate) return {
                 status: false,
                 code: 400,
@@ -23,6 +26,9 @@ class StatusService {
                 title,
                 color,
                 order,
+                defaultStatus,
+                created_by_id: id,
+                company_id: !defaultStatus ? null: data.company_id
             })
 
             const createdStatusSave = await createdStatus.save()
@@ -31,9 +37,11 @@ class StatusService {
                 return {
                     status: false,
                     code: 400,
-                    message: Response.post("status", false)
+                    message: Response.post("status", false),
+                    data: StatusDto.statusObject(createdStatusSave)
                 }
             } else {
+
                 return {
                     status: true,
                     code: 200,
@@ -53,7 +61,6 @@ class StatusService {
     async getById(id) {
         try {
             const status = await Status.findById({_id: id})
-
 
             if (status) {
                 return {
@@ -78,9 +85,42 @@ class StatusService {
         }
     }
 
-    async getAll() {
+    async getList(company_id) {
         try {
-            const statuses = await Status.find().sort({"createdAt": -1})
+
+            const defaultStatuses = await Status.find({ defaultStatus: true }, 'id title color order')
+            const companyStatuses = await Status.find({ company_id, defaultStatus: false }, 'id title color order')
+            const statuses = [...defaultStatuses, ...companyStatuses]
+
+            if (statuses) {
+                return {
+                    status: true,
+                    code: 200,
+                    message: Response.get("statuses", true),
+                    data: StatusDto.statusArray(statuses)
+                };
+            } else {
+                return {
+                    status: false,
+                    code: 400,
+                    message: Response.search("statuses", false),
+                };
+            }
+
+        } catch (e) {
+            return {
+                code: 500,
+                error: e.message,
+            };
+        }
+    }
+
+    async getAll(company_id) {
+        try {
+
+            const defaultStatuses = await Status.find({ defaultStatus: true })
+            const companyStatuses = await Status.find({ company_id, defaultStatus: false })
+            const statuses = [...defaultStatuses, ...companyStatuses]
 
             if (statuses) {
                 return {
