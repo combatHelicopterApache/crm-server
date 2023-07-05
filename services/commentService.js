@@ -83,7 +83,7 @@ class CommentService {
                                     updated_by: '$$comment.updated_by',
                                     updated_by_name: '$$comment.updated_by_name',
                                     updated_at: '$$comment.updated_at',
-                                    created_at: '$$comment.updated_at',
+                                    created_at: '$$comment.created_at',
                                     id: '$$comment._id'
                                 }
                             }
