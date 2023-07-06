@@ -143,12 +143,13 @@ class CommentService {
                 { $push: { comments: { $each: [comment] } } },
                 { new: true }).lean();
 
+
             if (added) {
                 return {
                     status: true,
                     code: 200,
                     message: Response.post("comment", true),
-                    data: CommentDTO.commentObject(added.comments),
+                    data: CommentDTO.commentObject(added.comments.pop()),
                 };
             } else {
                 return {

@@ -32,7 +32,7 @@ class CommentDTO {
         }, []);
     }
 
-    async commentObject(data) {
+    commentObject(data) {
         const result = {};
 
         for (const [key, value] of Object.entries(data)) {
@@ -42,28 +42,26 @@ class CommentDTO {
         result.id = data._id;
         delete result._id;
         delete result.__v;
-
+        console.log(result)
         return result;
     }
 // }
 
     // commentObject(data) {
-    //     return data.reduce((acc, item, idx ) => {
-    //         acc.id = item?._id;
-    //         acc.user_id = item?.user_id;
-    //         acc.user_name = item?.user_name;
-    //         acc.description = item?.description;
-    //         acc.deleted_by = item?.deleted_by;
-    //         acc.deleted_by_name = item?.deleted_by_name;
-    //         acc.deleted_at = item?.deleted_at;
-    //         acc.updated_by = item?.updated_by;
-    //         acc.updated_by_name = item?.updated_by_name;
-    //         acc.updated_at = item?.updated_at;
-    //         acc.created_at = item?.created_at;
-    //         acc.attached_files = item?.attached_files;
-    //         acc.key = idx;
-    //         return acc;
-    //     }, {});
+    //     return {
+    //         id: data?._id,
+    //         user_id : data?.user_id,
+    //         user_name : data?.user_name,
+    //         description : data?.description,
+    //         deleted_by : data?.deleted_by,
+    //         deleted_by_name : data?.deleted_by_name,
+    //         deleted_at : data?.deleted_at,
+    //         updated_by : data?.updated_by,
+    //         updated_by_name : data?.updated_by_name,
+    //         updated_at : data?.updated_at,
+    //         created_at : data?.created_at,
+    //         attached_files : data?.attached_files,
+    //     }
     // }
 
 }
