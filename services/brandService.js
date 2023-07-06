@@ -92,6 +92,7 @@ class BrandService {
         }
     }
 
+
     async getList(company_id) {
         try {
             const brands = await Brand.find({company_id}, "id, title").sort({created_at: 1});
