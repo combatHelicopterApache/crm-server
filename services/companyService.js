@@ -134,7 +134,7 @@ class CompanyService {
         status: true,
         code: 200,
         message: Response.get("company", true),
-        data: CompanyDTO.companyObjects(company),
+        data: CompanyDTO.companyObject(company),
       };
     } catch (error) {
       return {

@@ -142,6 +142,7 @@ class LeadService {
 
                 {
                     $addFields: {
+                        id: '$_id',
                         brand: {
                             $map: {
                                 input: '$brand',
@@ -152,15 +153,15 @@ class LeadService {
                                     active: '$$br.active'
                                 },
                             },
-                        },
 
+                        },
                         manager: {
                             $map: {
                                 input: '$manager',
-                                as: 'manager',
+                                as: 'mg',
                                 in: {
-                                    id: '$$manager._id',
-                                    full_name: '$$manager.full_name'
+                                    id: '$$mg._id',
+                                    full_name: '$$mg.full_name'
                                 }
                             }
                         },
@@ -176,37 +177,76 @@ class LeadService {
                                 }
                             }
                         },
-
-                        comments: {
+                        comments_list: {
                             $map: {
                                 input: '$comments_list',
                                 as: 'cl',
                                 in: {
                                     id: '$$cl._id',
-                                    path: '$$cl.path'
+                                    path: '$$cl.path',
+                                    elem_id: '$$cl.elem_id',
+                                    commentary_list: {
+                                        $map: {
+                                            input: '$$cl.comments',
+                                            as: 'comment',
+                                            in: {
+                                                user_id: '$$comment.user_id',
+                                                user_name: '$$comment.user_name',
+                                                description: '$$comment.description',
+                                                deleted_by: '$$comment.deleted_by',
+                                                deleted_by_name: '$$comment.deleted_at',
+                                                deleted_at: '$$comment.deleted_at',
+                                                updated_by: '$$comment.updated_by',
+                                                updated_by_name: '$$comment.updated_by_name',
+                                                updated_at: '$$comment.updated_at',
+                                                id: '$$comment._id'
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         },
                     }
                 },
                 {
-                    $unwind: '$brand'
+                    $unwind: {
+                        path: '$brand',
+                        preserveNullAndEmptyArrays: true
+                    }
                 },
                 {
-                    $unwind: '$status'
+                    $unwind: {
+                        path: '$status',
+                        preserveNullAndEmptyArrays: true
+                    }
                 },
                 {
-                    $unwind: '$manager'
+                    $unwind: {
+                        path: '$manager',
+                        preserveNullAndEmptyArrays: true
+                    }
                 },
                 {
-                    $unwind: '$comments_list'
+                    $unwind: {
+                        path: '$comments_list',
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $addFields: {
+                        comments_list: {
+                            $ifNull: ['$comments_list', []]
+                        }
+                    }
                 },
                 {
                     $project: {
+                        _id: 0,
                         __v: 0,
                         password: 0,
                     }
-                }
+                },
+
             ];
             const lead = await Lead.aggregate(pipeline).exec()
 
