@@ -9,7 +9,6 @@ class StatusService {
                 title,
                 color,
                 order,
-                default_status
             } = data.body
 
             const {id} = data.user
@@ -26,9 +25,8 @@ class StatusService {
                 title,
                 color,
                 order,
-                default_status,
                 created_by_id: id,
-                company_id: !default_status ? null: data.company_id
+                company_id: data.company_id
             })
 
             const createdStatusSave = await createdStatus.save()
@@ -88,16 +86,14 @@ class StatusService {
     async getList(company_id) {
         try {
 
-            const defaultStatuses = await Status.find({ default_status: true }, 'id title color order')
-            const companyStatuses = await Status.find({ company_id, default_status: false }, 'id title color order')
-            const statuses = [...defaultStatuses, ...companyStatuses]
+            const companyStatuses = await Status.find({ company_id }, 'id title color order')
 
-            if (statuses) {
+            if (companyStatuses) {
                 return {
                     status: true,
                     code: 200,
                     message: Response.get("statuses", true),
-                    data: StatusDto.statusArray(statuses)
+                    data: StatusDto.statusArray(companyStatuses)
                 };
             } else {
                 return {
@@ -118,16 +114,14 @@ class StatusService {
     async getAll(company_id) {
         try {
 
-            const defaultStatuses = await Status.find({ default_status: true })
-            const companyStatuses = await Status.find({ company_id, default_status: false })
-            const statuses = [...defaultStatuses, ...companyStatuses]
+            const companyStatuses = await Status.find({ company_id })
 
-            if (statuses) {
+            if (companyStatuses) {
                 return {
                     status: true,
                     code: 200,
                     message: Response.get("statuses", true),
-                    data: StatusDto.statusArray(statuses)
+                    data: StatusDto.statusArray(companyStatuses)
                 };
             } else {
                 return {
