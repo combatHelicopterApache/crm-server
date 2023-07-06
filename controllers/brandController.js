@@ -47,7 +47,7 @@ class BrandController {
 
   async getBrandList(req, res) {
     try {
-      const result = await brandService.getList();
+      const result = await brandService.getList(req.company_id);
       return res.status(result.code).send(result);
     } catch (err) {
       return res.status(500).json({ message: err.message });

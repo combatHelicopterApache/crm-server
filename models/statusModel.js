@@ -7,7 +7,7 @@ const status = new Schema( {
         order:      { type: Number, required: false },
         created_by_id:    { type: ObjectId, ref:"Users", default: null},
         updated_by_id:    { type: ObjectId, ref:"Users", default: null},
-        company_id: { type: ObjectId, ref: "Companies", default: '' }
+        company_id: { type: ObjectId, default: '' }
     },  {
         timestamps: {
             createdAt: "created_at",

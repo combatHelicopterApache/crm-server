@@ -42,7 +42,7 @@ class BrandService {
     async getAll(company_id) {
         try {
 
-            const brands = await Brand.find().sort({created_at: 1});
+            const brands = await Brand.find({company_id}).sort({created_at: 1});
 
             if (brands) {
                 return {
@@ -92,9 +92,9 @@ class BrandService {
         }
     }
 
-    async getList() {
+    async getList(company_id) {
         try {
-            const brands = await Brand.find({}, "id, title").sort({created_at: 1});
+            const brands = await Brand.find({company_id}, "id, title").sort({created_at: 1});
 
             if (brands) {
                 return {

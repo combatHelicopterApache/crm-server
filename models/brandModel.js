@@ -4,13 +4,12 @@ const brandModel = new Schema(
     {
         title: {type: String, required: false, default: "Default brand"},
         description: {type: String, required: false, default: ""},
-        active: {type: Boolean, required: false, default: true},
+        active: {type: Number, required: false, default: 2},
         logo: {type: String, required: false, default: ""},
         parent_id: {type: ObjectId, required: false, default: null},
-        company_id: {type: ObjectId, ref: "Companies", required: false, default: null},
+        company_id: {type: ObjectId, required: false, default: null},
         site: [
             {
-                site_id: {type: ObjectId, require: false, default: new ObjectId},
                 site_logo: {type: String, require: false},
                 site_name: {type: String, require: false},
                 site_domains: {type: [String], require: false, unique: false},
@@ -18,7 +17,6 @@ const brandModel = new Schema(
         ],
         platform: [
             {
-                cfd_id: {type: ObjectId, require: false, default: new ObjectId},
                 cfd_logo: {type: String, require: false},
                 cfd_name: {type: String, require: false},
                 cfd_domain: {type: String, require: false},
