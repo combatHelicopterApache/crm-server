@@ -5,13 +5,14 @@ const Response = require("../common/responseMessages");
 class BrandService {
     async createNew(data) {
         try {
-            const {title, description, site, platform} = data;
+            const {title, description, site, platform, parent_id} = data;
 
             const brand = await new Brand({
                 title,
                 description,
                 site,
                 platform,
+                parent_id
             });
 
             const createdBrand = await brand.save();
@@ -39,6 +40,33 @@ class BrandService {
     }
 
     async getAll(company_id) {
+        try {
+
+            const brands = await Brand.find().sort({created_at: 1});
+
+            if (brands) {
+                return {
+                    status: true,
+                    code: 200,
+                    message: Response.get("brand", true),
+                    data: BrandDTO.brandArray(brands),
+                };
+            } else {
+                return {
+                    status: false,
+                    code: 400,
+                    message: Response.search("brand", false),
+                };
+            }
+        } catch (e) {
+            return {
+                code: 500,
+                error: e.message,
+            };
+        }
+    }
+
+    async getAllAdmin() {
         try {
             const brands = await Brand.find().sort({created_at: 1});
 

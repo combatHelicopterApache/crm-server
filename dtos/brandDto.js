@@ -1,5 +1,6 @@
 class BrandDTO {
     brandArray(data) {
+
         return data.reduce((acc, item) => {
             acc.push({
                 id: item._id,
@@ -7,7 +8,8 @@ class BrandDTO {
                 description: item.description,
                 company_id: item.company_id,
                 active: item.active,
-                site: this.siteArray(item.site),
+                parent_id: item.parent_id,
+                site: this.siteArray(item?.site),
                 platform: item.platform,
                 created_at: item.created_at,
                 updated_at: item.updated_at,
@@ -17,21 +19,22 @@ class BrandDTO {
     }
 
     brandObject(data) {
-        return data.reduce((acc, item) => {
-            acc.id = item._id;
-            acc.title = item.title;
-            acc.description = item.description;
-            acc.company_id = item.company_id;
-            acc.active = item.active;
-            acc.site = this.siteArray(item.site);
-            acc.platform = item.platform;
-            acc.created_at = item.created_at;
-            acc.updated_at = item.updated_at;
-            return acc;
-        }, {});
+        return  {
+            id: data._id,
+            title: data.title,
+            description: data.description,
+            company_id: data.company_id,
+            active: data.active,
+            parent_id: data.parent_id,
+            site: this.siteArray(data.site),
+            platform: data.platform,
+            created_at: data.created_at,
+            updated_at: data.updated_at
+        }
     }
 
     siteArray(data) {
+        if (!data) return
         return data.reduce((acc, item) => {
             acc.push({
                 id: item._id,

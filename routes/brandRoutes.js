@@ -29,6 +29,14 @@ router.get(
 );
 
 router.get(
+  "/admin-list",
+  checkAuthMiddleware,
+  checkRoleMiddleware,
+  checkCompanyIdMiddleware,
+  brandController.getAllBrandsAdmin
+);
+
+router.get(
   "/brand-list",
   checkAuthMiddleware,
   checkRoleMiddleware,

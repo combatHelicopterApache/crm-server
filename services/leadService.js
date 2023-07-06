@@ -43,7 +43,7 @@ class LeadService {
             const hashedPass = await bcrypt.hash(password, saltPass);
             // Find the last element based on a field representing the ordering or timestamp
 
-            const lastItem = await Lead.findOne({}, 'createdAt uid').sort({ createdAt: -1 })
+            const lastItem = await Lead.findOne({}, 'created_at uid').sort({ created_at: -1 })
 
             const createdLead = await new Lead({
                 uid: generateUid(lastItem),
@@ -139,6 +139,14 @@ class LeadService {
                         as: 'comments_list'
                     }
                 },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: '_id',
+                        foreignField: 'assigned_to',
+                        as: 'assigned_to'
+                    }
+                },
 
                 {
                     $addFields: {
@@ -154,6 +162,16 @@ class LeadService {
                                 },
                             },
 
+                        },
+                        assigned_to: {
+                            $map: {
+                                input: '$assigned_to',
+                                as: 'at',
+                                in: {
+                                    id: '$$at._id',
+                                    full_name: '$$at.full_name'
+                                }
+                            }
                         },
                         manager: {
                             $map: {
@@ -228,6 +246,12 @@ class LeadService {
                 },
                 {
                     $unwind: {
+                        path: '$assigned_to',
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $unwind: {
                         path: '$comments_list',
                         preserveNullAndEmptyArrays: true
                     }
@@ -236,6 +260,9 @@ class LeadService {
                     $addFields: {
                         comments_list: {
                             $ifNull: ['$comments_list', []]
+                        },
+                        assigned_to: {
+                            $ifNull: ['$assigned_to', null]
                         }
                     }
                 },

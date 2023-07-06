@@ -14,8 +14,7 @@ const lead = new Schema({
         funnel_name: {type: String, required: false, default: ''},
         client_type: {type: String, required: false, default: 'sales'}, // sales/retention
 
-
-
+        assigned_to: {type: ObjectId, ref: 'Users', required: false, default: null},
         created_by: {type: ObjectId, ref: 'Users', required: false, default: null},
         company_id: {type: ObjectId, ref: 'Companies', required: true },
         manager_id: {type: ObjectId, ref: 'Users', required: false, default: null},

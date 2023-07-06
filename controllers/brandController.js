@@ -36,6 +36,15 @@ class BrandController {
     }
   }
 
+  async getAllBrandsAdmin(req, res) {
+    try {
+      const result = await brandService.getAllAdmin();
+      return res.status(result.code).send(result);
+    } catch (err) {
+      return res.status(500).json({ message: err.message });
+    }
+  }
+
   async getBrandList(req, res) {
     try {
       const result = await brandService.getList();
