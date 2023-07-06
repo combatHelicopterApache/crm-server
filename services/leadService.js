@@ -248,7 +248,7 @@ class LeadService {
                 },
 
             ];
-            const lead = await Lead.aggregate(pipeline).exec()
+            const [lead] = await Lead.aggregate(pipeline).exec()
 
             if (lead) {
                 return {
