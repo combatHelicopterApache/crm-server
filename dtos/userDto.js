@@ -1,5 +1,5 @@
 class UserDTO {
-  async userArray(data) {
+  userArray(data) {
     return data.reduce((acc, item) => {
       acc.push({
         id: item?._id,
@@ -32,7 +32,7 @@ class UserDTO {
       return acc;
     }, []);
   }
-  async userObject(data) {
+  userObject(data) {
     const result = {};
 
     for (const [key, value] of Object.entries(data)) {

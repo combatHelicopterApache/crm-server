@@ -14,6 +14,14 @@ router.post(
     statusController.createNewStatus
 )
 
+router.post(
+    '/change-status/:id',
+    checkAuthMiddleware,
+    checkRoleMiddleware,
+    checkCompanyIdMiddleware,
+    statusController.changeLeadStatus
+)
+
 router.get(
     '/',
     checkAuthMiddleware,

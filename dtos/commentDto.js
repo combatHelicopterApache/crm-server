@@ -42,7 +42,7 @@ class CommentDTO {
         result.id = data._id;
         delete result._id;
         delete result.__v;
-        console.log(result)
+        // console.log(result)
         return result;
     }
 // }

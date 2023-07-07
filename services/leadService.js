@@ -101,6 +101,7 @@ class LeadService {
 
     async getById(id) {
         try {
+
             const pipeline = [
                 {
                     $match: {
@@ -302,7 +303,8 @@ class LeadService {
 
     async getAll(company_id) {
         try {
-
+            // const limit = per_page || 25;
+            // const skip = (page - 1) * per_page;
 
             const pipelineAll = [
                 {

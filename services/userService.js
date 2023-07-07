@@ -39,7 +39,7 @@ class UserService {
                     status: true,
                     code: 200,
                     message: Response.post("user", true),
-                    user: await UserDTO.userObject(createdUser),
+                    user: UserDTO.userObject(createdUser),
                 };
             } else {
                 return {
@@ -71,7 +71,7 @@ class UserService {
                     status: true,
                     code: 200,
                     message: Response.get("users", true),
-                    data: await UserDTO.userArray(users),
+                    data: UserDTO.userArray(users),
                 };
             } else {
                 return {
@@ -92,7 +92,7 @@ class UserService {
         try {
             const users = await User.find(
                 {company_id: company_id},
-                "id, full_name"
+                "full_name role_id"
             ).sort({
                 created_at: 1,
             });
@@ -102,7 +102,7 @@ class UserService {
                     status: true,
                     code: 200,
                     message: Response.get("users", true),
-                    data: await UserDTO.userArray(users),
+                    data: UserDTO.userArray(users)
                 };
             } else {
                 return {
@@ -128,7 +128,7 @@ class UserService {
                     status: true,
                     code: 200,
                     message: Response.get("admin users", true),
-                    data: await UserDTO.userArray(users),
+                    data: UserDTO.userArray(users),
                 };
             } else {
                 return {
@@ -227,7 +227,7 @@ class UserService {
                     status: true,
                     code: 200,
                     message: Response.get("users", true),
-                    data: await UserDTO.userArray(users),
+                    data: UserDTO.userArray(users),
                     meta: {
                         page,
                         per_page,
@@ -267,7 +267,7 @@ class UserService {
                     status: true,
                     code: 200,
                     message: Response.get("user", true),
-                    data: await UserDTO.userObject(user),
+                    data: UserDTO.userObject(user),
                 };
             } else {
                 return {
@@ -288,7 +288,7 @@ class UserService {
     async getByToken(id) {
         try {
             const foundUser = await User.findOne({_id: id}).lean();
-            const userData = await UserDTO.userObject(foundUser);
+            const userData = UserDTO.userObject(foundUser);
 
             const tokenData = {
                 id: userData.id.toString(),
@@ -347,7 +347,7 @@ class UserService {
                     status: true,
                     code: 200,
                     message: Response.update("user", true),
-                    data: await UserDTO.userObject(updated),
+                    data: UserDTO.userObject(updated),
                 };
             } else {
                 return {
@@ -381,7 +381,7 @@ class UserService {
                     status: true,
                     code: 200,
                     message: Response.delete("user", true),
-                    data: await UserDTO.userObject(deleted),
+                    data: UserDTO.userObject(deleted),
                 };
             } else {
                 return {
@@ -430,7 +430,7 @@ class UserService {
                 };
             }
 
-            const userData = await UserDTO.userObject(user);
+            const userData = UserDTO.userObject(user);
 
             const tokenData = {
                 id: userData?.id.toString(),
@@ -480,7 +480,7 @@ class UserService {
                 _id: loggedTo,
             }).lean();
 
-            const userData = await UserDTO.userObject({
+            const userData = UserDTO.userObject({
                 ...user,
                 company_id: companyToLogin._id,
                 company_name: companyToLogin.company_name,
@@ -535,7 +535,7 @@ class UserService {
                 _id: authUser.id,
             }).lean();
 
-            const userData = await UserDTO.userObject({
+            const userData = UserDTO.userObject({
                 ...user,
                 company_id: process.env.ADMIN_COMPANY_ID,
                 company_name: process.env.ADMIN_COMPANY_NAME,
@@ -628,7 +628,7 @@ class UserService {
                     status: true,
                     code: 200,
                     message: Response.post("admin user", true),
-                    user: await UserDTO.userObject(createdUser),
+                    user: UserDTO.userObject(createdUser),
                 };
             } else {
                 return {
@@ -665,7 +665,7 @@ class UserService {
                     status: true,
                     code: 200,
                     message: Response.update("password", true),
-                    data: await UserDTO.userObject(changedUserPassword),
+                    data: UserDTO.userObject(changedUserPassword),
                 };
             } else {
                 return {

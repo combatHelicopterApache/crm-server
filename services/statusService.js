@@ -168,6 +168,18 @@ class StatusService {
         }
     }
 
+    async changeStatus(id) {
+        try {
+
+
+        } catch (e) {
+            return {
+                code: 500,
+                error: e.message,
+            };
+        }
+    }
+
     async deleteById(id) {
         try {
             const deleted = await Status.findByIdAndDelete(id)
