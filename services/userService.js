@@ -34,6 +34,7 @@ class UserService {
 
             const createdUser = await user.save();
 
+
             if (createdUser) {
                 return {
                     status: true,

@@ -1,4 +1,5 @@
 const Status = require("../models/statusModel");
+const StatusLog = require("../models/statusLogModel");
 const Response = require("../common/responseMessages");
 const StatusDto = require('../dtos/statusDto')
 
@@ -168,10 +169,39 @@ class StatusService {
         }
     }
 
-    async changeStatus(id) {
+    async createStatusLog(lead_id, user_id) {
         try {
 
+            const createStatus = await new StatusLog({
+                lead_id: lead_id,
+                statuses: [
+                    {
+                        created_by: user_id,
+                        description: '',
+                        prev_status_id: null,
+                        prev_status_title: null,
+                        curr_status_id: 1,
+                        curr_status_title: 'NEW',
 
+                    }
+                ]
+            })
+
+            const created = await createStatus.save()
+            if (created) {
+                return {
+                    status: true,
+                    code: 200,
+                    message: Response.post("status log", true),
+                    data: created
+                };
+            } else {
+                return {
+                    status: false,
+                    code: 400,
+                    message: Response.post("status log", false),
+                };
+            }
         } catch (e) {
             return {
                 code: 500,
@@ -179,6 +209,37 @@ class StatusService {
             };
         }
     }
+    //
+    // async createStatusStatusLog(data) {
+    //     try {
+    //
+    //         const createStatus = await new StatusLog({
+    //             lead_id: data.params.id,
+    //             statuses: [
+    //                 {
+    //                     created_by: data.user.id,
+    //                     description: data.body.description,
+    //                     prev_status_id: data.body.,
+    //                     prev_status_title: l,
+    //                     curr_status_id: l,
+    //                     curr_status_title: l,
+    //
+    //                 }
+    //             ]
+    //         })
+    //
+    //         const created = createStatus.save()
+    //
+    //     } catch (e) {
+    //         return {
+    //             code: 500,
+    //             error: e.message,
+    //         };
+    //     }
+    // }
+
+
+
 
     async deleteById(id) {
         try {

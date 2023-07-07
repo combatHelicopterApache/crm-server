@@ -260,13 +260,17 @@ class LeadService {
                 {
                     $addFields: {
                         comments_list: {
-                            $ifNull: ['$comments_list', []]
+                            $ifNull: ['$comments_list', {}]
                         },
                         assigned_to: {
                             $ifNull: ['$assigned_to', null]
+                        },
+                        status: {
+                            $ifNull: ['$status', {}]
                         }
                     }
                 },
+
                 {
                     $project: {
                         _id: 0,
@@ -440,7 +444,13 @@ class LeadService {
                 {
                     $addFields: {
                         comments_list: {
-                            $ifNull: ['$comments_list', []]
+                            $ifNull: ['$comments_list', {}]
+                        },
+                        assigned_to: {
+                            $ifNull: ['$assigned_to', null]
+                        },
+                        status: {
+                            $ifNull: ['$status', {}]
                         }
                     }
                 },
