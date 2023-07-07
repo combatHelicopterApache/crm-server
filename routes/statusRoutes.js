@@ -14,13 +14,13 @@ router.post(
     statusController.createNewStatus
 )
 
-router.post(
-    '/change-status/:id',
-    checkAuthMiddleware,
-    checkRoleMiddleware,
-    checkCompanyIdMiddleware,
-    statusController.changeLeadStatus
-)
+// router.post(
+//     '/change-status/:id',
+//     checkAuthMiddleware,
+//     checkRoleMiddleware,
+//     checkCompanyIdMiddleware,
+//     statusController.changeLeadStatus
+// )
 
 router.get(
     '/',
@@ -40,16 +40,25 @@ router.get(
 
 router.get(
     '/:id',
+    checkAuthMiddleware,
+    checkRoleMiddleware,
+    checkCompanyIdMiddleware,
     statusController.getStatusById
 )
 
 router.put(
     '/:id',
+    checkAuthMiddleware,
+    checkRoleMiddleware,
+    checkCompanyIdMiddleware,
     statusController.updateStatusById
 )
 
 router.delete(
     '/:id',
+    checkAuthMiddleware,
+    checkRoleMiddleware,
+    checkCompanyIdMiddleware,
     statusController.deleteStatusById
 )
 

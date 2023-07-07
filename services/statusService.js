@@ -2,6 +2,10 @@ const Status = require("../models/statusModel");
 const StatusLog = require("../models/statusLogModel");
 const Response = require("../common/responseMessages");
 const StatusDto = require('../dtos/statusDto')
+const User = require("../models/userModel");
+const Lead = require("../models/leadModel");
+const mongoose = require("mongoose");
+const commentModel = require("../models/commentModel");
 
 class StatusService {
     async createNew(data) {
@@ -14,7 +18,9 @@ class StatusService {
 
             const {id} = data.user
 
-            const candidate = await Status.findOne({title: title})
+            const candidate = await Status.findOne({title: title, company_id: data.company_id})
+
+            // console.log(data)
 
             if(candidate) return {
                 status: false,
@@ -26,7 +32,44 @@ class StatusService {
                 title,
                 color,
                 order,
+                status_default: false,
                 created_by_id: id,
+                company_id: data.company_id
+            })
+
+            const createdStatusSave = await createdStatus.save()
+
+            if (!createdStatusSave) {
+                return {
+                    status: false,
+                    code: 400,
+                    message: Response.post("status", false),
+                    data: StatusDto.statusObject(createdStatusSave)
+                }
+            } else {
+
+                return {
+                    status: true,
+                    code: 200,
+                    message: Response.post("status", true),
+                    data: StatusDto.statusObject(createdStatusSave)
+                }
+            }
+
+        } catch (e) {
+            return {
+                code: 500,
+                error: e.message,
+            };
+        }
+    }
+
+    async createDefaultStatus(data) {
+        try {
+
+            const createdStatus = await new Status({
+                status_default: true,
+                created_by_id: data.user_id,
                 company_id: data.company_id
             })
 
@@ -169,48 +212,53 @@ class StatusService {
         }
     }
 
-    async createStatusLog(lead_id, user_id) {
-        try {
-
-            const createStatus = await new StatusLog({
-                lead_id: lead_id,
-                statuses: [
-                    {
-                        created_by: user_id,
-                        description: '',
-                        prev_status_id: null,
-                        prev_status_title: null,
-                        curr_status_id: 1,
-                        curr_status_title: 'NEW',
-
-                    }
-                ]
-            })
-
-            const created = await createStatus.save()
-            if (created) {
-                return {
-                    status: true,
-                    code: 200,
-                    message: Response.post("status log", true),
-                    data: created
-                };
-            } else {
-                return {
-                    status: false,
-                    code: 400,
-                    message: Response.post("status log", false),
-                };
-            }
-        } catch (e) {
-            return {
-                code: 500,
-                error: e.message,
-            };
-        }
-    }
+    // async createStatusLog(lead_id, user_id, status_id) {
+    //     try {
     //
-    // async createStatusStatusLog(data) {
+    //         const candidate = await StatusLog.findOne({lead_id: lead_id})
+    //
+    //         if(candidate) { }
+    //
+    //         const createStatus = await new StatusLog({
+    //             lead_id: lead_id,
+    //             statuses: [
+    //                 {
+    //                     created_by: user_id,
+    //                     description: '',
+    //                     prev_status_id: null,
+    //                     prev_status_title: null,
+    //                     curr_status_id: status_id,
+    //                     curr_status_title: 'NEW',
+    //
+    //                 }
+    //             ]
+    //         })
+    //
+    //         const created = await createStatus.save()
+    //         if (created) {
+    //             return {
+    //                 status: true,
+    //                 code: 200,
+    //                 message: Response.post("status log", true),
+    //                 data: created
+    //             };
+    //         } else {
+    //             return {
+    //                 status: false,
+    //                 code: 400,
+    //                 message: Response.post("status log", false),
+    //             };
+    //         }
+    //     } catch (e) {
+    //         return {
+    //             code: 500,
+    //             error: e.message,
+    //         };
+    //     }
+    // }
+
+    //
+    // async pushElementToStatusLog(data) {
     //     try {
     //
     //         const createStatus = await new StatusLog({
@@ -241,9 +289,34 @@ class StatusService {
 
 
 
-    async deleteById(id) {
+    async deleteById(data) {
         try {
-            const deleted = await Status.findByIdAndDelete(id)
+
+            const statusLead = await Lead.find({
+                status_id: data.params.id,
+                company_id: new mongoose.Types.ObjectId(data.company_id)
+            }).count()
+
+            if(statusLead > 0) {
+                return {
+                    status: true,
+                    code: 409,
+                    message: "You cannot delete this status, it is tied to the lead",
+                    count: statusLead
+                };
+            }
+
+            const statusCount = await Status.find({company_id: new mongoose.Types.ObjectId(data.company_id)}).count()
+
+            if(statusCount === 1) {
+                return {
+                    status: true,
+                    code: 409,
+                    message:"You cant delete last element",
+                };
+            }
+
+            const deleted = await Status.findByIdAndDelete(data.params.id)
 
             if (deleted) {
                 return {

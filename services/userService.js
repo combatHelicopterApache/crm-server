@@ -32,9 +32,11 @@ class UserService {
                 company_name: req.user.company_name,
             });
 
+            console.log(req)
+
             const createdUser = await user.save();
 
-
+// console.log(createdUser)
             if (createdUser) {
                 return {
                     status: true,

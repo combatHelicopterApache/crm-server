@@ -11,14 +11,14 @@ class StatusController {
         }
     }
 
-    async changeLeadStatus (req, res) {
-        try {
-            const result = await statusService.createStatusLog(req)
-            return res.status(result.code).send(result);
-        } catch (err) {
-            return res.status(500).json({ message: err.message });
-        }
-    }
+    // async changeLeadStatus (req, res) {
+    //     try {
+    //         const result = await statusService.createStatusLog(req)
+    //         return res.status(result.code).send(result);
+    //     } catch (err) {
+    //         return res.status(500).json({ message: err.message });
+    //     }
+    // }
 
     async getStatuses (req, res) {
         try {
@@ -60,7 +60,7 @@ class StatusController {
 
     async deleteStatusById (req, res) {
         try {
-            const result = await statusService.deleteById(req.params.id)
+            const result = await statusService.deleteById(req)
             return res.status(result.code).send(result);
         } catch (err) {
             return res.status(500).json({ message: err.message });
