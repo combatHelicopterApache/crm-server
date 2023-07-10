@@ -1,11 +1,12 @@
 const Status = require("../models/statusModel");
-const StatusLog = require("../models/statusLogModel");
+const StatusLogModel = require("../models/statusLogModel");
 const Response = require("../common/responseMessages");
 const StatusDto = require('../dtos/statusDto')
 const User = require("../models/userModel");
 const Lead = require("../models/leadModel");
 const mongoose = require("mongoose");
 const commentModel = require("../models/commentModel");
+const CommentDTO = require("../dtos/commentDto");
 
 class StatusService {
     async createNew(data) {
@@ -212,79 +213,113 @@ class StatusService {
         }
     }
 
-    // async createStatusLog(lead_id, user_id, status_id) {
-    //     try {
-    //
-    //         const candidate = await StatusLog.findOne({lead_id: lead_id})
-    //
-    //         if(candidate) { }
-    //
-    //         const createStatus = await new StatusLog({
-    //             lead_id: lead_id,
-    //             statuses: [
-    //                 {
-    //                     created_by: user_id,
-    //                     description: '',
-    //                     prev_status_id: null,
-    //                     prev_status_title: null,
-    //                     curr_status_id: status_id,
-    //                     curr_status_title: 'NEW',
-    //
-    //                 }
-    //             ]
-    //         })
-    //
-    //         const created = await createStatus.save()
-    //         if (created) {
-    //             return {
-    //                 status: true,
-    //                 code: 200,
-    //                 message: Response.post("status log", true),
-    //                 data: created
-    //             };
-    //         } else {
-    //             return {
-    //                 status: false,
-    //                 code: 400,
-    //                 message: Response.post("status log", false),
-    //             };
-    //         }
-    //     } catch (e) {
-    //         return {
-    //             code: 500,
-    //             error: e.message,
-    //         };
-    //     }
-    // }
+    async createStatusLog(lead_id, user_id, status_id) {
+        try {
 
-    //
-    // async pushElementToStatusLog(data) {
-    //     try {
-    //
-    //         const createStatus = await new StatusLog({
-    //             lead_id: data.params.id,
-    //             statuses: [
-    //                 {
-    //                     created_by: data.user.id,
-    //                     description: data.body.description,
-    //                     prev_status_id: data.body.,
-    //                     prev_status_title: l,
-    //                     curr_status_id: l,
-    //                     curr_status_title: l,
-    //
-    //                 }
-    //             ]
-    //         })
-    //
-    //         const created = createStatus.save()
-    //
-    //     } catch (e) {
-    //         return {
-    //             code: 500,
-    //             error: e.message,
-    //         };
-    //     }
-    // }
+            const defaultStatus = await Status.findOne({
+                _id: new mongoose.Types.ObjectId(status_id)
+            })
+
+            const createStatus = await new StatusLogModel({
+                lead_id: lead_id,
+                statuses: [
+                    {
+                        created_by: user_id,
+                        description: '',
+                        prev_status_id: null,
+                        prev_status_title: null,
+                        curr_status_id: status_id,
+                        curr_status_title: defaultStatus.title,
+                    }
+                ]
+            })
+
+            const created = await createStatus.save()
+            if (created) {
+                return {
+                    status: true,
+                    code: 200,
+                    message: Response.post("status log", true),
+                    data: created
+                };
+            } else {
+                return {
+                    status: false,
+                    code: 400,
+                    message: Response.post("status log", false),
+                };
+            }
+        } catch (e) {
+            return {
+                code: 500,
+                error: e.message,
+            };
+        }
+    }
+
+
+    async pushElementToStatusLog(lead_id, user, prev_status, curr_status) {
+        try {
+
+            const fullStatusDataPrev = await Status.findOne(
+                { _id: prev_status.status_id },
+                'title'
+            )
+            if(!fullStatusDataPrev) {
+                return {
+                    status: false,
+                    code: 400,
+                    message: Response.search("status", false),
+                };
+            }
+
+            const fullStatusDataCurr = await Status.findOne(
+                { _id: curr_status },
+                'title'
+            )
+            if(!fullStatusDataCurr) {
+                return {
+                    status: false,
+                    code: 400,
+                    message: Response.search("status", false),
+                };
+            }
+
+            const pushStatusLog = {
+                created_by: user.id,
+                description:  '',
+                prev_status_id:  fullStatusDataPrev._id,
+                prev_status_title: fullStatusDataPrev.title,
+                curr_status_id:  fullStatusDataCurr._id,
+                curr_status_title:  fullStatusDataCurr.title,
+            }
+
+            const added = await StatusLogModel.findOneAndUpdate(
+                { lead_id: lead_id },
+                { $push: { statuses: { $each: [pushStatusLog] } } },
+                { new: true }).lean();
+
+            if (added) {
+                return {
+                    status: true,
+                    code: 200,
+                    message: Response.post("status", true),
+                    data: StatusDto.statusObject(added.statuses.pop()),
+                };
+            } else {
+                return {
+                    status: false,
+                    code: 400,
+                    message: Response.post("status", false),
+                };
+            }
+        } catch (e) {
+            return {
+                code: 500,
+                error: e.message,
+            };
+        }
+    }
 
 
 

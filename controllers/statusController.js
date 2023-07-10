@@ -11,14 +11,6 @@ class StatusController {
         }
     }
 
-    // async changeLeadStatus (req, res) {
-    //     try {
-    //         const result = await statusService.createStatusLog(req)
-    //         return res.status(result.code).send(result);
-    //     } catch (err) {
-    //         return res.status(500).json({ message: err.message });
-    //     }
-    // }
 
     async getStatuses (req, res) {
         try {

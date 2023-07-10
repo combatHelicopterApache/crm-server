@@ -34,7 +34,7 @@ class LeadDTO {
     leadObject(item) {
         return  {
             id: item._id,
-            uid : item.title,
+            uid : item.uid,
             first_name : item.first_name,
             last_name : item.last_name,
             phone : item.phone,
@@ -47,6 +47,7 @@ class LeadDTO {
             funnel_name: item.funnel_name,
             manager: item.manager,
             assigned_to : item.assigned_to,
+            status_id : item?.status_id,
             status : item?.status ? StatusDTO.statusObject(item?.status) : null,
             brand : item?.brand ? BrandsDTO.brandObject(item?.brand): null,
             client_type : item.client_type,

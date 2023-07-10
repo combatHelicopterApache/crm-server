@@ -32,6 +32,8 @@ class UserDTO {
       return acc;
     }, []);
   }
+
+
   userObject(data) {
     const result = {};
 

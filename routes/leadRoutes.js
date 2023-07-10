@@ -12,6 +12,7 @@ router.post(
     '/create',
     checkAuthMiddleware,
     checkRoleMiddleware,
+    checkCompanyIdMiddleware,
     checkPermissions('leads'),
     checkRestriction('leads', 'lead_access'),
     leadController.createNewLead
@@ -37,6 +38,15 @@ router.get(
     leadController.getLeads
 )
 
+router.put(
+    '/change-status',
+    checkAuthMiddleware,
+    checkRoleMiddleware,
+    checkPermissions('leads'),
+    checkRestriction('leads', 'lead_access'),
+    leadController.changeLeadStatus
+)
+
 router.get(
     '/:id',
     checkAuthMiddleware,
@@ -55,6 +65,8 @@ router.put(
     checkRestriction('leads', 'lead_access'),
     leadController.updateLeadById
 )
+
+
 
 router.delete(
     '/:id',

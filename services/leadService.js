@@ -7,7 +7,7 @@ const generateUid = require('../helpers/generateUid')
 
 class LeadService {
 
-    async createNewLead(ip, data) {
+    async createNewLead(data) {
         try {
             const {
                 first_name,
@@ -21,7 +21,6 @@ class LeadService {
                 geo,
                 funnel_name,
                 client_type,
-                company_id,
                 manager_id,
                 status_id,
                 brand_id,
@@ -34,15 +33,15 @@ class LeadService {
                 accounts,
                 cfd_orders,
                 documents
-            } = data
+            } = data.body
 
 
 
 
             const saltPass = await bcrypt.genSalt(10);
             const hashedPass = await bcrypt.hash(password, saltPass);
-            // Find the last element based on a field representing the ordering or timestamp
 
+            // Find the last element based on a field representing the ordering or timestamp
             const lastItem = await Lead.findOne({}, 'created_at uid').sort({ created_at: -1 })
 
             const createdLead = await new Lead({
@@ -58,7 +57,8 @@ class LeadService {
                 geo,
                 funnel_name,
                 manager_id,
-                company_id,
+                created_by: data.user.id,
+                company_id: data?.company_id,
                 status_id,
                 brand_id,
                 client_type,
@@ -148,7 +148,14 @@ class LeadService {
                         as: 'assigned_to'
                     }
                 },
-
+                {
+                    $lookup: {
+                        from: 'statuslogs',
+                        localField: '_id',
+                        foreignField: 'lead_id',
+                        as: 'status_log_list'
+                    }
+                },
                 {
                     $addFields: {
                         id: '$_id',
@@ -225,6 +232,31 @@ class LeadService {
                                 }
                             }
                         },
+                        status_log_list: {
+                            $map: {
+                                input: '$status_log_list',
+                                as: 'sll',
+                                in: {
+                                    id: '$$sll._id',
+                                    lead_id: '$$sll.lead_id',
+                                    status_list: {
+                                        $map: {
+                                            input: '$$sll.statuses',
+                                            as: 'status_log',
+                                            in: {
+                                                created_by: '$$status_log.created_by',
+                                                description: '$$status_log.description',
+                                                prev_status_id: '$$status_log.prev_status_id',
+                                                prev_status_title: '$$status_log.prev_status_title',
+                                                curr_status_id: '$$status_log.curr_status_id',
+                                                curr_status_title: '$$status_log.curr_status_title',
+                                                id: '$$status_log._id'
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
                     }
                 },
                 {
@@ -258,9 +290,18 @@ class LeadService {
                     }
                 },
                 {
+                    $unwind: {
+                        path: '$status_log_list',
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
                     $addFields: {
                         comments_list: {
                             $ifNull: ['$comments_list', {}]
+                        },
+                        status_log_list: {
+                            $ifNull: ['$status_log_list', {}]
                         },
                         assigned_to: {
                             $ifNull: ['$assigned_to', null]
@@ -349,6 +390,7 @@ class LeadService {
                     }
                 },
 
+
                 {
                     $addFields: {
                         id: '$_id',
@@ -386,6 +428,7 @@ class LeadService {
                                 }
                             }
                         },
+
                         comments_list: {
                             $map: {
                                 input: '$comments_list',
@@ -415,6 +458,7 @@ class LeadService {
                                 }
                             }
                         },
+
                     }
                 },
                 {
@@ -464,7 +508,7 @@ class LeadService {
 
             ];
 
-            const leads = await Lead.aggregate(pipelineAll).exec()
+            const leads = await Lead.aggregate(pipelineAll).sort({created_at: -1}).exec()
 
 
             if (leads) {
@@ -518,6 +562,43 @@ class LeadService {
             };
         }
     }
+
+    async changeStatus(data) {
+
+        try {
+
+            const {lead_id, status_id} = data.body
+
+            const leadStatus = await Lead.findOne({_id: new mongoose.Types.ObjectId(lead_id)}, 'status_id')
+
+            const updated = await Lead.findByIdAndUpdate({
+                _id: new mongoose.Types.ObjectId(lead_id)
+            } , {status_id}, {
+                new: true
+            })
+
+            if (updated) {
+                return {
+                    status: true,
+                    code: 200,
+                    message: Response.update("lead", true),
+                    data: {...LeadDTO.leadObject(updated), prev_status_id: leadStatus}
+                };
+            } else {
+                return {
+                    status: false,
+                    code: 400,
+                    message: Response.update("lead", false),
+                };
+            }
+        } catch (e) {
+            return {
+                code: 500,
+                error: e.message,
+            };
+        }
+    }
+
 
     async deleteById(id) {
         try {

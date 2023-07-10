@@ -94,8 +94,8 @@ class UserService {
     async getList(company_id) {
         try {
             const users = await User.find(
-                {company_id: company_id},
-                "full_name role_id"
+                {company_id: company_id, role_id: {$ne: 1}},
+                "full_name role_id",
             ).sort({
                 created_at: 1,
             });
@@ -171,7 +171,7 @@ class UserService {
                 manager_name,
             } = data.query;
 
-            const limit = per_page || 25;
+            const limit = per_page || 20;
             const skip = (page - 1) * per_page;
 
             const sortOptions = {};

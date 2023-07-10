@@ -5,10 +5,11 @@ const statusService = require('../services/statusService')
 class LeadController {
     async createNewLead (req, res) {
         try {
-            const result = await leadService.createNewLead(req.connection.remoteAddress, req.body)
-            // const status = await statusService.createStatusLog(result.id, req.user.id, result.status_id)
-            // console.log(status)
-            return res.status(result.code).send(result);
+            const result = await leadService.createNewLead(req)
+            if(!result) {return res.status(result.code).send(result); }
+            const status = await statusService.createStatusLog(result.data.id, req.user.id, result.data.status_id)
+            if(!status) {return res.status(result.code).send(result); }
+            return res.status(result.code).send({result, status});
         } catch (err) {
             return res.status(500).json({ message: err.message });
         }
@@ -49,6 +50,18 @@ class LeadController {
         try {
             const result = await leadService.deleteById(req.params.id)
             return res.status(result.code).send(result);
+        } catch (err) {
+            return res.status(500).json({ message: err.message });
+        }
+    }
+
+    async changeLeadStatus (req, res) {
+        try {
+            const result = await leadService.changeStatus(req)
+
+            const setStatusLog = await statusService.pushElementToStatusLog(result.data.id, req.user, result.data.prev_status_id,  result.data.status_id)
+
+            return res.status(result.code).send( setStatusLog );
         } catch (err) {
             return res.status(500).json({ message: err.message });
         }

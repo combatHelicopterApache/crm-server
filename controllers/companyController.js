@@ -15,6 +15,9 @@ class CompanyController {
 
     async createCompany(req, res) {
         try {
+            // TODO
+            // remove company when newOwnerUser failed
+
             const result = await companyService.createCompany(req.body);
 
             const newOwnerUser = await userService.createOwnerUserForNewCompany({
@@ -29,6 +32,9 @@ class CompanyController {
 
             const createDefaultStatus = await statusService.createDefaultStatus({ user_id: req.user.id, company_id: result.data.id.toString() })
 
+            if (!createDefaultStatus.status) {
+                return res.status(result.code).json(createDefaultStatus);
+            }
 
             const setFieldsToCompany = companyService.updateCompany(
                 result.data.id.toString(),
