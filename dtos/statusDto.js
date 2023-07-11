@@ -30,6 +30,20 @@ class StatusDTO {
              updated_at: data.updated_at
          }
     }
+
+    statusLogObject(data) {
+        return {
+            id: data._id,
+            updated_at: data.updated_at,
+            description: data.description,
+            prev_status_id: data.prev_status_id,
+            prev_status_color: data.prev_status_color,
+            prev_status_title: data.prev_status_title,
+            curr_status_id: data.curr_status_id,
+            curr_status_color: data.curr_status_color,
+            curr_status_title: data.curr_status_title,
+        }
+    }
 }
 
 module.exports = new StatusDTO();

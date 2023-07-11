@@ -30,6 +30,15 @@ router.get(
     statusController.getStatusesList
 )
 
+
+router.get(
+    '/list-log/:lead_id',
+    checkAuthMiddleware,
+    checkRoleMiddleware,
+    checkCompanyIdMiddleware,
+    statusController.getStatusesListLog
+)
+
 router.get(
     '/:id',
     checkAuthMiddleware,

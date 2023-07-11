@@ -9,8 +9,10 @@ const statusLogs = new Schema({
             updated_at: {type: Date, required: false, default: null},
             description: {type: String, required: false, default: null},
             prev_status_id: {type: ObjectId, required: false, default: null},
+            prev_status_color: {type: String, required: false, default: ''},
             prev_status_title: {type: String, required: false, default: null},
             curr_status_id: {type: ObjectId, required: false},
+            curr_status_color: {type: String, required: false, default: ''},
             curr_status_title: {type: String, required: false},
         }
     ]

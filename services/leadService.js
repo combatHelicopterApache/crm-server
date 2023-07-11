@@ -573,10 +573,10 @@ class LeadService {
 
             const updated = await Lead.findByIdAndUpdate({
                 _id: new mongoose.Types.ObjectId(lead_id)
-            } , {status_id}, {
+            } , {status_id: status_id}, {
                 new: true
             })
-
+            // console.log(updated)
             if (updated) {
                 return {
                     status: true,

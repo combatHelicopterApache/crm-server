@@ -28,6 +28,14 @@ class StatusController {
             return res.status(500).json({ message: err.message });
         }
     }
+    async getStatusesListLog (req, res) {
+        try {
+            const result = await statusService.getListLog(req)
+            return res.status(result.code).send(result);
+        } catch (err) {
+            return res.status(500).json({ message: err.message });
+        }
+    }
 
     async getStatusById (req, res) {
         try {
