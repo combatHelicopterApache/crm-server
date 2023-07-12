@@ -66,8 +66,6 @@ router.put(
     leadController.updateLeadById
 )
 
-
-
 router.delete(
     '/:id',
     checkAuthMiddleware,

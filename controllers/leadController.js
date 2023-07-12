@@ -21,7 +21,7 @@ class LeadController {
 
     async getLeads(req, res) {
         try {
-            const result = await leadService.getAll(req.company_id)
+            const result = await leadService.getAll(req)
             return res.status(result.code).send(result);
         } catch (err) {
             return res.status(500).json({message: err.message});

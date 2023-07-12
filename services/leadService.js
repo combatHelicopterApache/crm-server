@@ -4,6 +4,7 @@ const Response = require("../common/responseMessages");
 const LeadDTO = require('../dtos/leadDto')
 const mongoose = require("mongoose");
 const generateUid = require('../helpers/generateUid')
+const customFilter = require('../helpers/filters')
 
 class LeadService {
 
@@ -157,8 +158,17 @@ class LeadService {
                     }
                 },
                 {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'created_by',
+                        foreignField: '_id',
+                        as: 'created_by'
+                    }
+                },
+                {
                     $addFields: {
                         id: '$_id',
+                        created_by: '$created_by.full_name',
                         brand: {
                             $map: {
                                 input: '$brand',
@@ -346,15 +356,28 @@ class LeadService {
         }
     }
 
-    async getAll(company_id) {
+    async getAll(data) {
         try {
-            // const limit = per_page || 25;
-            // const skip = (page - 1) * per_page;
+            const {page, sort_field, order, per_page } = data.query
+            const pageNumber = page || 1
+            const limit = Number(per_page) || 20;
+            const skip = (page - 1) * per_page || 0;
+
+            const sortOptions = {};
+
+            if (sort_field && order) {
+                sortOptions[sort_field] = order === "desc" ? -1 : 1;
+            } else {
+                sortOptions['created_at'] = 'desc'
+            }
+
+            const filterOptions = customFilter('leads', data.query, data.company_id)
+
 
             const pipelineAll = [
                 {
                     $match: {
-                        company_id: new mongoose.Types.ObjectId(company_id)
+                        $and: filterOptions
                     }
                 },
                 {
@@ -389,11 +412,18 @@ class LeadService {
                         as: 'comments_list'
                     }
                 },
-
-
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'created_by',
+                        foreignField: '_id',
+                        as: 'created_by'
+                    }
+                },
                 {
                     $addFields: {
                         id: '$_id',
+                        created_by: '$created_by.full_name',
                         brand: {
                             $map: {
                                 input: '$brand',
@@ -428,7 +458,6 @@ class LeadService {
                                 }
                             }
                         },
-
                         comments_list: {
                             $map: {
                                 input: '$comments_list',
@@ -458,7 +487,12 @@ class LeadService {
                                 }
                             }
                         },
-
+                    }
+                },
+                {
+                    $unwind: {
+                        path: '$created_by',
+                        preserveNullAndEmptyArrays: true
                     }
                 },
                 {
@@ -503,20 +537,39 @@ class LeadService {
                         _id: 0,
                         __v: 0,
                         password: 0,
+                        company_id: 0,
+                        manager_id: 0,
+                        status_id: 0,
+                        payments: 0,
+                        comment_id: 0,
+                        brand_id: 0,
+                        logs: 0,
+                        calls: 0,
+
                     }
                 },
 
             ];
 
-            const leads = await Lead.aggregate(pipelineAll).sort({created_at: -1}).exec()
+            const leads = await Lead.aggregate(pipelineAll)
+                .sort(sortOptions)
+                .skip(skip)
+                .limit(limit)
+                .exec()
 
-
+            const total = await Lead.countDocuments();
             if (leads) {
                 return {
                     status: true,
                     code: 200,
                     message: Response.get("leads", true),
-                    data: leads
+                    data: leads,
+                    meta: {
+                        page: pageNumber,
+                        per_page: limit,
+                        found: leads.length,
+                        total,
+                    },
                 };
             } else {
                 return {
