@@ -20,16 +20,48 @@ module.exports = (target, data, company) => {
 
     if( target === 'leads') {
         if (data.status && Array.isArray(data.status)) {
-            const statusIds = getObjectId('status_id', data.status);
-            filterOptions.push(statusIds);
+            const ids = getObjectId('status_id', data.status);
+            filterOptions.push(ids);
+        }
+        if (data.manager_id && Array.isArray(data.manager_id)) {
+            const ids = getObjectId('manager_id', data.manager_id);
+            filterOptions.push(ids);
         }
 
         if (data.first_name && Array.isArray(data.first_name)) {
-            const firstNameCondition = getString('first_name', data.first_name);
-            filterOptions.push(firstNameCondition);
+            const condition = getString('first_name', data.first_name);
+            filterOptions.push(condition);
         }
 
+        if (data.last_name && Array.isArray(data.last_name)) {
+            const condition = getString('last_name', data.last_name);
+            filterOptions.push(condition);
+        }
 
+        if (data.email && Array.isArray(data.email)) {
+            const condition = getString('email', data.email);
+            filterOptions.push(condition);
+        }
+
+        if (data.affiliate && Array.isArray(data.affiliate)) {
+            const condition = getString('affiliate', data.affiliate);
+            filterOptions.push(condition);
+        }
+
+        if (data.source && Array.isArray(data.source)) {
+            const condition = getString('source', data.source);
+            filterOptions.push(condition);
+        }
+
+        if (data.geo && Array.isArray(data.geo)) {
+            const condition = getString('geo', data.geo);
+            filterOptions.push(condition);
+        }
+
+        if (data.client_type && Array.isArray(data.client_type)) {
+            const condition = getString('client_type', data.client_type);
+            filterOptions.push(condition);
+        }
     }
     return filterOptions
 }
