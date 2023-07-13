@@ -217,8 +217,15 @@ class StatusService {
         try {
 
             const defaultStatus = await Status.findOne({
-                _id: new mongoose.Types.ObjectId(status_id)
+                company_id: new mongoose.Types.ObjectId(status_id),
+                status_default: true
             })
+
+            const updateLeadStatusId = await Lead.findByIdAndUpdate(
+                lead_id,
+                { status_id: defaultStatus._id },
+                { new: true }
+            )
 
             const createStatus = await new StatusLogModel({
                 lead_id: lead_id,
@@ -228,13 +235,14 @@ class StatusService {
                         description: '',
                         prev_status_id: null,
                         prev_status_title: null,
-                        curr_status_id: status_id,
+                        curr_status_id: defaultStatus._id,
                         curr_status_title: defaultStatus.title,
                     }
                 ]
             })
 
             const created = await createStatus.save()
+
             if (created) {
                 return {
                     status: true,

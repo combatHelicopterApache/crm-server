@@ -16,10 +16,10 @@ class LeadService {
                 phone,
                 email,
                 affiliate,
-                password,
                 source,
                 ip,
                 geo,
+                assigned_to,
                 funnel_name,
                 client_type,
                 manager_id,
@@ -37,13 +37,12 @@ class LeadService {
             } = data.body
 
 
-
-
             const saltPass = await bcrypt.genSalt(10);
-            const hashedPass = await bcrypt.hash(password, saltPass);
+            const hashedPass = await bcrypt.hash(process.env.DEFAULT_LEAD_PASSWORD, saltPass);
 
             // Find the last element based on a field representing the ordering or timestamp
-            const lastItem = await Lead.findOne({}, 'created_at uid').sort({ created_at: -1 })
+            const lastItem = await Lead.findOne({}, 'created_at uid').sort({created_at: -1})
+
 
             const createdLead = await new Lead({
                 uid: generateUid(lastItem),
@@ -58,6 +57,7 @@ class LeadService {
                 geo,
                 funnel_name,
                 manager_id,
+                assigned_to,
                 created_by: data.user.id,
                 company_id: data?.company_id,
                 status_id,
@@ -358,7 +358,8 @@ class LeadService {
 
     async getAll(data) {
         try {
-            const {page, sort_field, order, per_page } = data.query
+            const timeStart = new Date()
+            const {page, sort_field, order, per_page} = data.query
             const pageNumber = page || 1
             const limit = Number(per_page) || 20;
             const skip = (page - 1) * per_page || 0;
@@ -383,92 +384,87 @@ class LeadService {
                 {
                     $lookup: {
                         from: 'statuses',
-                        localField: 'status_id',
-                        foreignField: '_id',
+                        let: {status_id: '$status_id'},
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {$eq: ['$_id', '$$status_id']}
+                                }
+                            },
+                            {
+                                $project: {
+                                    _id: 0,
+                                    id: '$_id',
+                                    title: 1,
+                                    color: 1,
+                                    order: 1
+                                }
+                            }
+                        ],
                         as: 'status'
                     }
                 },
                 {
                     $lookup: {
                         from: 'brands',
-                        localField: 'brand_id',
-                        foreignField: '_id',
+                        let: {brand_id: '$brand_id'},
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {$eq: ['$_id', '$$brand_id']}
+                                }
+                            },
+                            {
+                                $project: {
+                                    _id: 0,
+                                    id: '$_id',
+                                    title: 1,
+                                    active: 1
+                                }
+                            }
+                        ],
                         as: 'brand'
                     }
                 },
                 {
                     $lookup: {
                         from: 'users',
-                        localField: 'manager_id',
-                        foreignField: '_id',
+                        let: {manager_id: '$manager_id'},
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {$eq: ['$_id', '$$manager_id']}
+                                }
+                            },
+                            {
+                                $project: {
+                                    _id: 0,
+                                    id: '$_id',
+                                    full_name: 1
+                                }
+                            }
+                        ],
                         as: 'manager'
                     }
                 },
                 {
                     $lookup: {
                         from: 'comments',
-                        localField: '_id',
-                        foreignField: 'elem_id',
-                        as: 'comments_list'
-                    }
-                },
-                {
-                    $lookup: {
-                        from: 'users',
-                        localField: 'created_by',
-                        foreignField: '_id',
-                        as: 'created_by'
-                    }
-                },
-                {
-                    $addFields: {
-                        id: '$_id',
-                        created_by: '$created_by.full_name',
-                        brand: {
-                            $map: {
-                                input: '$brand',
-                                as: 'br',
-                                in: {
-                                    id: '$$br._id',
-                                    title: '$$br.title',
-                                    active: '$$br.active'
-                                },
+                        let: {elem_id: '$_id'},
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {$eq: ['$elem_id', '$$elem_id']}
+                                }
                             },
-
-                        },
-                        manager: {
-                            $map: {
-                                input: '$manager',
-                                as: 'mg',
-                                in: {
-                                    id: '$$mg._id',
-                                    full_name: '$$mg.full_name'
-                                }
-                            }
-                        },
-                        status: {
-                            $map: {
-                                input: '$status',
-                                as: 'st',
-                                in: {
-                                    id: '$$st._id',
-                                    title: '$$st.title',
-                                    color: '$$st.color',
-                                    order: '$$st.order'
-                                }
-                            }
-                        },
-                        comments_list: {
-                            $map: {
-                                input: '$comments_list',
-                                as: 'cl',
-                                in: {
-                                    id: '$$cl._id',
-                                    path: '$$cl.path',
-                                    elem_id: '$$cl.elem_id',
-                                    commentary_list: {
+                            {
+                                $project: {
+                                    _id: 1,
+                                    path: 1,
+                                    elem_id: 1,
+                                    comments: {
                                         $map: {
-                                            input: '$$cl.comments',
+                                            input: '$comments',
                                             as: 'comment',
                                             in: {
                                                 user_id: '$$comment.user_id',
@@ -486,52 +482,21 @@ class LeadService {
                                     }
                                 }
                             }
-                        },
-                    }
-                },
-                {
-                    $unwind: {
-                        path: '$created_by',
-                        preserveNullAndEmptyArrays: true
-                    }
-                },
-                {
-                    $unwind: {
-                        path: '$brand',
-                        preserveNullAndEmptyArrays: true
-                    }
-                },
-                {
-                    $unwind: {
-                        path: '$status',
-                        preserveNullAndEmptyArrays: true
-                    }
-                },
-                {
-                    $unwind: {
-                        path: '$manager',
-                        preserveNullAndEmptyArrays: true
-                    }
-                },
-                {
-                    $unwind: {
-                        path: '$comments_list',
-                        preserveNullAndEmptyArrays: true
+                        ],
+                        as: 'comments_list'
                     }
                 },
                 {
                     $addFields: {
-                        comments_list: {
-                            $ifNull: ['$comments_list', {}]
-                        },
-                        assigned_to: {
-                            $ifNull: ['$assigned_to', null]
-                        },
-                        status: {
-                            $ifNull: ['$status', {}]
-                        }
+                        id: '$_id',
+                        created_by: {$ifNull: ['$created_by.full_name', null]},
+                        brand: {$arrayElemAt: ['$brand', 0]},
+                        manager: {$arrayElemAt: ['$manager', 0]},
+                        status: {$arrayElemAt: ['$status', 0]},
+                        comments_list: {$arrayElemAt: ['$comments_list', 0]}
                     }
                 },
+
                 {
                     $project: {
                         _id: 0,
@@ -544,18 +509,20 @@ class LeadService {
                         comment_id: 0,
                         brand_id: 0,
                         logs: 0,
-                        calls: 0,
-
                     }
-                },
+                }
 
             ];
-
             const leads = await Lead.aggregate(pipelineAll)
                 .sort(sortOptions)
                 .skip(skip)
                 .limit(limit)
                 .exec()
+
+            const endStart = new Date()
+            const totalTime = `${(endStart - timeStart) / 1000}s`
+
+            console.log(totalTime)
 
             const total = await Lead.countDocuments();
             if (leads) {
@@ -563,6 +530,7 @@ class LeadService {
                     status: true,
                     code: 200,
                     message: Response.get("leads", true),
+                    time: totalTime,
                     data: leads,
                     meta: {
                         page: pageNumber,
@@ -626,7 +594,7 @@ class LeadService {
 
             const updated = await Lead.findByIdAndUpdate({
                 _id: new mongoose.Types.ObjectId(lead_id)
-            } , {status_id: status_id}, {
+            }, {status_id: status_id}, {
                 new: true
             })
             // console.log(updated)
@@ -636,6 +604,71 @@ class LeadService {
                     code: 200,
                     message: Response.update("lead", true),
                     data: {...LeadDTO.leadObject(updated), prev_status_id: leadStatus}
+                };
+            } else {
+                return {
+                    status: false,
+                    code: 400,
+                    message: Response.update("lead", false),
+                };
+            }
+        } catch (e) {
+            return {
+                code: 500,
+                error: e.message,
+            };
+        }
+    }
+
+    async changeAssign(data) {
+
+        try {
+
+            const {lead_id, assign_to} = data
+
+            const updated = await Lead.findByIdAndUpdate({
+                _id: new mongoose.Types.ObjectId(lead_id)
+            }, {assigned_to: assign_to}, {
+                new: true
+            })
+            if (updated) {
+                return {
+                    status: true,
+                    code: 200,
+                    message: Response.update("lead", true),
+                };
+            } else {
+                return {
+                    status: false,
+                    code: 400,
+                    message: Response.update("lead", false),
+                };
+            }
+        } catch (e) {
+            return {
+                code: 500,
+                error: e.message,
+            };
+        }
+    }
+
+
+    async changeType(data) {
+
+        try {
+            const {lead_id, client_type} = data
+
+            const updated = await Lead.findByIdAndUpdate({
+                _id: new mongoose.Types.ObjectId(lead_id)
+            }, {client_type}, {
+                new: true
+            })
+
+            if (updated) {
+                return {
+                    status: true,
+                    code: 200,
+                    message: Response.update("lead", true),
                 };
             } else {
                 return {
@@ -662,7 +695,7 @@ class LeadService {
                     status: true,
                     code: 200,
                     message: Response.delete("lead", true),
-                    data:  LeadDTO.leadObject(deleted)
+                    data: LeadDTO.leadObject(deleted)
                 };
             } else {
                 return {

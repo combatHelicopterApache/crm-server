@@ -47,6 +47,25 @@ router.put(
     leadController.changeLeadStatus
 )
 
+router.put(
+    '/change-assign',
+    checkAuthMiddleware,
+    checkRoleMiddleware,
+    checkPermissions('leads'),
+    checkRestriction('leads', 'lead_access'),
+    leadController.changeLeadAssign
+)
+
+router.put(
+    '/change-type',
+    checkAuthMiddleware,
+    checkRoleMiddleware,
+    checkPermissions('leads'),
+    checkRestriction('leads', 'lead_access'),
+    leadController.changeLeadType
+)
+
+
 router.get(
     '/:id',
     checkAuthMiddleware,

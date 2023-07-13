@@ -5,7 +5,7 @@ const lead = new Schema({
         first_name: {type: String, required: true},
         last_name: {type: String, required: true},
         phone: {type: String, required: true, unique: false},
-        email: {type: String, required: true, unique: false, match: /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/},
+        email: {type: String, required: true, unique: false},
         affiliate: {type: String, required: false},
         password: {type: String, required: false, default: '123456Ads!'},
         source: {type: String, required: false, lowercase: true},
@@ -37,5 +37,17 @@ const lead = new Schema({
         },
     }
 )
+lead.index({ uid: 1 });
+lead.index({ company_id: 1 });
+lead.index({ manager_id: 1 });
+lead.index({ status_id: 1 });
+lead.index({ brand_id: 1 });
+lead.index({ comment_id: 1 });
+lead.index({ assigned_to: 1 });
+lead.index({ email: 1 });
+lead.index({ phone: 1 });
+lead.index({ created_at: -1 });
+lead.index({ updated_at: -1 });
+
 
 module.exports = model('Leads', lead)

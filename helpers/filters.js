@@ -10,7 +10,11 @@ const getObjectId = (field, values) => {
     const regexArray = values.map((value) => new mongoose.Types.ObjectId(value))
     return { [field]: { $in: regexArray } };
 }
-
+// search elements from-to Array Date
+const getByDate = (field, values) => {
+    const regexArray = values.map((value) => new mongoose.Types.ObjectId(value))
+    return { [field]: { $in: regexArray } };
+}
 
 
 module.exports = (target, data, company) => {
@@ -60,6 +64,17 @@ module.exports = (target, data, company) => {
 
         if (data.client_type && Array.isArray(data.client_type)) {
             const condition = getString('client_type', data.client_type);
+            filterOptions.push(condition);
+        }
+
+        if (data.assigned_to && Array.isArray(data.assigned_to)) {
+            const condition = getObjectId('assigned_to', data.assigned_to);
+            filterOptions.push(condition);
+        }
+
+        if (data.created_at && Array.isArray(data.created_at)) {
+            console.log(data.created_at[0])
+            const condition = getByDate('created_at', data.created_at);
             filterOptions.push(condition);
         }
     }

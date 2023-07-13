@@ -3,7 +3,7 @@ module.exports = checkRoleMiddleware = async (req, res, next) => {
         if (
             req.user.role_id !== 1 &&
             req.user.role_id !== 2 &&
-            req.user.role_id !== 3
+            req.user.role_id !== 5
         ) {
             return res
                 .status(403)

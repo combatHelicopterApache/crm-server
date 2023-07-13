@@ -9,7 +9,7 @@ class LeadController {
             if (!result) {
                 return res.status(result.code).send(result);
             }
-            const status = await statusService.createStatusLog(result.data.id, req.user.id, result.data.status_id)
+            const status = await statusService.createStatusLog(result.data.id, req.user.id, req.company_id)
             if (!status) {
                 return res.status(result.code).send(result);
             }
@@ -67,6 +67,27 @@ class LeadController {
             const setStatusLog = await statusService.pushElementToStatusLog(result.data.id, req.user, result.data.prev_status_id, req.body.status_id)
 
             return res.status(result.code).send(setStatusLog);
+        } catch (err) {
+            return res.status(500).json({message: err.message});
+        }
+    }
+
+    async changeLeadAssign(req, res) {
+        try {
+
+            const result = await leadService.changeAssign(req.body)
+
+            return res.status(result.code).send(result);
+        } catch (err) {
+            return res.status(500).json({message: err.message});
+        }
+    }
+
+    async changeLeadType(req, res) {
+        try {
+            const result = await leadService.changeType(req.body)
+
+            return res.status(result.code).send(result);
         } catch (err) {
             return res.status(500).json({message: err.message});
         }
