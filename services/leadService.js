@@ -449,6 +449,28 @@ class LeadService {
                 },
                 {
                     $lookup: {
+                        from: 'users',
+                        let: {created_by: '$created_by'},
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {$eq: ['$_id', '$$created_by']}
+                                }
+                            },
+                            {
+                                $project: {
+                                    _id: 0,
+                                    id: '$_id',
+                                    full_name: 1
+                                }
+                            }
+                        ],
+                        as: 'created_by'
+                    }
+                },
+
+                {
+                    $lookup: {
                         from: 'comments',
                         let: {elem_id: '$_id'},
                         pipeline: [
@@ -489,7 +511,7 @@ class LeadService {
                 {
                     $addFields: {
                         id: '$_id',
-                        created_by: {$ifNull: ['$created_by.full_name', null]},
+                        created_by: {$arrayElemAt: ['$created_by.full_name', 0]},
                         brand: {$arrayElemAt: ['$brand', 0]},
                         manager: {$arrayElemAt: ['$manager', 0]},
                         status: {$arrayElemAt: ['$status', 0]},
@@ -661,6 +683,38 @@ class LeadService {
             const updated = await Lead.findByIdAndUpdate({
                 _id: new mongoose.Types.ObjectId(lead_id)
             }, {client_type}, {
+                new: true
+            })
+
+            if (updated) {
+                return {
+                    status: true,
+                    code: 200,
+                    message: Response.update("lead", true),
+                };
+            } else {
+                return {
+                    status: false,
+                    code: 400,
+                    message: Response.update("lead", false),
+                };
+            }
+        } catch (e) {
+            return {
+                code: 500,
+                error: e.message,
+            };
+        }
+    }
+
+    async changeBrand(data) {
+
+        try {
+            const {lead_id, brand_id} = data
+
+            const updated = await Lead.findByIdAndUpdate({
+                _id: new mongoose.Types.ObjectId(lead_id)
+            }, {brand_id}, {
                 new: true
             })
 
