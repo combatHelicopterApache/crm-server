@@ -5,17 +5,25 @@ const getString = (field, values) => {
     const regexArray = values.map((value) => new RegExp(value, 'i'));
     return { [field]: { $in: regexArray } };
 }
+
 // search elements from Array ObjectIds
 const getObjectId = (field, values) => {
     const regexArray = values.map((value) => new mongoose.Types.ObjectId(value))
     return { [field]: { $in: regexArray } };
 }
+
 // search elements from-to Array Date
 const getByDate = (field, values) => {
-    const regexArray = values.map((value) => new mongoose.Types.ObjectId(value))
-    return { [field]: { $in: regexArray } };
-}
+    const date = values.pop().split("|");
+    const startDateString = new Date(date[0].trim());
+    const endDateString = new Date(date[1].trim());
 
+    if (startDateString.getTime() === endDateString.getTime()) {
+        endDateString.setDate(endDateString.getDate() + 1);
+    }
+
+    return { [field]: { $gte: startDateString, $lte: endDateString } };
+};
 
 module.exports = (target, data, company) => {
     const filterOptions = []
@@ -72,9 +80,19 @@ module.exports = (target, data, company) => {
             filterOptions.push(condition);
         }
 
+        if (data.created_by && Array.isArray(data.created_by)) {
+            const condition = getObjectId('created_by', data.created_by);
+            filterOptions.push(condition);
+        }
+
+
         if (data.created_at && Array.isArray(data.created_at)) {
-            console.log(data.created_at[0])
             const condition = getByDate('created_at', data.created_at);
+            filterOptions.push(condition);
+        }
+
+        if (data.updated_at && Array.isArray(data.updated_at)) {
+            const condition = getByDate('updated_at', data.updated_at);
             filterOptions.push(condition);
         }
     }
