@@ -74,6 +74,15 @@ router.put(
     leadController.changeLeadBrand
 )
 
+router.put(
+    '/change-brand',
+    checkAuthMiddleware,
+    checkRoleMiddleware,
+    checkPermissions('leads'),
+    checkRestriction('leads', 'lead_access'),
+    leadController.uploadLeadsMassive
+)
+
 
 router.get(
     '/:id',

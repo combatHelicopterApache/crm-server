@@ -766,6 +766,32 @@ class LeadService {
             };
         }
     }
+
+    async uploadLeads(data) {
+        try {
+
+            // if () {
+            //     return {
+            //         status: true,
+            //         code: 200,
+            //         message: Response.delete("lead", true),
+            //         data:
+            //     };
+            // } else {
+            //     return {
+            //         status: false,
+            //         code: 400,
+            //         message: Response.delete("lead", false),
+            //     };
+            // }
+
+        } catch (e) {
+            return {
+                code: 500,
+                error: e.message,
+            };
+        }
+    }
 }
 
 module.exports = new LeadService()
